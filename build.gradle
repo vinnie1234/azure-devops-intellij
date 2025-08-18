@@ -11,7 +11,7 @@ buildscript {
 }
 
 plugins {
-    id 'org.jetbrains.intellij' version '1.17.4' apply false
+    id 'org.jetbrains.intellij.platform' version '2.1.0' apply false
     // https://docs.gradle.org/current/userguide/compatibility.html#kotlin
     id 'org.jetbrains.kotlin.jvm' version '1.4.31' apply false
     id "de.undercouch.download" version "4.0.0"
@@ -59,8 +59,8 @@ configure(mainProjects) {
     apply plugin: 'checkstyle'
     apply plugin: 'pmd'
 
-    sourceCompatibility = 11
-    targetCompatibility = 11
+    sourceCompatibility = 17
+    targetCompatibility = 17
 
     sourceSets {
         main {
