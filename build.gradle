@@ -117,7 +117,7 @@ project(":plugin") {
 
     intellij {
         version = ideaVersion
-        plugins = ['git4idea']
+        plugins = ['Git4Idea']
         pluginName = 'com.microsoft.vso.idea'
         updateSinceUntilBuild = false
 
@@ -165,7 +165,7 @@ project(":L2Tests") {
 
     intellij {
         version = ideaVersion
-        plugins = ['git4idea', 'java']
+        plugins = ['Git4Idea', 'java']
 
         buildSearchableOptions.enabled = false
 
