@@ -5,6 +5,14 @@ plugins {
     id "org.jetbrains.kotlin.jvm"
 }
 
+sourceSets {
+    main {
+        kotlin {
+            srcDirs = ['src/main/kotlin']
+        }
+    }
+}
+
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "com.jetbrains.rd:rd-framework:$rdGenVersion"
