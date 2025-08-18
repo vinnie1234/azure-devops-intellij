@@ -10,9 +10,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.testFramework.EdtTestUtil;
-import com.intellij.testFramework.TestLoggerFactory;
-import com.intellij.testFramework.UsefulTestCase;
 import com.intellij.testFramework.fixtures.IdeaProjectTestFixture;
 import com.intellij.testFramework.fixtures.IdeaTestFixtureFactory;
 import com.intellij.util.ObjectUtils;
@@ -47,7 +44,7 @@ import git4idea.commands.Git;
 import git4idea.commands.GitHandler;
 import git4idea.config.GitVcsSettings;
 import git4idea.repo.GitRepositoryManager;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -65,18 +62,14 @@ import java.util.Collections;
 import java.util.List;
 
 @RunWith(JUnit38ClassRunner.class)
-public abstract class L2Test extends UsefulTestCase {
+public abstract class L2Test {
     protected static final String ENV_UNIQUE_SUFFIX = "MSVSTS_INTELLIJ_UNIQUE_SUFFIX";
-    static {
-        Logger.setFactory(TestLoggerFactory.class);
-    }
 
     @Rule
     public TestName name = new TestName();
 
     public L2Test() {
-        // Set the name of the test in the base class
-        setName(name.getMethodName());
+        // JUnit constructor
     }
 
     // Context variables
