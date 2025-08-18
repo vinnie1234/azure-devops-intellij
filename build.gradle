@@ -11,7 +11,7 @@ buildscript {
 }
 
 plugins {
-    id 'org.jetbrains.intellij' version '1.13.3' apply false
+    id 'org.jetbrains.intellij' version '0.7.3' apply false
     // https://docs.gradle.org/current/userguide/compatibility.html#kotlin
     id 'org.jetbrains.kotlin.jvm' version '1.4.31' apply false
     id "de.undercouch.download" version "4.0.0"
@@ -21,7 +21,7 @@ plugins {
  * This is task for update Gradle wrapper version.
  */
 wrapper {
-    gradleVersion = '7.6'
+    gradleVersion = '5.6.4'
     distributionUrl = "https://services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
 }
 
@@ -104,13 +104,13 @@ project(":plugin") {
     apply plugin: 'org.jetbrains.intellij'
 
     dependencies {
-        compile project(path: ":client:connector", configuration: "default")
+        implementation project(path: ":client:connector", configuration: "default")
 
-        testCompile group: 'org.powermock', name: 'powermock-module-junit4', version: '2.0.2'
-        testCompile group: 'org.powermock', name: 'powermock-api-mockito2', version: '2.0.2'
-        testCompile group: 'org.powermock', name: 'powermock-classloading-xstream', version: '2.0.2'
+        testImplementation group: 'org.powermock', name: 'powermock-module-junit4', version: '2.0.2'
+        testImplementation group: 'org.powermock', name: 'powermock-api-mockito2', version: '2.0.2'
+        testImplementation group: 'org.powermock', name: 'powermock-classloading-xstream', version: '2.0.2'
 
-        testRuntime project(":plugin:test-utils")
+        testRuntimeOnly project(":plugin:test-utils")
     }
 
     version buildNumber
@@ -150,7 +150,7 @@ project(':plugin:test-utils') {
     apply plugin: 'org.jetbrains.intellij'
 
     dependencies {
-        compile project(':plugin')
+        implementation project(':plugin')
     }
 
     intellij {
@@ -182,10 +182,10 @@ project(":L2Tests") {
         // available). It is available in the product because of how IDEA classloaders work, but it gets overridden by
         // IDEA's instance of jackson-databind in tests. We have to load right version of the library by moving it on
         // top of the classpath.
-        priorityTestCompile 'com.fasterxml.jackson.core:jackson-databind:2.4.1'
+        priorityTestImplementation 'com.fasterxml.jackson.core:jackson-databind:2.4.1'
 
-        compile project(':plugin')
-        testCompile project(':plugin:test-utils')
+        implementation project(':plugin')
+        testImplementation project(':plugin:test-utils')
     }
 
     jar {
@@ -205,37 +205,37 @@ project(":L2Tests") {
 configure(mainProjects) {
     dependencies {
         // Dependencies of ':com.microsoft.alm.client:0.4.3-SNAPSHOT'
-        compile 'javax.ws.rs:javax.ws.rs-api:2.0.1'
-        compile 'commons-codec:commons-codec:1.10'
-        compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.4.1'
+        implementation 'javax.ws.rs:javax.ws.rs-api:2.0.1'
+        implementation 'commons-codec:commons-codec:1.10'
+        implementation 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.4.1'
 
         // Microsoft ALM libraries that are managed by the dependencies.gradle script
-        compile ':com.microsoft.alm.client:0.4.3-SNAPSHOT'
-        compile ':com.microsoft.alm.client.build2:0.4.3-SNAPSHOT'
-        compile ':com.microsoft.alm.client.core:0.4.3-SNAPSHOT'
-        compile ':com.microsoft.alm.client.distributedtask:0.4.3-SNAPSHOT'
-        compile ':com.microsoft.alm.client.sourcecontrol:0.4.3-SNAPSHOT'
-        compile ':com.microsoft.alm.client.workitemtracking:0.4.3-SNAPSHOT'
+        implementation ':com.microsoft.alm.client:0.4.3-SNAPSHOT'
+        implementation ':com.microsoft.alm.client.build2:0.4.3-SNAPSHOT'
+        implementation ':com.microsoft.alm.client.core:0.4.3-SNAPSHOT'
+        implementation ':com.microsoft.alm.client.distributedtask:0.4.3-SNAPSHOT'
+        implementation ':com.microsoft.alm.client.sourcecontrol:0.4.3-SNAPSHOT'
+        implementation ':com.microsoft.alm.client.workitemtracking:0.4.3-SNAPSHOT'
 
-        compile group: 'commons-io', name: 'commons-io', version: '2.4'
-        compile group: 'org.glassfish.jersey.core', name: 'jersey-client', version: '2.28'
-        compile group: 'org.glassfish.jersey.connectors', name: 'jersey-apache-connector', version: '2.28'
-        compile group: 'org.glassfish.jersey.inject', name: 'jersey-hk2', version: '2.28'
-        compile (group: 'org.apache.httpcomponents', name: 'httpclient-win', version: '4.4.1') {
+        implementation group: 'commons-io', name: 'commons-io', version: '2.4'
+        implementation group: 'org.glassfish.jersey.core', name: 'jersey-client', version: '2.28'
+        implementation group: 'org.glassfish.jersey.connectors', name: 'jersey-apache-connector', version: '2.28'
+        implementation group: 'org.glassfish.jersey.inject', name: 'jersey-hk2', version: '2.28'
+        implementation (group: 'org.apache.httpcomponents', name: 'httpclient-win', version: '4.4.1') {
             exclude group: 'net.java.dev.jna', module: 'jna'
             exclude group: 'net.java.dev.jna', module: 'jna-platform'
         }
 
-        compile (group: 'com.microsoft.alm', name: 'auth-core', version: '0.6.4') {
+        implementation (group: 'com.microsoft.alm', name: 'auth-core', version: '0.6.4') {
             exclude group: 'org.slf4j', module: 'slf4j-api'
         }
 
         // IDEA has two other junit versions embedded into it: 3.8.1 (junit.jar) and 4.12 (junit-4.12.jar). We need our
         // version to take priority.
-        priorityTestCompile group: 'junit', name: 'junit', version: '4.12'
+        priorityTestImplementation group: 'junit', name: 'junit', version: '4.12'
 
-        testCompile group: 'org.mockito', name: 'mockito-core', version: '4.8.0'
-        testCompile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+        testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.8.0'
+        testImplementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
     }
 
     tasks.withType(JavaCompile) {
