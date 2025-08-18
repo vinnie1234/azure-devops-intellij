@@ -9,3 +9,7 @@ L2Tests/lib
 out/
 
 *.Generated.kt
+
+# IntelliJ Platform cache directory
+.intellijPlatform*.hprof
+.intellijPlatform/

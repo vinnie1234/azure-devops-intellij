@@ -19,6 +19,7 @@
 
 package com.microsoft.alm.plugin.idea.tfvc.actions;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
@@ -207,16 +208,14 @@ public class BranchAction extends SingleItemAction {
     private VirtualFile chooseFileInUi(final FileChooserDescriptor descriptor, final Project project) {
         final Ref<VirtualFile> selectedFile = Ref.create();
         try {
-            GuiUtils.runOrInvokeAndWait(new Runnable() {
+            ApplicationManager.getApplication().invokeAndWait(new Runnable() {
                 @Override
                 public void run() {
                      selectedFile.set(FileChooser.chooseFile(descriptor, project, null));
                 }
             });
-        } catch (InvocationTargetException e) {
+        } catch (Exception e) {
             logger.error("Error when calling FileChooser", e);
-            return null;
-        } catch (InterruptedException e) {
             return null;
         }
 

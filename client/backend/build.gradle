@@ -8,22 +8,27 @@ plugins {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    compile project("tfs-sdk")
-    compile "com.jetbrains.rd:rd-framework:$rdGenVersion"
-
-    testImplementation 'junit:junit:4.12'
+    implementation project("tfs-sdk")
+    implementation "com.jetbrains.rd:rd-framework:$rdGenVersion"
+    
+    // Test dependencies - needed because test files are in main sourceset
+    implementation 'junit:junit:4.12'
 }
 
 compileKotlin {
-    dependsOn ':client:protocol:rdgen'
-    kotlinOptions.jvmTarget = '11'
+    // Note: protocol dependency disabled due to rdgen compatibility issues  
+    // Generated files are manually maintained
+    // dependsOn ':client:protocol:rdgen'
+    kotlinOptions.jvmTarget = '21'
 }
 
 compileTestKotlin {
-    kotlinOptions.jvmTarget = '11'
+    kotlinOptions.jvmTarget = '21'
 }
 
-mainClassName = "com.microsoft.tfs.MainKt"
+application {
+    mainClass = "com.microsoft.tfs.MainKt"
+}
 
 evaluationDependsOnChildren() // to get properties of tfs-sdk subproject
 

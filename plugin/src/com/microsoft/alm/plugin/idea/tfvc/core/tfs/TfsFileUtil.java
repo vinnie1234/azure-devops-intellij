@@ -136,7 +136,7 @@ public class TfsFileUtil {
     public static void setReadOnly(final Collection<VirtualFile> files, final boolean status) throws IOException {
         final Ref<IOException> exception = new Ref<IOException>();
         try {
-            GuiUtils.runOrInvokeAndWait(new Runnable() {
+            ApplicationManager.getApplication().invokeAndWait(new Runnable() {
                 public void run() {
                     ApplicationManager.getApplication().runWriteAction(new Runnable() {
                         public void run() {
@@ -151,9 +151,7 @@ public class TfsFileUtil {
                     });
                 }
             });
-        } catch (InvocationTargetException e) {
-            // ignore
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             // ignore
         }
         if (!exception.isNull()) {
@@ -164,7 +162,7 @@ public class TfsFileUtil {
     private static void setReadOnly(final String path, final boolean status) throws IOException {
         final Ref<IOException> exception = new Ref<IOException>();
         try {
-            GuiUtils.runOrInvokeAndWait(new Runnable() {
+            ApplicationManager.getApplication().invokeAndWait(new Runnable() {
                 public void run() {
                     try {
                         ReadOnlyAttributeUtil.setReadOnlyAttribute(path, status);
@@ -173,9 +171,7 @@ public class TfsFileUtil {
                     }
                 }
             });
-        } catch (InvocationTargetException e) {
-            // ignore
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             // ignore
         }
         if (!exception.isNull()) {
@@ -271,7 +267,7 @@ public class TfsFileUtil {
 
     public static void refreshAndFindFile(final FilePath path) {
         try {
-            GuiUtils.runOrInvokeAndWait(new Runnable() {
+            ApplicationManager.getApplication().invokeAndWait(new Runnable() {
                 public void run() {
                     ApplicationManager.getApplication().runWriteAction(new Runnable() {
                         public void run() {
@@ -280,9 +276,7 @@ public class TfsFileUtil {
                     });
                 }
             });
-        } catch (InvocationTargetException e) {
-            // ignore
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             // ignore
         }
     }

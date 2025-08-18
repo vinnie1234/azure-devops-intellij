@@ -102,7 +102,7 @@ public class TFSChangeProvider implements ChangeProvider {
             ServerContext serverContext = myVcs.getServerContext(true);
             changes = TfvcClient.getInstance().getStatusForFiles(project, serverContext, pathsToProcess);
         } catch (final Throwable t) {
-            logger.error("Failed to get changes from command line. roots=" + StringUtils.join(pathsToProcess, ", "), t);
+            logger.error("Failed to get changes from command line. roots=" + org.apache.commons.lang3.StringUtils.join(pathsToProcess, ", "), t);
             changes = Collections.emptyList();
         }
 

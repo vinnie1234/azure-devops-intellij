@@ -105,7 +105,7 @@ public class VisualStudioTfvcClient {
             @NotNull Path clientPath,
             @Nullable Path workingDirectory,
             @NotNull List<String> arguments) throws IOException, InterruptedException {
-        ourLogger.info("Executing VS client: " + clientPath + ", args: " + StringUtils.join(arguments, ','));
+        ourLogger.info("Executing VS client: " + clientPath + ", args: " + org.apache.commons.lang3.StringUtils.join(arguments, ','));
         List<String> command = new ArrayList<>(arguments.size() + 1);
         command.add(clientPath.toString());
         command.addAll(arguments);

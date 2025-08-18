@@ -258,7 +258,7 @@ public class TFSCheckinEnvironment implements CheckinEnvironment {
             if (successfullyAdded.size() != pathsToAdd.size()) {
                 // remove all added files from original list of files to add to give us which files weren't added
                 pathsToAdd.removeAll(successfullyAdded);
-                exceptions.add(new VcsException(TfPluginBundle.message(TfPluginBundle.KEY_TFVC_ADD_ERROR, StringUtils.join(pathsToAdd, ", "))));
+                exceptions.add(new VcsException(TfPluginBundle.message(TfPluginBundle.KEY_TFVC_ADD_ERROR, org.apache.commons.lang3.StringUtils.join(pathsToAdd, ", "))));
             }
         } catch (RuntimeException e) {
             logger.warn("Exception during adding the files", e);

@@ -84,7 +84,7 @@ public class IdeaHelper {
      * @return true if Git exe is configured, false if Git exe is not correctly configured
      */
     public static boolean isGitExeConfigured(@NotNull final Project project) {
-        final GitExecutableValidator validator = GitVcs.getInstance(project).getExecutableValidator();
+        final GitExecutableValidator validator = new GitExecutableValidator(project);
         if (!validator.checkExecutableAndNotifyIfNeeded()) {
             //Git.exe is not configured, show warning message in addition to notification from Git plugin
             Messages.showWarningDialog(project,

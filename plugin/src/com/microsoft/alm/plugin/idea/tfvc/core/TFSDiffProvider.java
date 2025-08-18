@@ -123,7 +123,7 @@ public class TFSDiffProvider extends DiffProviderEx {
     }
 
     @Override
-    public Map<VirtualFile, VcsRevisionNumber> getCurrentRevisions(Iterable<VirtualFile> files) {
+    public Map<VirtualFile, VcsRevisionNumber> getCurrentRevisions(Iterable<? extends VirtualFile> files) {
         final ServerContext context = TFSVcs.getInstance(project).getServerContext(true);
         final List<String> filePaths = ContainerUtil.newArrayList();
         for (VirtualFile file : files) {

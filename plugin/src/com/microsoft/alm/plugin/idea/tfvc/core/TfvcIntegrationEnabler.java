@@ -329,7 +329,7 @@ public class TfvcIntegrationEnabler extends VcsIntegrationEnabler {
             });
 
             if (success) {
-                vcsNotifier.notifySuccess(
+                vcsNotifier.notifySuccess("TFVC Import", 
                         TfPluginBundle.message(
                                 TfPluginBundle.KEY_TFVC_REPOSITORY_IMPORT_SUCCESS,
                                 projectDir.getPresentableUrl()));

@@ -101,7 +101,7 @@ public class VcsPullRequestsModel extends TabModelImpl<PullRequestsTreeModel> {
                                 abandonPR = IdeaHelper.showConfirmationDialog(project,
                                         TfPluginBundle.message(TfPluginBundle.KEY_VCS_PR_ABANDON_CONFIRMATION, prId),
                                         TfPluginBundle.message(TfPluginBundle.KEY_VCS_PR_TITLE),
-                                        Icons.VSLogo, Messages.YES_BUTTON, Messages.NO_BUTTON);
+                                        Icons.VSLogo, Messages.getYesButton(), Messages.getNoButton());
                             }
                         }, true, indicator.getModalityState());
 
@@ -157,10 +157,10 @@ public class VcsPullRequestsModel extends TabModelImpl<PullRequestsTreeModel> {
     private void notifyOperationStatus(final boolean success, final String message) {
         if (success) {
             VcsNotifier.getInstance(project).notifySuccess(
-                    TfPluginBundle.message(TfPluginBundle.KEY_VCS_PR_TITLE), message, NotificationListener.URL_OPENING_LISTENER);
+                    TfPluginBundle.message(TfPluginBundle.KEY_VCS_PR_TITLE), message);
         } else {
             VcsNotifier.getInstance(project).notifyError(
-                    TfPluginBundle.message(TfPluginBundle.KEY_VCS_PR_TITLE), message, NotificationListener.URL_OPENING_LISTENER);
+                    TfPluginBundle.message(TfPluginBundle.KEY_VCS_PR_TITLE), message, "");
         }
 
         // Update the PR tab and any other UI that is listening for PR Changed events (even on failure updating the tab is a good idea)

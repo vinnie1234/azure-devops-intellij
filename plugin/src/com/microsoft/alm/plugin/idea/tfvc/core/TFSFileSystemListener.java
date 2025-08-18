@@ -306,7 +306,7 @@ public class TFSFileSystemListener implements LocalFileOperationsHandler, Dispos
     }
 
     @Override
-    public void afterDone(final ThrowableConsumer<LocalFileOperationsHandler, IOException> throwableConsumer) {
+    public void afterDone(final ThrowableConsumer<? super LocalFileOperationsHandler, ? extends IOException> throwableConsumer) {
         // nothing to do
     }
 

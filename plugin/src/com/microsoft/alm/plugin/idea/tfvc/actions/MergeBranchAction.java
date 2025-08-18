@@ -113,7 +113,7 @@ public class MergeBranchAction extends SingleItemAction implements DumbAware {
                             throw new VcsException(TfPluginBundle.message(TfPluginBundle.KEY_ACTIONS_TFVC_MERGE_BRANCH_ERRORS_NO_CHANGES_TO_MERGE, sourceServerPath, targetServerPath));
                         } else if (mergeResults.errorsExist()) {
                             //TODO show warnings to users?
-                            final String errorString = StringUtils.join(mergeResults.getErrors(), "; ");
+                            final String errorString = org.apache.commons.lang3.StringUtils.join(mergeResults.getErrors(), "; ");
                             logger.warn("Merge errors exist: " + errorString);
                             throw new VcsException(TfPluginBundle.message(TfPluginBundle.KEY_ACTIONS_TFVC_MERGE_BRANCH_ERRORS_FOUND, errorString));
                         }

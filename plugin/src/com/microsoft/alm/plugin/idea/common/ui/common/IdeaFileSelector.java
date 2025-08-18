@@ -36,7 +36,6 @@ public class IdeaFileSelector {
                 prompt,
                 confirmationOption,
                 true,
-                false,
                 false);
         dialog.setTitle(dialogTitle);
         DialogManager.show(dialog);

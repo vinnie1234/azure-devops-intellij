@@ -308,9 +308,9 @@ public abstract class ImportPageModelImpl extends LoginPageModelImpl implements 
         indicator.setText(TfPluginBundle.message(TfPluginBundle.KEY_IMPORT_GIT_INIT, project.getName()));
         final GitLineHandler hInit = new GitLineHandler(project, rootVirtualFile, GitCommand.INIT);
         GitHandlerUtil.runInCurrentThread(hInit, null, true, TfPluginBundle.message(TfPluginBundle.KEY_IMPORT_GIT_INIT, project.getName()));
-        if (!hInit.errors().isEmpty()) {
+        if (hInit.getExitCode() != 0) {
             //git init failed
-            final String error = hInit.errors().get(0).getMessage();
+            final String error = "Git init failed";
             logger.error("setupGitRepositoryForProject: git init failed on project: {} at root: {} with error: {}",
                     project.getName(), rootVirtualFile.getUrl(), error);
             notifyImportError(project,
@@ -592,7 +592,7 @@ public abstract class ImportPageModelImpl extends LoginPageModelImpl implements 
     }
 
     private void notifyImportError(final Project project, final String message) {
-        VcsNotifier.getInstance(project).notifyError(TfPluginBundle.message(TfPluginBundle.KEY_IMPORT_FAILED), message, NotificationListener.URL_OPENING_LISTENER);
+        VcsNotifier.getInstance(project).notifyError(TfPluginBundle.message(TfPluginBundle.KEY_IMPORT_FAILED), message, "");
     }
 
     @Override

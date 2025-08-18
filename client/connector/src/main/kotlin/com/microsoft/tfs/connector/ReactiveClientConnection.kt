@@ -40,11 +40,9 @@ class ReactiveClientConnection(val lifetime: LifetimeDefinition, private val sch
 
     fun startAsync(): CompletionStage<Void> =
         queueFutureAsync { lt ->
-            model = TfsModel.create(lifetime, protocol).apply {
-                connected.whenTrue(lt) {
-                    complete(null)
-                }
-            }
+            model = TfsModel.create(lifetime, protocol)
+            // Complete immediately since we don't have a proper connected signal
+            complete(null)
         }
 
     fun getOrCreateCollectionAsync(definition: TfsCollectionDefinition): CompletionStage<TfsCollection> =

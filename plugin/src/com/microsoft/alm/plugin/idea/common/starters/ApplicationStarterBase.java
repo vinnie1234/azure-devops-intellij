@@ -4,7 +4,7 @@
 package com.microsoft.alm.plugin.idea.common.starters;
 
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.ApplicationStarterEx;
+import com.intellij.openapi.application.ApplicationStarter;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.microsoft.alm.plugin.idea.common.resources.TfPluginBundle;
 import org.apache.commons.lang.StringUtils;
@@ -20,7 +20,7 @@ import java.util.List;
  * Create a new commandline argument to do VSTS commands. This will allow for a protocol handler to pass IntelliJ
  * the needed arguments to start a VSTS specific workflow.
  */
-public abstract class ApplicationStarterBase extends ApplicationStarterEx {
+public abstract class ApplicationStarterBase implements ApplicationStarter {
     private final Logger logger = LoggerFactory.getLogger(ApplicationStarterBase.class);
     public static final String VSTS_COMMAND = "vsts";
     public final String URI_PREFIX = "vsoi://";
@@ -81,23 +81,20 @@ public abstract class ApplicationStarterBase extends ApplicationStarterEx {
     }
 
     @Override
-    public void premain(String[] args) {
-        if (!checkArguments(args)) {
+    public void main(List<String> args) {
+        String[] argsArray = args.toArray(new String[0]);
+        if (!checkArguments(argsArray)) {
             System.err.println(getUsageMessage());
             // exit code IntelliJ uses checkArgs failure
             System.exit(1);
         }
-    }
-
-    @Override
-    public void main(String[] args) {
-        logger.debug("Args passed to Azure DevOps to process: {}", Arrays.toString(args));
+        logger.debug("Args passed to Azure DevOps to process: {}", args);
         try {
-            if (StringUtils.startsWithIgnoreCase(args[1], URI_PREFIX)) {
+            if (StringUtils.startsWithIgnoreCase(args.get(1), URI_PREFIX)) {
                 // pass the uri but after removing it's prefix since it isn't needed anymore
-                processUri(args[1].replaceFirst(URI_PREFIX, StringUtils.EMPTY));
+                processUri(args.get(1).replaceFirst(URI_PREFIX, StringUtils.EMPTY));
             } else {
-                List<String> argsList = new ArrayList<String>(Arrays.asList(args));
+                List<String> argsList = new ArrayList<String>(args);
                 // remove first arg which is just the generic command "vsts" that got us to this point
                 argsList.remove(0);
                 processCommand(argsList);

@@ -11,10 +11,10 @@ buildscript {
 }
 
 plugins {
-    id 'org.jetbrains.intellij.platform' version '2.1.0' apply false
+    id 'org.jetbrains.intellij.platform' version '2.7.2' apply false
     // https://docs.gradle.org/current/userguide/compatibility.html#kotlin
-    id 'org.jetbrains.kotlin.jvm' version '1.4.31' apply false
-    id "de.undercouch.download" version "4.0.0"
+    id 'org.jetbrains.kotlin.jvm' version '1.9.24' apply false
+    id "de.undercouch.download" version "4.1.2"
 }
 
 /**
@@ -28,6 +28,7 @@ wrapper {
 apply from: 'dependencies.gradle'
 
 def mainProjects = [project(":L2Tests"), project(":plugin"), project(':plugin:test-utils')]
+def clientProjects = [project(":client:backend"), project(":client:connector")]
 
 /**
  * settings common to ALL projects (even the root level project)
@@ -47,7 +48,7 @@ allprojects {
 /**
  * settings shared by the main projects (part 1)
  */
-configure(mainProjects) {
+configure(mainProjects + clientProjects) {
     configurations {
         // Some our dependencies should be included *before* dependencies from IDEA (e.g. junit, jackson-databind). IDEA
         // has some versions of these dependencies that sometimes break tests (see comments for particular dependencies
@@ -59,8 +60,11 @@ configure(mainProjects) {
     apply plugin: 'checkstyle'
     apply plugin: 'pmd'
 
-    sourceCompatibility = 17
-    targetCompatibility = 17
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+    }
 
     sourceSets {
         main {
@@ -101,7 +105,13 @@ def reactiveBackend = file("client/backend/build/install")
  * specific settings for each project
  */
 project(":plugin") {
-    apply plugin: 'org.jetbrains.intellij'
+    apply plugin: 'org.jetbrains.intellij.platform'
+
+    repositories {
+        intellijPlatform {
+            defaultRepositories()
+        }
+    }
 
     dependencies {
         implementation project(path: ":client:connector", configuration: "default")
@@ -111,26 +121,50 @@ project(":plugin") {
         testImplementation group: 'org.powermock', name: 'powermock-classloading-xstream', version: '2.0.2'
 
         testRuntimeOnly project(":plugin:test-utils")
+
+        // IntelliJ Platform dependencies
+        intellijPlatform {
+            intellijIdeaCommunity(ideaVersion)
+            bundledPlugin('Git4Idea')
+            bundledPlugin('com.intellij.java')
+            
+            pluginVerifier()
+            zipSigner()
+            instrumentationTools()
+        }
     }
 
     version buildNumber
 
-    intellij {
-        version = ideaVersion
-        plugins = ['Git4Idea']
-        pluginName = 'com.microsoft.vso.idea'
-        updateSinceUntilBuild = false
-
-        // buildPlugin and runIde should depend on the reactive backend
-        task prepareBackendSandbox(type: Copy, dependsOn: ":client:backend:installDist") {
-            from reactiveBackend
-            into file("${prepareSandbox.destinationDir}/${prepareSandbox.pluginName}")
+    intellijPlatform {
+        pluginConfiguration {
+            name = 'com.microsoft.vso.idea'
         }
-        prepareSandbox.finalizedBy(prepareBackendSandbox)
+
+        publishing {
+            token = providers.environmentVariable("PUBLISH_TOKEN")
+        }
+
+        pluginVerification {
+            ides {
+                recommended()
+            }
+        }
+
+        // Custom sandbox tasks for reactive backend
+        tasks.register('prepareBackendSandbox', Copy) {
+            dependsOn ":client:backend:installDist"
+            from reactiveBackend
+            into layout.buildDirectory.dir("idea-sandbox/plugins/${project.name}")
+        }
+        
+        tasks.named('prepareSandbox') {
+            finalizedBy('prepareBackendSandbox')
+        }
     }
 
     jar {
-        baseName 'com.microsoft.alm.plugin.idea'
+        archiveBaseName = 'com.microsoft.alm.plugin.idea'
     }
 
     task showVersion() {
@@ -147,33 +181,63 @@ project(":plugin") {
 }
 
 project(':plugin:test-utils') {
-    apply plugin: 'org.jetbrains.intellij'
+    apply plugin: 'org.jetbrains.intellij.platform'
+
+    repositories {
+        intellijPlatform {
+            defaultRepositories()
+        }
+    }
 
     dependencies {
         implementation project(':plugin')
+
+        // IntelliJ Platform dependencies
+        intellijPlatform {
+            intellijIdeaCommunity(ideaVersion)
+            
+            instrumentationTools()
+        }
     }
 
-    intellij {
-        version = ideaVersion
+    intellijPlatform {
+        buildSearchableOptions = false
     }
-
-    buildSearchableOptions.enabled = false
 }
 
 project(":L2Tests") {
-    apply plugin: 'org.jetbrains.intellij'
+    apply plugin: 'org.jetbrains.intellij.platform'
 
-    intellij {
-        version = ideaVersion
-        plugins = ['Git4Idea', 'java']
-
-        buildSearchableOptions.enabled = false
-
-        task prepareBackendSandbox(type: Copy, dependsOn: ":client:backend:installDist") {
-            from reactiveBackend
-            into file("${prepareTestingSandbox.destinationDir}/${prepareTestingSandbox.pluginName}")
+    repositories {
+        intellijPlatform {
+            defaultRepositories()
         }
-        prepareTestingSandbox.finalizedBy(prepareBackendSandbox)
+    }
+
+    dependencies {
+        // IntelliJ Platform dependencies
+        intellijPlatform {
+            intellijIdeaCommunity(ideaVersion)
+            bundledPlugin('Git4Idea')
+            bundledPlugin('com.intellij.java')
+            
+            instrumentationTools()
+        }
+    }
+
+    intellijPlatform {
+        buildSearchableOptions = false
+
+        // Custom sandbox tasks for L2Tests
+        tasks.register('prepareTestBackendSandbox', Copy) {
+            dependsOn ":client:backend:installDist"
+            from reactiveBackend
+            into layout.buildDirectory.dir("idea-sandbox/plugins-test/${project.name}")
+        }
+        
+        tasks.named('prepareTestSandbox') {
+            finalizedBy('prepareTestBackendSandbox')
+        }
     }
 
     dependencies {
@@ -189,7 +253,7 @@ project(":L2Tests") {
     }
 
     jar {
-        baseName 'com.microsoft.alm.L2'
+        archiveBaseName = 'com.microsoft.alm.L2'
     }
 
     test {

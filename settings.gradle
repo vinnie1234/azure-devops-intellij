@@ -1,1 +1,7 @@
-include "plugin", "plugin:test-utils", "L2Tests", "client:backend", "client:backend:tfs-sdk", "client:connector", "client:protocol"
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
+}
+
+include "plugin", "plugin:test-utils", "L2Tests", "client:backend", "client:backend:tfs-sdk", "client:connector"
+// Note: client:protocol temporarily excluded due to rdgen plugin Gradle 8.10 compatibility issues
+// Generated files are kept and manually patched for compatibility

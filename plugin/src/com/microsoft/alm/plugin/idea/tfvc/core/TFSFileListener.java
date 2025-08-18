@@ -29,6 +29,8 @@ import com.intellij.openapi.vcs.FilePath;
 import com.intellij.openapi.vcs.LocalFilePath;
 import com.intellij.openapi.vcs.VcsException;
 import com.intellij.openapi.vcs.VcsVFSListener;
+import kotlinx.coroutines.CoroutineScope;
+import kotlinx.coroutines.GlobalScope;
 import com.intellij.openapi.vcs.checkin.CheckinEnvironment;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.vcsUtil.VcsUtil;
@@ -55,7 +57,7 @@ public class TFSFileListener extends VcsVFSListener {
     public static final Logger logger = LoggerFactory.getLogger(TFSFileListener.class);
 
     public TFSFileListener(Project project, TFSVcs vcs) {
-        super(project, vcs);
+        super(vcs, GlobalScope.INSTANCE);
     }
 
     @NotNull

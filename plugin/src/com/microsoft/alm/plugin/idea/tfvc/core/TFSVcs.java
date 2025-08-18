@@ -261,7 +261,6 @@ public class TFSVcs extends AbstractVcs {
         return exception;
     }
 
-    @Override
     public CheckoutProvider getCheckoutProvider() {
         return null; ///TODO: new TFSCheckoutProvider();
     }
@@ -330,17 +329,7 @@ public class TFSVcs extends AbstractVcs {
                             // Notify the user that they should upgrade their version of the TF command line
                             VcsNotifier.getInstance(getProject()).notifyImportantWarning(
                                     TfPluginBundle.message(TfPluginBundle.KEY_TFVC_TF_VERSION_WARNING_TITLE),
-                                    error, new NotificationListener.Adapter() {
-
-                                        @Override
-                                        protected void hyperlinkActivated(@NotNull Notification notification, @NotNull HyperlinkEvent hyperlinkEvent) {
-                                            if (SETTINGS_URL_EVENT.equals(hyperlinkEvent.getDescription())) {
-                                                ShowSettingsUtil.getInstance().showSettingsDialog(myProject, TFVC_NAME);
-                                            } else {
-                                                BrowserUtil.browse(TFVC_ONLINE_HELP_URL);
-                                            }
-                                        }
-                                    });
+                                    error, "");
                         }
                     } catch (Exception e) {
                         logger.warn("Failed to warn user about min version of TF command line.", e);

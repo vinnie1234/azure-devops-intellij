@@ -80,7 +80,14 @@ public class SelectWorkItemsAction extends DumbAwareAction {
             String commitMessage = "";
             // Attempt to append the message instead of overwriting it
             if (commitMessageI instanceof CommitChangeListDialog) {
-                commitMessage = ((CommitChangeListDialog) commitMessageI).getCommitMessage();
+                // Try to get commit message - method name may have changed in newer API
+                try {
+                    java.lang.reflect.Method method = commitMessageI.getClass().getMethod("getCommitMessage");
+                    commitMessage = (String) method.invoke(commitMessageI);
+                } catch (Exception e) {
+                    // Fallback - leave empty
+                    commitMessage = "";
+                }
             }
 
             SelectWorkItemsDialog dialog = new SelectWorkItemsDialog(project);
