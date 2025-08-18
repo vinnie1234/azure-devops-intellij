@@ -1,18 +1,18 @@
-# **This project is no longer maintained.** 
-> To make changes, you may fork this repository and build your own version.
-
----
 # Azure DevOps Plugin for IntelliJ, Android Studio, & other JetBrains IDEs
 
 This is a plugin for working with Git and TFVC repositories on Azure DevOps and Team Foundation Server (TFS) 2015+ inside IntelliJ, Android Studio, 
 and various other JetBrains IDEs. It is supported on Linux, Mac OS X, and Windows.
-It is compatible with IntelliJ IDEA Community and Ultimate editions (version 2021.2.4+) and Android Studio (version 2021.2.1+).
+
+**Compatibility**: IntelliJ IDEA Community and Ultimate editions (version **2025.2+**) and Android Studio (version **2025.2+**).
+
+> **Note**: This plugin has been migrated to IntelliJ Platform Gradle Plugin 2.0 and updated for IntelliJ IDEA 2025.2+ compatibility. 
+> Previous versions (2021.2-2025.1) are no longer supported due to platform API changes.
 
 To learn more about installing and using our Azure DevOps IntelliJ plug-in, visit: https://docs.microsoft.com/en-us/azure/devops/repos/git/create-repo-intellij?view=azure-devops
 
 ## Pre-Reqs
-1. Install OpenJDK 11.
-2. Set JAVA_HOME to the location of JDK 11.
+1. Install OpenJDK 21.
+2. Set JAVA_HOME to the location of JDK 21.
 3. Clone the repository (if planning on building yourself).
 
 ## Building the Plugin
@@ -23,7 +23,7 @@ Run the build by:
 1. Open a terminal/console window. 
 2. Navigate to the repository root.
 3. Run `./gradlew buildPlugin`
-   * If you have multiple versions of the Java JDK installed, you may need to set your `JAVA_HOME` environment variable to the installation folder of the JDK 11.
+   * If you have multiple versions of the Java JDK installed, you may need to set your `JAVA_HOME` environment variable to the installation folder of the JDK 21.
 4. The plugin zip file will be created in the `plugin/build/distributions/` folder.
 
 
@@ -32,9 +32,9 @@ Once you've downloaded the dependencies, run the build by:
 
 1. Start IntelliJ and open the Gradle project from the root project directory.
 
-2. Configure the project to use language level Java 11
+2. Configure the project to use language level Java 21
    * File -> Project Structure -> Project Settings -> Project
-   * Under Project Language Level, select "11 - Local variable syntax for lambda parameters"
+   * Under Project Language Level, select "21 - Pattern matching for switch"
 
 3. Configure the project and ***each module*** to build with this "IntelliJ Platform Plugin SDK".
    * File -> Project Structure -> Project Settings -> Project.
