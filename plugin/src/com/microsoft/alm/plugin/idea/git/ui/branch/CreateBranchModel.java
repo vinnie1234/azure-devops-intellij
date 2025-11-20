@@ -89,7 +89,7 @@ public class CreateBranchModel extends AbstractModel {
 
         // TODO: add option to retrieve more branches in case the branch they are looking for is missing local
         // only show valid remote branches
-        sortedRemoteBranches.addAll(Collections2.filter(gitRepository.getInfo().getRemoteBranches().keySet(), remoteBranch -> {
+        sortedRemoteBranches.addAll(Collections2.filter(TfGitHelper.getRemoteBranchesCompat(gitRepository.getInfo()), remoteBranch -> {
             //  condition: remote must be a vso/tfs remote
             return tfGitRemotes.contains(remoteBranch.getRemote());
         }));

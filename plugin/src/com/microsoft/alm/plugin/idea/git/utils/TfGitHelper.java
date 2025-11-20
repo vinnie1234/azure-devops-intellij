@@ -12,14 +12,17 @@ import com.microsoft.alm.plugin.context.ServerContextManager;
 import git4idea.GitRemoteBranch;
 import git4idea.GitUtil;
 import git4idea.repo.GitRemote;
+import git4idea.repo.GitRepoInfo;
 import git4idea.repo.GitRepository;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class TfGitHelper {
@@ -96,6 +99,25 @@ public class TfGitHelper {
         Collection<GitRemote> gitRemotes = gitRepository.getRemotes();
 
         return Collections2.filter(gitRemotes, TfGitHelper::isTfGitRemote);
+    }
+
+    @NotNull
+    @SuppressWarnings("unchecked")
+    public static Collection<GitRemoteBranch> getRemoteBranchesCompat(@NotNull final GitRepoInfo repoInfo) {
+        try {
+            Method method = GitRepoInfo.class.getMethod("getRemoteBranches");
+            Object result = method.invoke(repoInfo);
+            
+            if (result instanceof Map) {
+                return ((Map<GitRemoteBranch, ?>) result).keySet();
+            } else if (result instanceof Collection) {
+                return (Collection<GitRemoteBranch>) result;
+            }
+            
+            throw new RuntimeException("Unexpected return type from getRemoteBranches(): " + result.getClass());
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to get remote branches", e);
+        }
     }
 
     @Nullable
