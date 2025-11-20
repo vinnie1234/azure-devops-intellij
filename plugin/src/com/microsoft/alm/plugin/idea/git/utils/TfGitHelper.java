@@ -105,16 +105,20 @@ public class TfGitHelper {
     @SuppressWarnings("unchecked")
     public static Collection<GitRemoteBranch> getRemoteBranchesCompat(@NotNull final GitRepoInfo repoInfo) {
         try {
-            Method method = GitRepoInfo.class.getMethod("getRemoteBranches");
-            Object result = method.invoke(repoInfo);
-            
-            if (result instanceof Map) {
-                return ((Map<GitRemoteBranch, ?>) result).keySet();
-            } else if (result instanceof Collection) {
-                return (Collection<GitRemoteBranch>) result;
+            for (Method method : GitRepoInfo.class.getMethods()) {
+                if (method.getName().equals("getRemoteBranches") && method.getParameterCount() == 0) {
+                    Object result = method.invoke(repoInfo);
+                    
+                    if (result instanceof Map) {
+                        return ((Map<GitRemoteBranch, ?>) result).keySet();
+                    } else if (result instanceof Collection) {
+                        return (Collection<GitRemoteBranch>) result;
+                    }
+                    
+                    throw new RuntimeException("Unexpected return type from getRemoteBranches(): " + result.getClass());
+                }
             }
-            
-            throw new RuntimeException("Unexpected return type from getRemoteBranches(): " + result.getClass());
+            throw new RuntimeException("Method getRemoteBranches() not found on GitRepoInfo");
         } catch (Exception e) {
             throw new RuntimeException("Failed to get remote branches", e);
         }
