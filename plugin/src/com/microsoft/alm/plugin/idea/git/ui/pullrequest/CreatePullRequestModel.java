@@ -721,12 +721,11 @@ public class CreatePullRequestModel extends AbstractModel {
     }
 
     private void notifySuccess(final Project project, final String title, final String message) {
-        VcsNotifier.getInstance(project).notifyImportantInfo(title, message, new NotificationListener() {
-            @Override
-            public void hyperlinkUpdate(@NotNull final Notification n, @NotNull final HyperlinkEvent e) {
-                BrowserUtil.browse(e.getURL());
-            }
-        });
+        VcsNotifier.getInstance(project).notifyImportantInfo(
+            title,
+            message,
+            NotificationListener.URL_OPENING_LISTENER
+        );
 
         // Update the PR tab and any other UI that is listening for PR Changed events
         EventContextHelper.triggerPullRequestChanged(EventContextHelper.SENDER_CREATE_PULL_REQUEST, project);

@@ -342,12 +342,8 @@ public class WorkspaceModel extends AbstractModel {
                 VcsNotifier.getInstance(project).notifyImportantInfo(
                         TfPluginBundle.message(TfPluginBundle.KEY_WORKSPACE_DIALOG_NOTIFY_SUCCESS_TITLE),
                         TfPluginBundle.message(TfPluginBundle.KEY_WORKSPACE_DIALOG_NOTIFY_SUCCESS_MESSAGE),
-                        new NotificationListener() {
-                            @Override
-                            public void hyperlinkUpdate(@NotNull final Notification n, @NotNull final HyperlinkEvent e) {
-                                syncWorkspaceAsync(serverContext, project, workspaceRootPath);
-                            }
-                        });
+                        (notification, hyperlinkEvent) -> syncWorkspaceAsync(serverContext, project, workspaceRootPath)
+                );
             }
         } catch (final Throwable t) {
             //TODO on failure we could provide a link that reopened the dialog with the values they tried to save
