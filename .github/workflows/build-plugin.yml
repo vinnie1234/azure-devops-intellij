@@ -20,12 +20,13 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '21'
+        cache: 'gradle'
 
     - name: Grant execute permission to Gradle
       run: chmod +x ./gradlew
 
-    - name: Clean build
-      run: ./gradlew clean
+    - name: Clean build and dependencies
+      run: ./gradlew clean --refresh-dependencies
 
     - name: Build plugin
       run: ./gradlew buildPlugin
