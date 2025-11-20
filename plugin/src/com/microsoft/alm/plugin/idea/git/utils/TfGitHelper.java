@@ -105,21 +105,35 @@ public class TfGitHelper {
     @SuppressWarnings("unchecked")
     public static Collection<GitRemoteBranch> getRemoteBranchesCompat(@NotNull final GitRepoInfo repoInfo) {
         try {
+            Method targetMethod = null;
             for (Method method : GitRepoInfo.class.getMethods()) {
                 if (method.getName().equals("getRemoteBranches") && method.getParameterCount() == 0) {
-                    Object result = method.invoke(repoInfo);
-                    
-                    if (result instanceof Map) {
-                        return ((Map<GitRemoteBranch, ?>) result).keySet();
-                    } else if (result instanceof Collection) {
-                        return (Collection<GitRemoteBranch>) result;
-                    }
-                    
-                    throw new RuntimeException("Unexpected return type from getRemoteBranches(): " + result.getClass());
+                    targetMethod = method;
+                    break;
                 }
             }
-            throw new RuntimeException("Method getRemoteBranches() not found on GitRepoInfo");
+            
+            if (targetMethod == null) {
+                StringBuilder availableMethods = new StringBuilder("Available methods: ");
+                for (Method m : GitRepoInfo.class.getMethods()) {
+                    availableMethods.append(m.getName()).append("(").append(m.getParameterCount()).append("), ");
+                }
+                throw new RuntimeException("Method getRemoteBranches() not found on GitRepoInfo. " + availableMethods);
+            }
+            
+            Object result = targetMethod.invoke(repoInfo);
+            
+            if (result instanceof Map) {
+                return ((Map<GitRemoteBranch, ?>) result).keySet();
+            } else if (result instanceof Collection) {
+                return (Collection<GitRemoteBranch>) result;
+            }
+            
+            throw new RuntimeException("Unexpected return type from getRemoteBranches(): " + result.getClass());
         } catch (Exception e) {
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException) e;
+            }
             throw new RuntimeException("Failed to get remote branches", e);
         }
     }
