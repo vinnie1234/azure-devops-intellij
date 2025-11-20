@@ -73,6 +73,7 @@
     <depends>com.intellij.modules.vcs</depends> <!-- Dependency for tfvc -->
 
     <extensions defaultExtensionNs="com.intellij">
+        <notificationGroup id="Azure DevOps" displayType="BALLOON"/>
         <appStarter implementation="com.microsoft.alm.plugin.idea.common.starters.VstsStarter"/>
         <checkoutProvider implementation="com.microsoft.alm.plugin.idea.git.extensions.GitCheckoutProvider"/>
         <checkoutProvider implementation="com.microsoft.alm.plugin.idea.tfvc.extensions.TfvcCheckoutProvider"/>

@@ -725,7 +725,7 @@ public class CreatePullRequestModel extends AbstractModel {
 
     private void notifySuccess(final Project project, final String title, final String message) {
         NotificationGroupManager.getInstance()
-            .getNotificationGroup("Vcs Important Messages")
+            .getNotificationGroup("Azure DevOps")
             .createNotification(title, message, NotificationType.INFORMATION)
             .setListener(NotificationListener.URL_OPENING_LISTENER)
             .notify(project);
