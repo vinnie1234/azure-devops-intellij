@@ -277,7 +277,7 @@ public class CreatePullRequestModel extends AbstractModel {
         final GitRemoteBranch remoteTrackingBranch = this.getRemoteTrackingBranch();
 
         // only show valid remote branches
-        sortedRemoteBranches.addAll(Collections2.filter(getInfo().getRemoteBranches(),
+        sortedRemoteBranches.addAll(Collections2.filter(getInfo().getRemoteBranches().keySet(),
                 remoteBranch -> {
                     /* two conditions:
                      *   1. remote must be a vso/tfs remote

@@ -251,7 +251,7 @@ public class SimpleCheckoutModel extends AbstractModel {
                             String fullRefName = StringUtils.EMPTY;
 
                             // find remote red name from given name
-                            for (final GitRemoteBranch remoteBranch : gitRepository.getInfo().getRemoteBranches()) {
+                            for (final GitRemoteBranch remoteBranch : gitRepository.getInfo().getRemoteBranches().keySet()) {
                                 final String remoteBranchName = remoteBranch.getName().replaceFirst(remoteBranch.getRemote().getName() + "/", StringUtils.EMPTY);
                                 if (ref.equals(remoteBranchName)) {
                                     fullRefName = remoteBranch.getName();
