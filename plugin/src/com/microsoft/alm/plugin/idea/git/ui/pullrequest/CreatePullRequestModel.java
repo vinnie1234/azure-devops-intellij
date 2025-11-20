@@ -15,7 +15,10 @@ import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationGroup;
+import com.intellij.notification.NotificationGroupManager;
 import com.intellij.notification.NotificationListener;
+import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
@@ -721,11 +724,11 @@ public class CreatePullRequestModel extends AbstractModel {
     }
 
     private void notifySuccess(final Project project, final String title, final String message) {
-        VcsNotifier.getInstance(project).notifyImportantInfo(
-            title,
-            message,
-            NotificationListener.URL_OPENING_LISTENER
-        );
+        NotificationGroupManager.getInstance()
+            .getNotificationGroup("Vcs Important Messages")
+            .createNotification(title, message, NotificationType.INFORMATION)
+            .setListener(NotificationListener.URL_OPENING_LISTENER)
+            .notify(project);
 
         // Update the PR tab and any other UI that is listening for PR Changed events
         EventContextHelper.triggerPullRequestChanged(EventContextHelper.SENDER_CREATE_PULL_REQUEST, project);
