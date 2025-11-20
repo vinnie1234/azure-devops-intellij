@@ -10,7 +10,6 @@ import com.microsoft.alm.plugin.authentication.facades.VsoAuthInfoProvider;
 import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.context.ServerContextBuilder;
 import com.microsoft.alm.plugin.context.ServerContextManager;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +68,7 @@ public class VsoAuthenticationProvider implements AuthenticationProvider {
                 logger.info("getAuthenticationInfoAsync succeeded");
                 try {
                     //save for VSO_Deployment
-                    if (StringUtils.equalsIgnoreCase(serverUri, VSO_AUTH_URL)) {
+                    if (serverUri == null ? VSO_AUTH_URL == null : serverUri.equalsIgnoreCase(VSO_AUTH_URL)) {
                         ServerContextManager.getInstance().validateServerConnection(
                                 new ServerContextBuilder().type(ServerContext.Type.VSO_DEPLOYMENT)
                                         .uri(VSO_AUTH_URL)

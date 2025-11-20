@@ -3,7 +3,6 @@
 
 package com.microsoft.alm.common.utils;
 
-import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 import java.util.List;
@@ -31,7 +30,7 @@ public class ArgumentHelper {
     }
 
     public static void checkNotEmptyString(final String arg, final String argName) {
-        if (StringUtils.isEmpty(arg)) {
+        if (arg == null || arg.isEmpty()) {
             throw new IllegalArgumentException(String.format(EMPTY_ARG_MSG, argName));
         }
     }

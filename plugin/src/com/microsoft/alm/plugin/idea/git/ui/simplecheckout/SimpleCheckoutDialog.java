@@ -5,7 +5,6 @@ package com.microsoft.alm.plugin.idea.git.ui.simplecheckout;
 
 import com.intellij.openapi.project.Project;
 import com.microsoft.alm.plugin.idea.common.ui.common.BaseDialogImpl;
-import org.apache.commons.lang.StringUtils;
 
 import javax.swing.JComponent;
 import java.awt.event.ActionListener;
@@ -53,7 +52,7 @@ public class SimpleCheckoutDialog extends BaseDialogImpl {
     }
 
     public JComponent getComponent(final String componentPropName) {
-        if (StringUtils.isEmpty(componentPropName)) {
+        if ((componentPropName == null || componentPropName.isEmpty())) {
             return null;
         }
         return simpleCheckoutForm.getComponent(componentPropName);

@@ -10,7 +10,6 @@ import com.microsoft.alm.plugin.external.models.MergeMapping;
 import com.microsoft.alm.plugin.external.models.MergeResults;
 import com.microsoft.alm.plugin.external.models.ServerStatusType;
 import com.microsoft.alm.plugin.external.models.VersionSpec;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,7 +81,7 @@ public class MergeCommand extends Command<MergeResults> {
      */
     @Override
     public MergeResults parseOutput(final String stdout, final String stderr) {
-        if (StringUtils.contains(stdout, NOTHING_TO_MERGE_MSG)) {
+        if (stdout != null && stdout.contains(NOTHING_TO_MERGE_MSG)) {
             return new MergeResults();
         }
 
@@ -93,13 +92,13 @@ public class MergeCommand extends Command<MergeResults> {
 
         // Go thru stderr and parse out the conflicts/errors/warnings
         for (final String line : getLines(stderr)) {
-            if (StringUtils.startsWithIgnoreCase(line, CONFLICT_PREFIX)) {
+            if (line != null && line.regionMatches(true, 0, CONFLICT_PREFIX, 0, CONFLICT_PREFIX.length())) {
                 // Just a conflict - add it to the lines
                 lines.add(line);
-            } else if (StringUtils.startsWithIgnoreCase(line, WARNING_CHANGES_IGNORED_PREFIX)) {
+            } else if (line != null && line.regionMatches(true, 0, WARNING_CHANGES_IGNORED_PREFIX, 0, WARNING_CHANGES_IGNORED_PREFIX.length())) {
                 // This "error" is really just a warning that previously made changes are being ignored because the merge is a delete
                 warnings.add(line);
-            } else if (StringUtils.isNotEmpty(line)){
+            } else if (line != null && !line.isEmpty()){
                 // Any other problem written to stderr is considered an error
                 errors.add(line);
             }
@@ -153,12 +152,12 @@ public class MergeCommand extends Command<MergeResults> {
 
     private MergeMapping createMapping(final String changeTypes, final String source, final String target, final boolean isConflict) {
         final List<ServerStatusType> serverStatusTypes = ServerStatusType.getServerStatusTypes(changeTypes);
-        String[] parts = StringUtils.split(source, VERSION_SEPARATOR);
-        final String sourceFilename = parts.length > 0 ? parts[0] : StringUtils.EMPTY;
-        final String sourceVersionRange = parts.length > 1 ? parts[1] : StringUtils.EMPTY;
-        parts = StringUtils.split(target, VERSION_SEPARATOR);
-        final String targetFilename = parts.length > 0 ? parts[0] : StringUtils.EMPTY;
-        final String targetVersion = parts.length > 1 ? parts[1] : StringUtils.EMPTY;
+        String[] parts = source.split(String.valueOf(VERSION_SEPARATOR));
+        final String sourceFilename = parts.length > 0 ? parts[0] : "";
+        final String sourceVersionRange = parts.length > 1 ? parts[1] : "";
+        parts = target.split(String.valueOf(VERSION_SEPARATOR));
+        final String targetFilename = parts.length > 0 ? parts[0] : "";
+        final String targetVersion = parts.length > 1 ? parts[1] : "";
         final VersionSpec.Range range = VersionSpec.Range.create(sourceVersionRange);
         return new MergeMapping(sourceFilename, targetFilename, range,
                 VersionSpec.create(targetVersion), serverStatusTypes, isConflict);

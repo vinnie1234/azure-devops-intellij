@@ -43,7 +43,6 @@ import com.microsoft.alm.plugin.idea.tfvc.core.tfs.TfsRevisionNumber;
 import com.microsoft.alm.sourcecontrol.webapi.model.TfvcItem;
 import com.microsoft.alm.sourcecontrol.webapi.model.TfvcVersionDescriptor;
 import com.microsoft.alm.sourcecontrol.webapi.model.TfvcVersionType;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -94,7 +93,7 @@ public class TFSDiffProvider extends DiffProviderEx {
             final TfsRevisionNumber revisionNumber = (TfsRevisionNumber) vcsRevisionNumber;
             return revisionNumber.getModificationDate();
         }
-        return StringUtils.EMPTY;
+        return "";
     }
 
     private int getChangeset(final VcsRevisionNumber vcsRevisionNumber) {

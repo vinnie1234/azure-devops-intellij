@@ -24,7 +24,7 @@ import com.microsoft.alm.plugin.services.PropertyService;
 import com.microsoft.alm.plugin.services.ServerContextStore;
 import com.microsoft.alm.sourcecontrol.webapi.GitHttpClient;
 import com.microsoft.alm.sourcecontrol.webapi.model.GitRepository;
-import org.apache.commons.lang.StringUtils;
+import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -137,7 +137,7 @@ public class ServerContextManager {
     }
 
     public synchronized ServerContext get(final String uri) {
-        if (!StringUtils.isEmpty(uri)) {
+        if (!(uri == null || uri.isEmpty())) {
             final ServerContext context = contextMap.get(ServerContext.getKey(uri));
             return context;
         }
@@ -146,7 +146,7 @@ public class ServerContextManager {
     }
 
     public synchronized void remove(final String serverUri) {
-        if (StringUtils.isEmpty(serverUri)) {
+        if ((serverUri == null || serverUri.isEmpty())) {
             return;
         }
 
@@ -156,7 +156,7 @@ public class ServerContextManager {
         if (context != null) {
             getStore().forgetServerContext(key);
             contextMap.remove(key);
-            if (StringUtils.equalsIgnoreCase(key, getLastUsedContextKey())) {
+            if ((key == null ? getLastUsedContextKey() == null : key.equalsIgnoreCase(getLastUsedContextKey()))) {
                 clearLastUsedContext();
             }
         }
@@ -212,7 +212,7 @@ public class ServerContextManager {
                 }
             }
         } else if (context.getTeamProjectReference() != null) {
-            final String collectionName = context.getTeamProjectCollectionReference() == null ? StringUtils.EMPTY : context.getTeamProjectCollectionReference().getName();
+            final String collectionName = context.getTeamProjectCollectionReference() == null ? "" : context.getTeamProjectCollectionReference().getName();
             // Assume this is a TFVC url and parse the TFVC url to get collection information
             if (validator.validateTfvcUrl(context.getUri().toString(), context.getTeamProjectReference().getName(), collectionName)) {
                 contextToValidate = new ServerContextBuilder(context)
@@ -282,7 +282,7 @@ public class ServerContextManager {
 
             if (data.getLocationServiceData() != null && data.getLocationServiceData().getServiceDefinitions() != null) {
                 for (final ServiceDefinition s : data.getLocationServiceData().getServiceDefinitions()) {
-                    if (StringUtils.equalsIgnoreCase(s.getServiceType(), TFS2015_NEW_SERVICE)) {
+                    if ((s.getServiceType() == null ? TFS2015_NEW_SERVICE == null : s.getServiceType().equalsIgnoreCase(TFS2015_NEW_SERVICE))) {
                         //TFS 2015 or higher, save the context with userId
                         final ServerContext contextWithUserId = new ServerContextBuilder(context)
                                 .userId(data.getAuthenticatedUser().getId())
@@ -357,7 +357,7 @@ public class ServerContextManager {
         if (context == null ||
                 context.getGitRepository() == null ||
                 context.getServerUri() == null ||
-                !StringUtils.equalsIgnoreCase(context.getUsableGitUrl(), httpsGitRemoteUrl)) {
+                !(context.getUsableGitUrl() == null ? httpsGitRemoteUrl == null : context.getUsableGitUrl().equalsIgnoreCase(httpsGitRemoteUrl))) {
             context = null;
         }
 
@@ -398,7 +398,7 @@ public class ServerContextManager {
                 context.getTeamProjectCollectionReference().getName() == null ||
                 context.getTeamProjectReference() == null ||
                 context.getTeamProjectReference().getId() == null ||
-                !StringUtils.equalsIgnoreCase(context.getTeamProjectReference().getName(), teamProjectName)) {
+                !(context.getTeamProjectReference().getName() == null ? teamProjectName == null : context.getTeamProjectReference().getName().equalsIgnoreCase(teamProjectName))) {
             context = null;
             logger.info("createContextFromTfvcServerUrl context fully populated: " + (context != null));
         }
@@ -555,7 +555,7 @@ public class ServerContextManager {
         // can't determine if TFVC or Git from context so check for a Git URL
         String url = context.getUsableGitUrl() == null ? context.getUri().toString() : context.getUsableGitUrl();
         // if the URL is the default value we give for last used get it from the auth info instead
-        if (StringUtils.equals(url, TfsAuthenticationProvider.TFS_LAST_USED_URL) && context.getAuthenticationInfo() != null) {
+        if (Objects.equals(url, TfsAuthenticationProvider.TFS_LAST_USED_URL) && context.getAuthenticationInfo() != null) {
             url = context.getAuthenticationInfo().getServerUri();
         }
 
@@ -635,7 +635,7 @@ public class ServerContextManager {
                     builder.authentication(newAuthenticationInfo);
                     final ServerContext newContext = builder.build();
                     logger.info(context.getUri().toString() + "       " + remoteUrl);
-                    if (StringUtils.equalsIgnoreCase(context.getUri().toString(), remoteUrl)) {
+                    if ((context.getUri().toString() == null ? remoteUrl == null : context.getUri().toString().equalsIgnoreCase(remoteUrl))) {
                         logger.info("The updated auth info created a context that matches the remote url");
                         add(newContext, true);
                         matchingContext = newContext;
@@ -717,7 +717,7 @@ public class ServerContextManager {
         protected TeamProjectReference getProjectFromServer(final ServerContext context, URI collectionURI, String teamProjectName) {
             final CoreHttpClient client = new CoreHttpClient(context.getClient(), collectionURI);
             for (TeamProjectReference ref : client.getProjects()) {
-                if (StringUtils.equalsIgnoreCase(ref.getName(), teamProjectName)) {
+                if ((ref.getName() == null ? teamProjectName == null : ref.getName().equalsIgnoreCase(teamProjectName))) {
                     return ref;
                 }
             }
@@ -832,7 +832,7 @@ public class ServerContextManager {
                         final String[] parts = splitTfvcCollectionUrl(collectionUrl);
                         serverUrl = parts[0];
                         collectionName = parts[1];
-                    } else if (StringUtils.isNotEmpty(possibleCollectionName)
+                    } else if ((possibleCollectionName != null && !possibleCollectionName.isEmpty())
                             && validateTfvcCollectionUrl(UrlHelper.getCollectionURI(UrlHelper.createUri(collectionUrl),
                             possibleCollectionName).toString())) {
                         serverUrl = collectionUrl;
@@ -882,7 +882,7 @@ public class ServerContextManager {
          */
         private String[] splitTfvcCollectionUrl(final String collectionUrl) {
             final String[] result = new String[2];
-            if (StringUtils.isEmpty(collectionUrl)) {
+            if ((collectionUrl == null || collectionUrl.isEmpty())) {
                 return result;
             }
 
@@ -897,7 +897,7 @@ public class ServerContextManager {
             } else {
                 // We can't determine the collection name so leave it empty
                 result[0] = collectionUrl;
-                result[1] = StringUtils.EMPTY;
+                result[1] = "";
             }
 
             return result;

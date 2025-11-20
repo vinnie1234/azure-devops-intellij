@@ -12,7 +12,7 @@ import com.microsoft.alm.build.webapi.model.BuildStatus;
 import com.microsoft.alm.common.utils.ArgumentHelper;
 import com.microsoft.alm.plugin.context.RepositoryContext;
 import com.microsoft.alm.plugin.context.ServerContext;
-import org.apache.commons.lang.StringUtils;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -194,16 +194,16 @@ public class BuildStatusLookupOperation extends Operation {
 
                     // Get the repo and branch for the build and compare them to ours
                     final BuildRepository repo = b.getRepository();
-                    if (repo != null && StringUtils.equalsIgnoreCase(context.getGitRepository().getId().toString(), repo.getId())) {
+                    if (repo != null && (context.getGitRepository().getId().toString() == null ? repo.getId() == null : context.getGitRepository().getId().toString().equalsIgnoreCase(repo.getId()))) {
                         // TODO: Get the constant refs/heads/master from someplace common or query for the default branch from the server
                         // Branch names are case sensitive
-                        if (StringUtils.equals(b.getSourceBranch(), "refs/heads/master")) {
+                        if (Objects.equals(b.getSourceBranch(), "refs/heads/master")) {
                             if (latestBuildForRepository == null) {
                                 // Found the master branch for the repo, so save that off
                                 logger.info("Latest build found for repo for the master branch.");
                                 latestBuildForRepository = b;
                             }
-                        } else if (StringUtils.equals(b.getSourceBranch(), repositoryContext.getBranch())) {
+                        } else if (Objects.equals(b.getSourceBranch(), repositoryContext.getBranch())) {
                             if (matchingBuild == null) {
                                 // The repo and branch match the build exactly, so save that off
                                 logger.info("Matching build found for repo and branch.");
@@ -263,7 +263,7 @@ public class BuildStatusLookupOperation extends Operation {
 
                 // Get the repo and branch for the build and compare them to ours
                 final BuildRepository repo = b.getRepository();
-                if (repo != null && StringUtils.equalsIgnoreCase(repo.getType(), TFVC_REPO_TYPE)) {
+                if (repo != null && (repo.getType() == null ? TFVC_REPO_TYPE == null : repo.getType().equalsIgnoreCase(TFVC_REPO_TYPE))) {
                     matchingBuild = b;
                     break;
                 }

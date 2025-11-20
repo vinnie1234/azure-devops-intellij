@@ -8,7 +8,6 @@ import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.external.ToolRunner;
 import com.microsoft.alm.plugin.external.models.ChangeSet;
 import com.microsoft.alm.plugin.external.models.CheckedInChange;
-import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -57,10 +56,10 @@ public class HistoryCommand extends Command<List<ChangeSet>> {
         if (stopAfter > 0) {
             builder.addSwitch("stopafter", Integer.toString(stopAfter));
         }
-        if (StringUtils.isNotEmpty(user)) {
+        if ((user != null && !user.isEmpty())) {
             builder.addSwitch("user", user);
         }
-        if (StringUtils.isNotEmpty(version)) {
+        if ((version != null && !version.isEmpty())) {
             builder.addSwitch("version", version);
         }
         if (itemMode) {

@@ -5,7 +5,7 @@ package com.microsoft.alm.common.utils;
 
 import com.microsoft.alm.common.artifact.GitRefArtifactID;
 import com.microsoft.alm.helpers.UriHelper;
-import org.apache.commons.lang.StringUtils;
+import java.util.Objects;
 import org.apache.http.client.utils.URIBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -83,7 +83,7 @@ public class UrlHelper {
     }
 
     public static String trimTrailingSeparators(final String uri) {
-        if (StringUtils.isNotEmpty(uri)) {
+        if (uri != null && !uri.isEmpty()) {
             int lastIndex = uri.length();
             while (lastIndex > 0 && uri.charAt(lastIndex - 1) == URL_SEPARATOR.charAt(0)) {
                 lastIndex--;
@@ -97,7 +97,7 @@ public class UrlHelper {
     }
 
     public static String trimLeadingAndTrailingSeparators(final String uri) {
-        if (StringUtils.isNotEmpty(uri)) {
+        if (uri != null && !uri.isEmpty()) {
             int startingIndex = 0;
             while (startingIndex < uri.length() && uri.charAt(startingIndex) == URL_SEPARATOR.charAt(0)) {
                 startingIndex++;
@@ -109,7 +109,7 @@ public class UrlHelper {
             if (startingIndex < uri.length() && lastIndex >= 0 && startingIndex < lastIndex) {
                 return uri.substring(startingIndex, lastIndex);
             }
-            return StringUtils.EMPTY;
+            return "";
         }
 
         return uri;
@@ -146,8 +146,8 @@ public class UrlHelper {
     public static boolean isVSO(final URI uri) {
         if (uri != null && uri.getHost() != null) {
             final String host = uri.getHost().toLowerCase();
-            if (StringUtils.endsWith(host, HOST_VSO) ||
-                    StringUtils.endsWith(host, HOST_TFS_ALL_IN) ||
+            if ((host != null && host.endsWith(HOST_VSO)) ||
+                    (host != null && host.endsWith(HOST_TFS_ALL_IN)) ||
                     UrlHelper.isOrganizationHost(host)) {
                 return true;
             }
@@ -174,8 +174,8 @@ public class UrlHelper {
     }
 
     public static boolean isOrganizationHost(final String host) {
-       if (StringUtils.equalsIgnoreCase(host, HOST_AZURE) ||
-               StringUtils.endsWithIgnoreCase(host, HOST_AZURE_ORG)) {
+       if ((host == null ? HOST_AZURE == null : host.equalsIgnoreCase(HOST_AZURE)) ||
+               (host != null && host.regionMatches(true, host.length() - HOST_AZURE_ORG.length(), HOST_AZURE_ORG, 0, HOST_AZURE_ORG.length()))) {
             return true;
        }
        return false;
@@ -205,8 +205,8 @@ public class UrlHelper {
     }
 
     public static boolean isTeamServicesUrl(final String url) {
-        if (StringUtils.containsIgnoreCase(url, HOST_VSO) ||
-                StringUtils.containsIgnoreCase(url, HOST_TFS_ALL_IN) ||
+        if ((url != null && url.toLowerCase().contains(HOST_VSO.toLowerCase())) ||
+                (url != null && url.toLowerCase().contains(HOST_TFS_ALL_IN.toLowerCase())) ||
                 UrlHelper.isOrganizationUrl(url)) {
             return true;
         }
@@ -214,17 +214,17 @@ public class UrlHelper {
     }
 
     public static boolean isGitRemoteUrl(final String gitRemoteUrl) {
-        return StringUtils.contains(gitRemoteUrl, "/_git/");
+        return (gitRemoteUrl != null && gitRemoteUrl.contains("/_git/"));
     }
 
     public static boolean isSshGitRemoteUrl(final String gitRemoteUrl) {
         if (isGitRemoteUrl(gitRemoteUrl)) {
-            if (StringUtils.startsWithIgnoreCase(gitRemoteUrl, "https://") ||
-                    StringUtils.startsWithIgnoreCase(gitRemoteUrl, "http://")) {
+            if ((gitRemoteUrl != null && gitRemoteUrl.regionMatches(true, 0, "https://", 0, "https://".length())) ||
+                    (gitRemoteUrl != null && gitRemoteUrl.regionMatches(true, 0, "http://", 0, "http://".length()))) {
                 return false;
             }
 
-            if (StringUtils.startsWithIgnoreCase(gitRemoteUrl, "ssh://")) {
+            if ((gitRemoteUrl != null && gitRemoteUrl.regionMatches(true, 0, "ssh://", 0, "ssh://".length()))) {
                 return true;
             }
 
@@ -232,7 +232,7 @@ public class UrlHelper {
             // E.g of valid url formats:
             // ssh://account@organization.visualstudio.com:22/Collection/_git/Repo
             // account@organization.visualstudio.com:22/Collection/_git/Repo
-            if (StringUtils.contains(gitRemoteUrl, "@")) {
+            if ((gitRemoteUrl != null && gitRemoteUrl.contains("@"))) {
                 return true;
             }
         }
@@ -242,12 +242,12 @@ public class UrlHelper {
     public static String getHttpsUrlFromHttpUrl(final String httpUrl) {
         final URI uri = createUri(httpUrl);
         String httpsUrl = httpUrl;
-        if (uri != null && StringUtils.equalsIgnoreCase(uri.getScheme(), "http")) {
+        if (uri != null && (uri.getScheme() == null ? "http" == null : uri.getScheme().equalsIgnoreCase("http"))) {
             final URI httpsUri = createUri("https://" + uri.getAuthority() + uri.getPath());
             httpsUrl = httpsUri.toString();
         }
 
-        if (StringUtils.startsWithIgnoreCase(httpsUrl, "https://")) {
+        if ((httpsUrl != null && httpsUrl.regionMatches(true, 0, "https://", 0, "https://".length()))) {
             return httpsUrl;
         } else {
             return null;
@@ -258,7 +258,7 @@ public class UrlHelper {
 
         if (isSshGitRemoteUrl(sshGitRemoteUrl)) {
             final URI sshUrl;
-            if (!StringUtils.startsWithIgnoreCase(sshGitRemoteUrl, "ssh://")) {
+            if (!(sshGitRemoteUrl != null && sshGitRemoteUrl.regionMatches(true, 0, "ssh://", 0, "ssh://".length()))) {
                 sshUrl = UrlHelper.createUri("ssh://" + sshGitRemoteUrl);
             } else {
                 sshUrl = UrlHelper.createUri(sshGitRemoteUrl);
@@ -267,8 +267,8 @@ public class UrlHelper {
             final String path = sshUrl.getPath();
             final URI httpsUrl = UrlHelper.createUri("https://" + host + path);
             return httpsUrl.toString();
-        } else if (StringUtils.startsWithIgnoreCase(sshGitRemoteUrl, HTTP_PROTOCOL)
-                || StringUtils.startsWithIgnoreCase(sshGitRemoteUrl, HTTPS_PROTOCOL)) {
+        } else if ((sshGitRemoteUrl != null && sshGitRemoteUrl.regionMatches(true, 0, HTTP_PROTOCOL, 0, HTTP_PROTOCOL.length()))
+                || (sshGitRemoteUrl != null && sshGitRemoteUrl.regionMatches(true, 0, HTTPS_PROTOCOL, 0, HTTPS_PROTOCOL.length()))) {
             // http/https url so return the url untouched
             return sshGitRemoteUrl;
         } else {
@@ -279,7 +279,7 @@ public class UrlHelper {
     }
 
     public static String getCmdLineFriendlyUrl(final String url) {
-        return StringUtils.replace(url, " ", "%20");
+        return url.replace(" ", "%20");
     }
 
     public static URI getVSOAccountURI(final String accountName) {
@@ -352,7 +352,7 @@ public class UrlHelper {
             return UrlHelper.createUri(DEFAULT_TEAM_SERVICES_LINK);
         }
 
-        if (StringUtils.isNotEmpty(gitRemoteBranchName)) {
+        if (gitRemoteBranchName != null && !gitRemoteBranchName.isEmpty()) {
             uri = uri.concat(URL_GIT_VERSION_SEGMENT).concat(gitRemoteBranchName);
         }
         return UrlHelper.createUri(uri);
@@ -373,7 +373,7 @@ public class UrlHelper {
      */
     public static boolean haveSameAccount(final URI remoteUrl1, final URI remoteUrl2) {
         if (remoteUrl1 != null && remoteUrl2 != null) {
-            return StringUtils.equalsIgnoreCase(getServerAccountKey(remoteUrl1), getServerAccountKey(remoteUrl2));
+            return (getServerAccountKey(remoteUrl1) == null ? getServerAccountKey(remoteUrl2) == null : getServerAccountKey(remoteUrl1).equalsIgnoreCase(getServerAccountKey(remoteUrl2)));
         }
 
         return false;
@@ -409,7 +409,7 @@ public class UrlHelper {
         StringBuilder sb = new StringBuilder();
         if (urlParts != null) {
             for (String part : urlParts) {
-                if (StringUtils.isEmpty(part)) {
+                if (part == null || part.isEmpty()) {
                     continue;
                 }
 
@@ -430,11 +430,11 @@ public class UrlHelper {
      * @return branch name
      */
     public static String parseUriForBranch(final String uri) {
-        if (!StringUtils.isEmpty(uri)) {
+        if (!(uri == null || uri.isEmpty())) {
             GitRefArtifactID artifactID = new GitRefArtifactID(uri);
             return artifactID.getRefName();
         } else {
-            return StringUtils.EMPTY;
+            return "";
         }
     }
 
@@ -478,7 +478,7 @@ public class UrlHelper {
      * parsed and validated result. If parsing isn't successful, every field is null
      */
     public static ParseResult tryParse(final String gitUrl, final ParseResultValidator validator) {
-        if (StringUtils.isEmpty(gitUrl)) {
+        if (gitUrl == null || gitUrl.isEmpty()) {
             return ParseResult.FAILED;
         }
 

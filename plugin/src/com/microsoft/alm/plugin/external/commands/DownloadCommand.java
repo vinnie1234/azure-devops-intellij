@@ -9,7 +9,6 @@ import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.external.ToolRunner;
 import com.microsoft.alm.plugin.external.exceptions.ToolParseFailureException;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,8 +58,8 @@ public class DownloadCommand extends Command<String> {
         final StringBuilder fileContents = new StringBuilder();
 
         // Check for "The specified file does not exist at the specified version" and write out empty string
-        if (ignoreFileNotFound && StringUtils.containsIgnoreCase(stderr, FILE_NOT_FOUND_ERROR)) {
-            fileContents.append(StringUtils.EMPTY);
+        if (ignoreFileNotFound && (stderr != null && stderr.toLowerCase().contains(FILE_NOT_FOUND_ERROR.toLowerCase()))) {
+            fileContents.append("");
         } else {
             super.throwIfError(stderr);
             for (final String line : getLines(stdout, true)) {

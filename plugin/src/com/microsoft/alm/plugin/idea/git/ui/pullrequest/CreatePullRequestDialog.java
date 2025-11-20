@@ -8,7 +8,6 @@ import com.microsoft.alm.plugin.idea.common.resources.TfPluginBundle;
 import com.microsoft.alm.plugin.idea.common.ui.common.BaseDialogImpl;
 import git4idea.GitBranch;
 import git4idea.GitRemoteBranch;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.ComboBoxModel;
@@ -87,7 +86,7 @@ public class CreatePullRequestDialog extends BaseDialogImpl {
     }
 
     public JComponent getComponent(final String componentPropName) {
-        if (StringUtils.isEmpty(componentPropName)) {
+        if ((componentPropName == null || componentPropName.isEmpty())) {
             return null;
         }
 

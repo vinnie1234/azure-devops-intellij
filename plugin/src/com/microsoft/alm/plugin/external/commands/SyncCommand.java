@@ -8,7 +8,6 @@ import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.external.ToolRunner;
 import com.microsoft.alm.plugin.external.exceptions.SyncException;
 import com.microsoft.alm.plugin.external.models.SyncResults;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,29 +106,29 @@ public class SyncCommand extends Command<SyncResults> {
         final List<String> deletedFiles = new ArrayList<String>();
         final List<SyncException> exceptions = new ArrayList<SyncException>();
 
-        if (StringUtils.contains(stdout, UP_TO_DATE_MSG)) {
+        if ((stdout != null && stdout.contains(UP_TO_DATE_MSG))) {
             return new SyncResults();
         }
 
         // make note that conflicts exist but to get conflicts use resolve command
-        final boolean conflictsExist = StringUtils.contains(stderr, CONFLICT_MESSAGE);
+        final boolean conflictsExist = (stderr != null && stderr.contains(CONFLICT_MESSAGE));
 
         // parse the exception to get individual exceptions instead of 1 large one
         exceptions.addAll(parseException(stderr));
 
         // parse output for file changes
         final String[] lines = getLines(stdout);
-        String path = StringUtils.EMPTY;
+        String path = "";
         for (final String line : lines) {
-            if (StringUtils.isNotEmpty(line) || StringUtils.startsWith(line, SUMMARY_PREFIX)) {
+            if ((line != null && !line.isEmpty()) || (line != null && line.startsWith(SUMMARY_PREFIX))) {
                 if (isFilePath(line)) {
-                    path = getFilePath(line, StringUtils.EMPTY, StringUtils.EMPTY);
-                } else if (StringUtils.startsWith(line, NEW_FILE_PREFIX)) {
-                    newFiles.add((new File(path, line.replaceFirst(NEW_FILE_PREFIX, StringUtils.EMPTY)).getPath()));
-                } else if (StringUtils.startsWith(line, UPDATED_FILE_PREFIX)) {
-                    updatedFiles.add((new File(path, line.replaceFirst(UPDATED_FILE_PREFIX, StringUtils.EMPTY)).getPath()));
-                } else if (StringUtils.startsWith(line, DELETED_FILE_PREFIX)) {
-                    deletedFiles.add((new File(path, line.replaceFirst(DELETED_FILE_PREFIX, StringUtils.EMPTY)).getPath()));
+                    path = getFilePath(line, "", "");
+                } else if ((line != null && line.startsWith(NEW_FILE_PREFIX))) {
+                    newFiles.add((new File(path, line.replaceFirst(NEW_FILE_PREFIX, "")).getPath()));
+                } else if ((line != null && line.startsWith(UPDATED_FILE_PREFIX))) {
+                    updatedFiles.add((new File(path, line.replaceFirst(UPDATED_FILE_PREFIX, "")).getPath()));
+                } else if ((line != null && line.startsWith(DELETED_FILE_PREFIX))) {
+                    deletedFiles.add((new File(path, line.replaceFirst(DELETED_FILE_PREFIX, "")).getPath()));
                 } else {
                     // TODO: check for other cases to cover here but no need to hinder user if case not covered
                     logger.warn("Unknown response from 'tf get' command: " + line);
@@ -161,10 +160,10 @@ public class SyncCommand extends Command<SyncResults> {
         final String[] exceptionLines = getLines(stderr);
         for (int i = exceptionLines.length / 2; i < exceptionLines.length; i++) {
             // skip empty lines and don't treat conflicts as exceptions
-            if (StringUtils.isNotEmpty(exceptionLines[i]) && !StringUtils.contains(exceptionLines[i], CONFLICT_MESSAGE)) {
+            if ((exceptionLines[i] != null && !exceptionLines[i].isEmpty()) && !(exceptionLines[i] != null && exceptionLines[i].contains(CONFLICT_MESSAGE))) {
                 //TODO: what if warning is that file was skipped (but only shows up when force was used)
                 final SyncException exception = new SyncException(exceptionLines[i],
-                        StringUtils.startsWith(exceptionLines[i], WARNING_PREFIX));
+                        (exceptionLines[i] != null && exceptionLines[i].startsWith(WARNING_PREFIX)));
                 exceptions.add(exception);
             }
         }

@@ -8,7 +8,6 @@ import com.microsoft.alm.plugin.idea.common.ui.common.FilteredModel;
 import com.microsoft.alm.plugin.idea.common.utils.DateHelper;
 import com.microsoft.alm.plugin.operations.PullRequestLookupOperation;
 import com.microsoft.alm.sourcecontrol.webapi.model.GitPullRequest;
-import org.apache.commons.lang.StringUtils;
 
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultTreeSelectionModel;
@@ -125,7 +124,7 @@ public class PullRequestsTreeModel extends DefaultTreeModel implements FilteredM
     }
 
     public boolean hasFilter() {
-        return StringUtils.isNotEmpty(this.filter);
+        return (this.filter != null && !this.filter.isEmpty());
     }
 
     private boolean nodeContainsFilter(final GitPullRequest pr) {
@@ -134,13 +133,21 @@ public class PullRequestsTreeModel extends DefaultTreeModel implements FilteredM
         }
 
         // filter on the data shown in the node view
-        if (StringUtils.containsIgnoreCase(pr.getTitle(), filter) ||
-                StringUtils.containsIgnoreCase(pr.getCreatedBy().getDisplayName(), filter) ||
-                StringUtils.containsIgnoreCase(String.valueOf(pr.getPullRequestId()), filter) ||
-                StringUtils.containsIgnoreCase(pr.getSourceRefName().replace(PRTreeCellRenderer.GIT_REFS_HEADS, ""), filter) ||
-                StringUtils.containsIgnoreCase(pr.getTargetRefName().replace(PRTreeCellRenderer.GIT_REFS_HEADS, ""), filter) ||
-                StringUtils.containsIgnoreCase(pr.getMergeStatus().toString(), filter) ||
-                StringUtils.containsIgnoreCase(DateHelper.getFriendlyDateTimeString(pr.getCreationDate()), filter)
+        String title = pr.getTitle();
+        String createdByName = pr.getCreatedBy().getDisplayName();
+        String prId = String.valueOf(pr.getPullRequestId());
+        String sourceRef = pr.getSourceRefName().replace(PRTreeCellRenderer.GIT_REFS_HEADS, "");
+        String targetRef = pr.getTargetRefName().replace(PRTreeCellRenderer.GIT_REFS_HEADS, "");
+        String mergeStatus = pr.getMergeStatus().toString();
+        String friendlyDate = DateHelper.getFriendlyDateTimeString(pr.getCreationDate());
+        
+        if ((title != null && title.toLowerCase().contains(filter.toLowerCase())) ||
+                (createdByName != null && createdByName.toLowerCase().contains(filter.toLowerCase())) ||
+                (prId != null && prId.toLowerCase().contains(filter.toLowerCase())) ||
+                (sourceRef != null && sourceRef.toLowerCase().contains(filter.toLowerCase())) ||
+                (targetRef != null && targetRef.toLowerCase().contains(filter.toLowerCase())) ||
+                (mergeStatus != null && mergeStatus.toLowerCase().contains(filter.toLowerCase())) ||
+                (friendlyDate != null && friendlyDate.toLowerCase().contains(filter.toLowerCase()))
                 ) {
             return true;
         } else {

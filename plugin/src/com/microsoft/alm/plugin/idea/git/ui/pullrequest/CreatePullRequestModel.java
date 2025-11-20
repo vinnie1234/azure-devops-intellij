@@ -182,7 +182,7 @@ public class CreatePullRequestModel extends AbstractModel {
     }
 
     public synchronized String getTitle() {
-        return StringUtils.isNotBlank(title) ? title : StringUtils.EMPTY;
+        return StringUtils.isNotBlank(title) ? title : "";
     }
 
     public void setTitle(final String title) {
@@ -193,7 +193,7 @@ public class CreatePullRequestModel extends AbstractModel {
     }
 
     public synchronized String getDescription() {
-        return StringUtils.isNotBlank(description) ? description : StringUtils.EMPTY;
+        return StringUtils.isNotBlank(description) ? description : "";
     }
 
     public void setDescription(final String description) {
@@ -378,7 +378,7 @@ public class CreatePullRequestModel extends AbstractModel {
                                     final GitLocalBranch sourceBranch = getSourceBranch();
                                     final GitRemoteBranch targetBranch = getTargetBranch();
 
-                                    if (StringUtils.isEmpty(getTitle()) && commits != null && sourceBranch.getName() != null
+                                    if ((getTitle() == null || getTitle().isEmpty()) && commits != null && sourceBranch.getName() != null
                                             && targetBranch.getNameForRemoteOperations() != null) {
                                         final String defaultTitle = pullRequestHelper.createDefaultTitle(commits,
                                                 sourceBranch.getName(),
@@ -486,7 +486,7 @@ public class CreatePullRequestModel extends AbstractModel {
                 Futures.addCallback(pushResult, new FutureCallback<Pair<String, GitCommandResult>>() {
                     @Override
                     public void onSuccess(@Nullable Pair<String, GitCommandResult> result) {
-                        if (result != null && StringUtils.isNotEmpty(result.getFirst())) {
+                        if (result != null && (result.getFirst() != null && !result.getFirst().isEmpty())) {
                             final String title = createModel.getTitle();
                             final String description = createModel.getDescription();
                             final String branchNameOnRemoteServer = result.getFirst();
@@ -504,7 +504,7 @@ public class CreatePullRequestModel extends AbstractModel {
                         } else {
                             // I really don't have anything else to say, push failed, the title says it all
                             // I have no error message to be more specific
-                            notifyPushFailedError(createModel.getProject(), StringUtils.EMPTY);
+                            notifyPushFailedError(createModel.getProject(), "");
                         }
                     }
 
@@ -618,7 +618,7 @@ public class CreatePullRequestModel extends AbstractModel {
         // create link object to add to the work item
         final Link link = new Link();
         link.setUrl(artifactID.encodeURI());
-        link.setTitle(StringUtils.EMPTY);
+        link.setTitle("");
         link.setRel(ARTIFACT_LINK_RELATION);
         link.setAttributes(attributes);
 
@@ -666,7 +666,7 @@ public class CreatePullRequestModel extends AbstractModel {
     }
 
     public ModelValidationInfo validate() {
-        if (StringUtils.isEmpty(this.getTitle())) {
+        if (this.getTitle() == null || this.getTitle().isEmpty()) {
             return ModelValidationInfo.createWithResource(PROP_TITLE,
                     TfPluginBundle.KEY_CREATE_PR_ERRORS_TITLE_EMPTY);
         }
@@ -676,7 +676,7 @@ public class CreatePullRequestModel extends AbstractModel {
                     TfPluginBundle.message(TfPluginBundle.KEY_CREATE_PR_ERRORS_TITLE_TOO_LONG, MAX_SIZE_TITLE));
         }
 
-        if (StringUtils.isEmpty(this.getDescription())) {
+        if (this.getDescription() == null || this.getDescription().isEmpty()) {
             return ModelValidationInfo.createWithResource(PROP_DESCRIPTION,
                     TfPluginBundle.KEY_CREATE_PR_ERRORS_DESCRIPTION_EMPTY);
         }

@@ -7,7 +7,6 @@ import com.google.common.util.concurrent.SettableFuture;
 import com.microsoft.alm.common.utils.ArgumentHelper;
 import com.microsoft.alm.plugin.authentication.AuthenticationInfo;
 import com.microsoft.alm.plugin.external.utils.ProcessHelper;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,7 +97,7 @@ public class ToolRunner {
         public ArgumentBuilder addSwitch(final String switchName, final String switchValue, final boolean isSecret) {
             ArgumentHelper.checkNotEmptyString(switchName, "switchName");
             final String arg;
-            if (StringUtils.isEmpty(switchValue)) {
+            if (switchValue == null || switchValue.isEmpty()) {
                 arg = "-" + switchName;
             } else {
                 arg = "-" + switchName + ":" + switchValue;
@@ -230,8 +229,8 @@ public class ToolRunner {
      * They should also be surrounded by double quotes if they contain a space.
      */
     private String escapeArgument(final String argument) {
-        String escaped = StringUtils.replace(argument, "\"", "\"\"");
-        if (StringUtils.contains(escaped, " ")) {
+        String escaped = argument.replace("\"", "\"\"");
+        if ((escaped != null && escaped.contains(" "))) {
             escaped = "\"" + escaped + "\"";
         }
         return escaped;

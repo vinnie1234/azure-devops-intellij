@@ -148,7 +148,7 @@ public class CreateBranchModel extends AbstractModel {
         }
 
         for (GitRemoteBranch ref : remoteBranchComboModel.getItems()) {
-            if (StringUtils.equals(ref.getName().replace(ORIGIN_PREFIX, StringUtils.EMPTY), getBranchName())) {
+            if (StringUtils.equals(ref.getName().replace(ORIGIN_PREFIX, ""), getBranchName())) {
                 return ModelValidationInfo.createWithResource(PROP_BRANCH_NAME,
                         TfPluginBundle.KEY_CREATE_BRANCH_DIALOG_ERRORS_BRANCH_NAME_EXISTS);
             }
@@ -193,11 +193,11 @@ public class CreateBranchModel extends AbstractModel {
         logger.info("CreateBranchModel.doBranchCreate");
         // call server to create branch
         boolean hasNotifiedUser = false; //keep track of notifications because of recursive call
-        String errorMessage = StringUtils.EMPTY;
+        String errorMessage = "";
         try {
             // ref update will create a new ref when no existing ref is found (we check for existing)
             final GitRefUpdate gitRefUpdate = new GitRefUpdate();
-            gitRefUpdate.setName(REFS_PREFIX + getBranchName().replaceFirst(ORIGIN_PREFIX, StringUtils.EMPTY));
+            gitRefUpdate.setName(REFS_PREFIX + getBranchName().replaceFirst(ORIGIN_PREFIX, ""));
             gitRefUpdate.setOldObjectId(BASE_HASH); // since branch is new the last commit hash is all 0's
             gitRefUpdate.setNewObjectId(GeneralGitHelper.getLastCommitHash(project, gitRepository, selectedRemoteBranch)); // TODO: get the latest commit from server b/c the latest local commit could be incorrect
             gitRefUpdate.setRepositoryId(context.getGitRepository().getId());
@@ -255,7 +255,7 @@ public class CreateBranchModel extends AbstractModel {
 
         if (!hasNotifiedUser) {
             // alert user to success or error in creating the branch
-            if (StringUtils.isEmpty(errorMessage)) {
+            if (errorMessage == null || errorMessage.isEmpty()) {
                 logger.info("Create branch succeeded");
                 setBranchWasCreated(true);
 

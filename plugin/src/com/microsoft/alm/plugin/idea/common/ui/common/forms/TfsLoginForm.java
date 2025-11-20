@@ -15,7 +15,6 @@ import com.microsoft.alm.plugin.idea.common.ui.controls.BusySpinnerPanel;
 import com.microsoft.alm.plugin.idea.common.ui.controls.Hyperlink;
 import com.microsoft.alm.plugin.idea.common.ui.controls.IconPanel;
 import com.microsoft.alm.plugin.idea.common.ui.controls.WrappingLabel;
-import org.apache.commons.lang.StringUtils;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -51,7 +50,7 @@ public class TfsLoginForm implements LoginForm {
 
     @Override
     public String getServerName() {
-        return StringUtils.trim(serverUrl.getText());
+        return serverUrl.getText() == null ? null : serverUrl.getText().trim();
     }
 
     @Override

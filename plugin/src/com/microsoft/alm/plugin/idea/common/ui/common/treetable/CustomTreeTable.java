@@ -25,7 +25,6 @@ import com.intellij.ui.treeStructure.treetable.TreeTable;
 import com.intellij.ui.treeStructure.treetable.TreeTableCellRenderer;
 import com.intellij.ui.treeStructure.treetable.TreeTableModel;
 import com.intellij.util.ui.ColumnInfo;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,7 +58,7 @@ public class CustomTreeTable<T> extends TreeTable {
         }
 
         public String getPresentableString(final T value) {
-            return StringUtils.EMPTY;
+            return "";
         }
     }
 

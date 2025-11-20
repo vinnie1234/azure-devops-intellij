@@ -8,7 +8,6 @@ import com.microsoft.alm.common.utils.SystemHelper;
 import com.microsoft.alm.plugin.idea.common.utils.BackCompatibleUtils;
 import com.microsoft.alm.plugin.services.HttpProxyService;
 import com.microsoft.alm.plugin.services.PluginServiceProvider;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +29,7 @@ public class HttpProxyServiceImpl implements HttpProxyService {
     private boolean useHttpProxyViaIntelliJProperties;
 
     private void initialize() {
-        useHttpProxyViaSystemProperties = StringUtils.equalsIgnoreCase(System.getProperty(PROP_PROXY_SET), "true");
+        useHttpProxyViaSystemProperties = (System.getProperty(PROP_PROXY_SET) == null ? "true" == null : System.getProperty(PROP_PROXY_SET).equalsIgnoreCase("true"));
         if (!useHttpProxyViaSystemProperties) {
             useHttpProxyViaIntelliJProperties = PluginServiceProvider.getInstance().isInsideIDE() &&
                     HttpConfigurable.getInstance() != null &&

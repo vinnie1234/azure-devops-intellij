@@ -11,7 +11,6 @@ import com.intellij.openapi.vcs.ProjectLevelVcsManager;
 import com.microsoft.alm.plugin.external.models.Workspace;
 import com.microsoft.alm.plugin.idea.tfvc.core.TFSVcs;
 import com.microsoft.alm.plugin.idea.tfvc.core.TfvcWorkspaceLocator;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -103,8 +102,8 @@ public class TFVCUtil {
      */
     public static boolean isInServiceDirectory(FilePath filePath) {
         String path = filePath.getPath();
-        return StringUtils.containsIgnoreCase(path, "$tf")
-                || StringUtils.containsIgnoreCase(path, ".tf");
+        return (path != null && path.toLowerCase().contains("$tf".toLowerCase()))
+                || (path != null && path.toLowerCase().contains(".tf".toLowerCase()));
     }
 
     private static List<FilePath> getMappingsFromWorkspace(@NotNull Project project) {

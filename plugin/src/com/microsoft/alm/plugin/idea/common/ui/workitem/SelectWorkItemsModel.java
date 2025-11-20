@@ -15,7 +15,7 @@ import com.microsoft.alm.plugin.idea.common.utils.IdeaHelper;
 import com.microsoft.alm.plugin.operations.Operation;
 import com.microsoft.alm.plugin.operations.WorkItemLookupOperation;
 import com.microsoft.alm.workitemtracking.webapi.models.WorkItem;
-import org.apache.commons.lang.StringUtils;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +66,7 @@ public class SelectWorkItemsModel extends AbstractModel {
         if (latestServerContext != null) {
             return latestServerContext.getServerUri().toString();
         }
-        return StringUtils.EMPTY;
+        return "";
     }
 
     public void loadWorkItems() {
@@ -177,7 +177,7 @@ public class SelectWorkItemsModel extends AbstractModel {
     }
 
     public void setFilter(final String filter) {
-        if (!StringUtils.equals(this.filter, filter)) {
+        if (!Objects.equals(this.filter, filter)) {
             this.filter = filter;
             setChangedAndNotify(PROP_FILTER);
             tableModel.setFilter(filter);
@@ -201,7 +201,7 @@ public class SelectWorkItemsModel extends AbstractModel {
             return sb.toString();
         }
 
-        return StringUtils.EMPTY;
+        return "";
     }
 
 }

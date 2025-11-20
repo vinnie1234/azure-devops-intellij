@@ -15,7 +15,6 @@ import com.microsoft.alm.sourcecontrol.webapi.model.PullRequestStatus;
 import com.microsoft.visualstudio.services.webapi.model.ResourceRef;
 import git4idea.GitCommit;
 import git4idea.GitRemoteBranch;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +57,7 @@ public class PullRequestHelper {
                                      final String targetBranchName) {
 
         if (commits == null || commits.isEmpty()) {
-            return StringUtils.EMPTY;
+            return "";
         }
 
         if (commits.size() == 1) {
@@ -74,7 +73,8 @@ public class PullRequestHelper {
             } else {
                 // break at last whitespace right before length 120
                 final String shortCommitMessage = commitMessage.substring(0, titleLength);
-                return StringUtils.substringBeforeLast(shortCommitMessage, "\\s+");
+                int lastWhitespaceIndex = shortCommitMessage.lastIndexOf("\\s+");
+                return lastWhitespaceIndex >= 0 ? shortCommitMessage.substring(0, lastWhitespaceIndex) : shortCommitMessage;
             }
         }
 
@@ -92,7 +92,7 @@ public class PullRequestHelper {
      */
     public String createDefaultDescription(final List<GitCommit> commits) {
         if (commits == null || commits.isEmpty()) {
-            return StringUtils.EMPTY;
+            return "";
         }
 
         if (commits.size() == 1) {
@@ -185,10 +185,10 @@ public class PullRequestHelper {
                                                        final GitHttpClient gitClient) {
         if (t == null) {
             // if there is no throwale, why are we here?
-            return Pair.create(PRCreateStatus.UNKNOWN, StringUtils.EMPTY);
+            return Pair.create(PRCreateStatus.UNKNOWN, "");
         }
 
-        if ((StringUtils.contains(t.getMessage(), PR_EXISTS_EXCEPTION_NAME)) || (StringUtils.contains(t.getMessage(), PR_EXISTS_EXCEPTION_CODE))) {
+        if (((t.getMessage() != null && t.getMessage().contains(PR_EXISTS_EXCEPTION_NAME))) || ((t.getMessage() != null && t.getMessage().contains(PR_EXISTS_EXCEPTION_CODE)))) {
             try {
                 // look for the existing PR
                 final UUID repoId = context.getGitRepository().getId();

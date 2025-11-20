@@ -28,7 +28,6 @@ import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.idea.common.resources.TfPluginBundle;
 import com.microsoft.alm.plugin.idea.common.utils.VcsHelper;
 import com.microsoft.alm.plugin.idea.tfvc.ui.servertree.ServerBrowserDialog;
-import org.apache.commons.lang.StringUtils;
 
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -71,7 +70,7 @@ public class ServerPathCellEditor extends AbstractTableCellEditor {
     protected void createBrowserDialog() {
         final String serverPath = getServerPath();
 
-        if (StringUtils.isNotEmpty(serverPath)) {
+        if ((serverPath != null && !serverPath.isEmpty())) {
             final ServerBrowserDialog dialog = new ServerBrowserDialog(title, project, serverContext, serverPath, true, false);
             if (dialog.showAndGet()) {
                 component.getChildComponent().setText(dialog.getSelectedPath());
@@ -92,7 +91,7 @@ public class ServerPathCellEditor extends AbstractTableCellEditor {
         String serverPath = (String) getCellEditorValue();
 
         // if there is no entry in the cell to find the root server path with then find it from the server context
-        if (StringUtils.isEmpty(serverPath) && serverContext != null && serverContext.getTeamProjectReference() != null) {
+        if ((serverPath == null || serverPath.isEmpty()) && serverContext != null && serverContext.getTeamProjectReference() != null) {
             serverPath = VcsHelper.TFVC_ROOT.concat(serverContext.getTeamProjectReference().getName());
         }
         return serverPath;

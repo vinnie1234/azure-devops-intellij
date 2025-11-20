@@ -10,7 +10,6 @@ import com.intellij.util.ui.JBUI;
 import com.microsoft.alm.plugin.idea.common.resources.Icons;
 import com.microsoft.alm.plugin.idea.common.ui.common.SwingHelper;
 import com.microsoft.alm.plugin.idea.common.utils.IdeaHelper;
-import org.apache.commons.lang.StringUtils;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -228,7 +227,7 @@ public class HelpPanel extends JPanel {
 
             int row = 1;
             for (final HelpPopupCommand popupCommand : popupCommands) {
-                if (!StringUtils.isEmpty(popupCommand.text)) {
+                if (!(popupCommand.text == null || popupCommand.text.isEmpty())) {
                     final Hyperlink hyperlink = new Hyperlink();
                     hyperlink.setText(popupCommand.text);
                     hyperlink.addActionListener(new ActionListener() {

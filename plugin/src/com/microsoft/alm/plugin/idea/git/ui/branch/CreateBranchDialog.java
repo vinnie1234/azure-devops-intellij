@@ -6,7 +6,6 @@ package com.microsoft.alm.plugin.idea.git.ui.branch;
 import com.intellij.openapi.project.Project;
 import com.microsoft.alm.plugin.idea.common.ui.common.BaseDialogImpl;
 import git4idea.GitRemoteBranch;
-import org.apache.commons.lang.StringUtils;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JComponent;
@@ -71,7 +70,7 @@ public class CreateBranchDialog extends BaseDialogImpl {
     }
 
     public JComponent getComponent(final String componentPropName) {
-        if (StringUtils.isEmpty(componentPropName)) {
+        if ((componentPropName == null || componentPropName.isEmpty())) {
             return null;
         }
         return createBranchForm.getComponent(componentPropName);

@@ -5,7 +5,6 @@ package com.microsoft.alm.common.artifact;
 
 import com.microsoft.alm.common.exceptions.MalformedArtifactIDException;
 import com.microsoft.alm.common.exceptions.MalformedURIException;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * An artifact ID specifically for Git artifacts.
@@ -40,7 +39,7 @@ public class GitRefArtifactID extends ArtifactID {
      * @param toolSpecifiedId
      */
     private void decodeGitRefToolSpecifiedId(final String toolSpecifiedId) {
-        if (StringUtils.isEmpty(toolSpecifiedId)) {
+        if (toolSpecifiedId == null || toolSpecifiedId.isEmpty()) {
             throw new MalformedArtifactIDException(this);
         }
 

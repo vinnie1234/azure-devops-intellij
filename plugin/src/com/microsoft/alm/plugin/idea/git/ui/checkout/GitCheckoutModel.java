@@ -12,7 +12,6 @@ import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.idea.common.resources.TfPluginBundle;
 import com.microsoft.alm.plugin.idea.common.ui.checkout.VcsSpecificCheckoutModel;
 import git4idea.commands.Git;
-import org.apache.commons.lang.StringUtils;
 
 public class GitCheckoutModel implements VcsSpecificCheckoutModel {
     @Override
@@ -42,7 +41,7 @@ public class GitCheckoutModel implements VcsSpecificCheckoutModel {
     @Override
     public String getRepositoryName(final ServerContext context) {
         return (context != null && context.getGitRepository() != null)
-                ? context.getGitRepository().getName() : StringUtils.EMPTY;
+                ? context.getGitRepository().getName() : "";
     }
 
     @Override

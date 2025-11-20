@@ -4,7 +4,6 @@
 package com.microsoft.alm.plugin.context;
 
 import com.intellij.openapi.components.ServiceManager;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +31,7 @@ public class RepositoryContextManager {
     }
 
     public synchronized RepositoryContext get(final String localRootFolder) {
-        if (!StringUtils.isEmpty(localRootFolder)) {
+        if (!(localRootFolder == null || localRootFolder.isEmpty())) {
             final RepositoryContext context = contextMap.get(localRootFolder);
             return context;
         }
@@ -41,7 +40,7 @@ public class RepositoryContextManager {
     }
 
     public synchronized void remove(final String localRootFolder) {
-        if (StringUtils.isEmpty(localRootFolder)) {
+        if (localRootFolder == null || localRootFolder.isEmpty()) {
             return;
         }
         contextMap.remove(localRootFolder);

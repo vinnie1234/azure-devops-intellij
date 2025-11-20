@@ -13,7 +13,6 @@ import com.microsoft.alm.plugin.external.models.ToolVersion;
 import com.microsoft.alm.plugin.services.PluginServiceProvider;
 import com.microsoft.alm.plugin.services.PropertyService;
 import com.sun.jna.Platform;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +70,7 @@ public class TfTool {
 
         // Verify the path leads to a tf command and exists
         for (final String filename : filenames) {
-            if (StringUtils.endsWith(location, filename) && (new File(location)).exists()) {
+            if ((location != null && location.endsWith(filename)) && (new File(location)).exists()) {
                 return location;
             }
         }
@@ -135,20 +134,20 @@ public class TfTool {
         try {
             // try looking at env path
             String exe = checkTfPath(SystemHelper.getEnvironmentVariable(TF_HOME_ENV), exeNames);
-            if (StringUtils.isNotEmpty(exe)) {
+            if ((exe != null && !exe.isEmpty())) {
                 logger.debug("Found exe by TF_HOME: " + exe);
                 return exe;
             }
 
             // try looking at PATH
             exe = getExeFromPath(exeNames);
-            if (StringUtils.isNotEmpty(exe)) {
+            if ((exe != null && !exe.isEmpty())) {
                 logger.debug("Found exe by PATH: " + exe);
                 return exe;
             }
 
             exe = searchDirectories(filePaths, exeNames);
-            if (StringUtils.isNotEmpty(exe)) {
+            if ((exe != null && !exe.isEmpty())) {
                 logger.debug("Found exe by Program Files: " + exe);
                 return exe;
             }
@@ -169,11 +168,12 @@ public class TfTool {
     private static String getExeFromPath(final String[] exeNames) {
         final String envPath = SystemHelper.getEnvironmentVariable(PATH_ENV);
 
-        if (StringUtils.isNotEmpty(envPath)) {
+        if ((envPath != null && !envPath.isEmpty())) {
             final String[] paths = envPath.split(";");
             for (final String path : paths) {
                 final File filePath = new File(path);
-                if (StringUtils.startsWith(filePath.getName(), TF_DIRECTORY_PREFIX) && filePath.isDirectory()) {
+                String fileName = filePath.getName();
+                if ((fileName != null && fileName.startsWith(TF_DIRECTORY_PREFIX)) && filePath.isDirectory()) {
                     final String verifiedPath = checkTfPath(filePath.getPath(), exeNames);
                     if (verifiedPath != null) {
                         return verifiedPath;
@@ -195,7 +195,8 @@ public class TfTool {
         for (final File path : paths) {
             if (path.exists()) {
                 for (final File subDirectory : path.listFiles()) {
-                    if (StringUtils.startsWith(subDirectory.getName(), TF_DIRECTORY_PREFIX) && subDirectory.isDirectory()) {
+                    String subDirName = subDirectory.getName();
+                    if ((subDirName != null && subDirName.startsWith(TF_DIRECTORY_PREFIX)) && subDirectory.isDirectory()) {
                         final String verifiedPath = checkTfPath(subDirectory.getPath(), exeNames);
                         if (verifiedPath != null) {
                             return verifiedPath;
@@ -215,7 +216,7 @@ public class TfTool {
      * @return
      */
     private static String checkTfPath(final String exePath, final String[] exeNames) {
-        if (StringUtils.isNotEmpty(exePath)) {
+        if ((exePath != null && !exePath.isEmpty())) {
             for (final String filename : exeNames) {
                 final File tfFile = new File(exePath, filename);
                 if (tfFile.exists()) {

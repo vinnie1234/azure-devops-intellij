@@ -7,7 +7,6 @@ import com.google.common.collect.ImmutableList;
 import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.external.ToolRunner;
 import com.microsoft.alm.plugin.external.models.PendingChange;
-import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -71,7 +70,7 @@ public class StatusCommand extends Command<List<PendingChange>> {
         if (nodes != null) {
             for (int i = 0; i < nodes.getLength(); i++) {
                 final NamedNodeMap attributes = nodes.item(i).getAttributes();
-                final boolean isCandidate = StringUtils.equalsIgnoreCase(nodes.item(i).getParentNode().getNodeName(), CANDIDATE_TAG);
+                final boolean isCandidate = (nodes.item(i).getParentNode().getNodeName() == null ? CANDIDATE_TAG == null : nodes.item(i).getParentNode().getNodeName().equalsIgnoreCase(CANDIDATE_TAG));
                 final Node sourceItem = attributes.getNamedItem("source-item"); // not always present
                 changes.add(new PendingChange(
                         attributes.getNamedItem("server-item").getNodeValue(),
@@ -84,7 +83,7 @@ public class StatusCommand extends Command<List<PendingChange>> {
                         attributes.getNamedItem("workspace").getNodeValue(),
                         attributes.getNamedItem("computer").getNodeValue(),
                         isCandidate,
-                        sourceItem != null ? sourceItem.getNodeValue() : StringUtils.EMPTY));
+                        sourceItem != null ? sourceItem.getNodeValue() : ""));
             }
         }
         return changes;

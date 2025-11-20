@@ -46,7 +46,6 @@ import com.microsoft.alm.plugin.idea.common.utils.VcsHelper;
 import com.microsoft.alm.plugin.idea.tfvc.core.TFSVcs;
 import com.microsoft.alm.plugin.idea.tfvc.ui.settings.EULADialog;
 import com.microsoft.alm.plugin.idea.tfvc.ui.workspace.WorkspaceController;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -202,7 +201,7 @@ public class TfvcCheckoutModel implements VcsSpecificCheckoutModel {
     @Override
     public String getRepositoryName(final ServerContext context) {
         return (context != null && context.getTeamProjectReference() != null)
-                ? context.getTeamProjectReference().getName() : StringUtils.EMPTY;
+                ? context.getTeamProjectReference().getName() : "";
     }
 
     @Override

@@ -7,7 +7,6 @@ import com.microsoft.alm.common.utils.ArgumentHelper;
 import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.external.ToolRunner;
 import com.microsoft.alm.plugin.external.models.Conflict;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,8 +64,8 @@ public class ResolveConflictsCommand extends Command<List<Conflict>> {
         final List<Conflict> resolved = new ArrayList<Conflict>();
         final String[] lines = getLines(stdout);
         for (String line : lines) {
-            if (StringUtils.startsWith(line, RESOLVED_PREFIX)) {
-                line = StringUtils.removeStart(line, RESOLVED_PREFIX);
+            if ((line != null && line.startsWith(RESOLVED_PREFIX))) {
+                line = line.substring(RESOLVED_PREFIX.length());
                 final int index = line.indexOf(RESOLVED_POST_MSG);
                 if (index != -1) {
                     resolved.add(new Conflict(line.substring(0, index), Conflict.ConflictType.RESOLVED));

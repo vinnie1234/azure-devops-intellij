@@ -11,7 +11,6 @@ import com.microsoft.alm.plugin.idea.tfvc.core.tfs.TfsFileUtil;
 import com.microsoft.tfs.model.connector.TfsLocalPath;
 import com.microsoft.tfs.model.connector.TfsPath;
 import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.StringUtils;
 
 import java.nio.file.Paths;
 import java.util.List;
@@ -46,7 +45,7 @@ public class DeleteCommand extends Command<TfvcDeleteResult> {
             builder.addSwitch("recursive");
         }
 
-        if (StringUtils.isNotEmpty(workspace)) {
+        if ((workspace != null && !workspace.isEmpty())) {
             builder.addSwitch("workspace", workspace);
         }
 
@@ -56,7 +55,7 @@ public class DeleteCommand extends Command<TfvcDeleteResult> {
     private static void parseStdErr(String stderr, List<TfsPath> notFoundFiles, List<String> errorMessages) {
         String[] lines = stderr.split("\r\n|\n");
         for (String line : lines) {
-            if (StringUtils.isEmpty(line))
+            if ((line == null || line.isEmpty()))
                 continue;
 
             if (line.equals(NO_FILES_TO_DELETE)) // skip this warning, we'll report each item separately
@@ -75,10 +74,10 @@ public class DeleteCommand extends Command<TfvcDeleteResult> {
 
     private void parseStdOut(String stdout, List<java.nio.file.Path> deletedPaths) {
         final String[] lines = getLines(stdout);
-        String path = StringUtils.EMPTY;
+        String path = "";
 
         for (final String line : lines) {
-            if (StringUtils.isEmpty(line))
+            if ((line == null || line.isEmpty()))
                 continue;
 
             if (line.endsWith(":")) {

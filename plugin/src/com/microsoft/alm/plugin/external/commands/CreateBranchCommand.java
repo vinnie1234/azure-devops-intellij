@@ -7,7 +7,6 @@ import com.microsoft.alm.common.utils.ArgumentHelper;
 import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.external.ToolRunner;
 import com.microsoft.alm.plugin.external.exceptions.BranchAlreadyExistsException;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,10 +56,10 @@ public class CreateBranchCommand extends Command<String> {
         if (recursive) {
             builder.addSwitch("recursive");
         }
-        if (StringUtils.isNotEmpty(comment)) {
+        if ((comment != null && !comment.isEmpty())) {
             builder.addSwitch("comment", comment);
         }
-        if (StringUtils.isNotEmpty(author)) {
+        if ((author != null && !author.isEmpty())) {
             builder.addSwitch("author", author);
         }
 
@@ -89,10 +88,10 @@ public class CreateBranchCommand extends Command<String> {
      */
     @Override
     protected void throwIfError(final String stderr) {
-        if (StringUtils.isNotEmpty(stderr)) {
+        if ((stderr != null && !stderr.isEmpty())) {
             final String[] errors = getLines(stderr);
             for (final String line : errors) {
-                if (StringUtils.equalsIgnoreCase(String.format(BRANCH_EXISTS_ERROR, newBranchedItem), line))
+                if ((String.format(BRANCH_EXISTS_ERROR, newBranchedItem) == null ? line == null : String.format(BRANCH_EXISTS_ERROR, newBranchedItem).equalsIgnoreCase(line)))
                     throw new BranchAlreadyExistsException(newBranchedItem);
             }
         }

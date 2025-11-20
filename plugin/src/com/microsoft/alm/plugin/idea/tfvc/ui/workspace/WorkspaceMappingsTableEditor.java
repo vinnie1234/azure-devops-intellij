@@ -35,7 +35,6 @@ import com.microsoft.alm.plugin.idea.common.resources.TfPluginBundle;
 import com.microsoft.alm.plugin.idea.common.utils.VcsHelper;
 import com.microsoft.alm.plugin.idea.tfvc.core.TFSVcs;
 import com.microsoft.alm.plugin.idea.tfvc.ui.ServerPathCellEditor;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -129,19 +128,19 @@ public class WorkspaceMappingsTableEditor extends ValidatingTableEditor<Workspac
         } else {
             // if no rows exist then get the path from the team project
             final ServerContext serverContext = TFSVcs.getInstance(project).getServerContext(false);
-            if (serverContext != null && serverContext.getTeamProjectReference() != null && StringUtils.isNotEmpty(serverContext.getTeamProjectReference().getName())) {
+            if (serverContext != null && serverContext.getTeamProjectReference() != null && (serverContext.getTeamProjectReference().getName() != null && !serverContext.getTeamProjectReference().getName().isEmpty())) {
                 return new Row(ROOT_FOLDER.concat(serverContext.getTeamProjectReference().getName()), defaultLocalPath, MappingType.MAPPED);
             }
             // not great if we get here but browse will still work except the root name won't populate
             logger.info("No rows or team project could be found so passing in empty root to new row");
-            return new Row(StringUtils.EMPTY, defaultLocalPath, MappingType.MAPPED);
+            return new Row("", defaultLocalPath, MappingType.MAPPED);
         }
     }
 
     public String getFirstValidationError() {
         for (final Row r : getItems()) {
             final String error = validate(r);
-            if (StringUtils.isNotEmpty(error)) {
+            if (error != null && !error.isEmpty()) {
                 return error;
             }
         }
@@ -151,13 +150,13 @@ public class WorkspaceMappingsTableEditor extends ValidatingTableEditor<Workspac
 
     @Nullable
     protected String validate(final Row item) {
-        if (StringUtils.isEmpty(item.serverPath)) {
+        if (item.serverPath == null || item.serverPath.isEmpty()) {
             return TfPluginBundle.message(TfPluginBundle.KEY_WORKSPACE_DIALOG_ERRORS_SERVER_PATH_EMPTY);
         }
         if (!item.serverPath.startsWith(VcsHelper.TFVC_ROOT)) {
             return TfPluginBundle.message(TfPluginBundle.KEY_WORKSPACE_DIALOG_ERRORS_SERVER_PATH_INVALID);
         }
-        if (StringUtils.isEmpty(item.localPath) && item.mappingType == MappingType.MAPPED) {
+        if ((item.localPath == null || item.localPath.isEmpty()) && item.mappingType == MappingType.MAPPED) {
             return TfPluginBundle.message(TfPluginBundle.KEY_WORKSPACE_DIALOG_ERRORS_LOCAL_PATH_EMPTY);
         }
         return null;
@@ -167,7 +166,7 @@ public class WorkspaceMappingsTableEditor extends ValidatingTableEditor<Workspac
     protected void displayMessageAndFix(@Nullable final Pair<String, Fix> messageAndFix) {
         if (validationDispatcher != null) {
             final String validationMessage = messageAndFix != null ? messageAndFix.first : null;
-            if (StringUtils.isNotEmpty(validationMessage)) {
+            if (validationMessage != null && !validationMessage.isEmpty()) {
                 validationDispatcher.showValidationError(validationMessage);
             }
         }

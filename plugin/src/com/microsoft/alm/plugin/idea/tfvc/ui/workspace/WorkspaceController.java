@@ -26,7 +26,6 @@ import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.external.models.Workspace;
 import com.microsoft.alm.plugin.idea.common.ui.common.ModelValidationInfo;
 import com.microsoft.alm.plugin.idea.common.ui.common.ValidationListener;
-import org.apache.commons.lang.StringUtils;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -174,7 +173,7 @@ public class WorkspaceController implements Observer, ActionListener {
 
         // The check the dialog
         final String error = dialog.getFirstMappingValidationError();
-        if (StringUtils.isNotEmpty(error)) {
+        if ((error != null && !error.isEmpty())) {
             return new ValidationInfo(error);
         }
 

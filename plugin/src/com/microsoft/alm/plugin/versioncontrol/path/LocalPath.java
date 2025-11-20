@@ -5,7 +5,6 @@ package com.microsoft.alm.plugin.versioncontrol.path;
 
 import com.microsoft.alm.common.utils.ArgumentHelper;
 import com.microsoft.alm.common.utils.FileHelper;
-import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 
@@ -142,7 +141,7 @@ public abstract class LocalPath {
          */
         if (localPath.regionMatches(true, 0, relativeTo, 0, relativeTo.length())) {
             if (localPath.length() == relativeTo.length()) {
-                return StringUtils.EMPTY;
+                return "";
             }
 
             /*

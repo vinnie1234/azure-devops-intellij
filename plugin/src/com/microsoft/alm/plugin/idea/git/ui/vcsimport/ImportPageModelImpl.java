@@ -53,7 +53,7 @@ import git4idea.repo.GitRemote;
 import git4idea.repo.GitRepository;
 import git4idea.repo.GitRepositoryManager;
 import git4idea.util.GitFileUtils;
-import org.apache.commons.lang.StringUtils;
+import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -143,7 +143,7 @@ public abstract class ImportPageModelImpl extends LoginPageModelImpl implements 
 
     @Override
     public void setRepositoryName(final String repositoryName) {
-        if (!StringUtils.equals(this.repositoryName, repositoryName)) {
+        if (!Objects.equals(this.repositoryName, repositoryName)) {
             this.repositoryName = repositoryName;
             setChangedAndNotify(PROP_REPO_NAME);
         }
@@ -156,7 +156,7 @@ public abstract class ImportPageModelImpl extends LoginPageModelImpl implements 
 
     @Override
     public void setTeamProjectFilter(final String teamProjectFilter) {
-        if (!StringUtils.equals(this.teamProjectFilter, teamProjectFilter)) {
+        if (!Objects.equals(this.teamProjectFilter, teamProjectFilter)) {
             this.teamProjectFilter = teamProjectFilter;
             setChangedAndNotify(PROP_PROJECT_FILTER);
             teamProjectTableModel.setFilter(teamProjectFilter);
@@ -273,7 +273,7 @@ public abstract class ImportPageModelImpl extends LoginPageModelImpl implements 
                     notifyImportError(project, TfPluginBundle.message(TfPluginBundle.KEY_IMPORT_ERRORS_UNEXPECTED, unexpectedError.getLocalizedMessage()));
 
                 } finally {
-                    if (StringUtils.isNotEmpty(remoteUrlForDisplay)) {
+                    if ((remoteUrlForDisplay != null && !remoteUrlForDisplay.isEmpty())) {
                         // Notify the user that we are done and provide a link to the repo
                         VcsNotifier.getInstance(project).notifyImportantInfo(TfPluginBundle.message(TfPluginBundle.KEY_IMPORT_SUCCEEDED),
                                 TfPluginBundle.message(TfPluginBundle.KEY_IMPORT_SUCCEEDED_MESSAGE, project.getName(), remoteUrlForDisplay, repositoryName),
@@ -338,7 +338,7 @@ public abstract class ImportPageModelImpl extends LoginPageModelImpl implements 
             final HashMap<String, String> vcCapabilities = capabilities.get(PROJECT_CAPABILITY_VC);
             if (vcCapabilities != null && vcCapabilities.containsKey(PROJECT_CAPABILITY_VC_TYPE)) {
                 final String sourceControlType = vcCapabilities.get(PROJECT_CAPABILITY_VC_TYPE);
-                if (StringUtils.equalsIgnoreCase(sourceControlType, PROJECT_CAPABILITY_VC_GIT)) {
+                if (sourceControlType != null && sourceControlType.equalsIgnoreCase(PROJECT_CAPABILITY_VC_GIT)) {
                     //sourceControlType=git, so git is supported
                     return true;
                 }
@@ -512,7 +512,8 @@ public abstract class ImportPageModelImpl extends LoginPageModelImpl implements 
 
         if (!gitRemotes.isEmpty()) {
             for (GitRemote remote : gitRemotes) {
-                if (StringUtils.equalsIgnoreCase(remote.getName(), REMOTE_ORIGIN)) {
+                String remoteName = remote.getName();
+                if (remoteName != null && remoteName.equalsIgnoreCase(REMOTE_ORIGIN)) {
                     //remote named origin exits, ask user if they want to overwrite it and proceed or cancel
                     IdeaHelper.runOnUIThread(new Runnable() {
                         @Override

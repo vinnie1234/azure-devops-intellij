@@ -22,7 +22,6 @@ import com.microsoft.alm.plugin.idea.common.services.ServerContextStoreImpl;
 import com.microsoft.alm.plugin.idea.common.statusBar.StatusBarManager;
 import com.microsoft.alm.plugin.services.PluginServiceProvider;
 import com.sun.jna.Platform;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,7 +120,7 @@ public class ApplicationStartup implements ApplicationComponent {
         }
 
         // if the IDE could not be found an empty string is returned
-        return StringUtils.EMPTY;
+        return "";
     }
 
     /**
@@ -137,7 +136,7 @@ public class ApplicationStartup implements ApplicationComponent {
         final String ideName = ApplicationNamesInfo.getInstance().getProductName().toLowerCase();
         BufferedReader bufferedReader = null;
         BufferedWriter bufferedWriter = null;
-        String currentEntry = StringUtils.EMPTY;
+        String currentEntry = "";
 
         try {
             // if file doesn't exist create it else read the entries in it

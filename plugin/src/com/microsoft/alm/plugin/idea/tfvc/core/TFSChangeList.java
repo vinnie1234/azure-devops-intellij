@@ -27,7 +27,6 @@ import com.intellij.openapi.vcs.changes.Change;
 import com.intellij.openapi.vcs.versionBrowser.CommittedChangeList;
 import com.intellij.vcsUtil.VcsUtil;
 import com.microsoft.alm.plugin.idea.tfvc.core.revision.TFSContentRevision;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -79,7 +78,7 @@ public class TFSChangeList implements CommittedChangeList {
 
         this.changeSetId = changeSetId;
         this.author = author;
-        this.comment = comment != null ? comment : StringUtils.EMPTY;
+        this.comment = comment != null ? comment : "";
         this.changeSetDate = changeSetDate;
         this.previousChangeSetId = previousChangeSetId;
         this.previousChangeSetDate = previousChangeSetDate;
@@ -165,7 +164,7 @@ public class TFSChangeList implements CommittedChangeList {
 
     @Override
     public void setDescription(final String newMessage) {
-        comment = newMessage != null ? newMessage : StringUtils.EMPTY;
+        comment = newMessage != null ? newMessage : "";
     }
 
     @NotNull
@@ -220,11 +219,11 @@ public class TFSChangeList implements CommittedChangeList {
             logger.warn("Error reading changelist from stream", e);
 
             // default Strings to empty to keep NPE from happening
-            author = StringUtils.isEmpty(author) ? StringUtils.EMPTY : author;
-            comment = StringUtils.isEmpty(comment) ? StringUtils.EMPTY : comment;
-            changeSetDate = StringUtils.isEmpty(changeSetDate) ? StringUtils.EMPTY : changeSetDate;
-            previousChangeSetDate = StringUtils.isEmpty(previousChangeSetDate) ? StringUtils.EMPTY : previousChangeSetDate;
-            workspaceName = StringUtils.isEmpty(workspaceName) ? StringUtils.EMPTY : workspaceName;
+            author = (author == null || author.isEmpty()) ? "" : author;
+            comment = (comment == null || comment.isEmpty()) ? "" : comment;
+            changeSetDate = (changeSetDate == null || changeSetDate.isEmpty()) ? "" : changeSetDate;
+            previousChangeSetDate = (previousChangeSetDate == null || previousChangeSetDate.isEmpty()) ? "" : previousChangeSetDate;
+            workspaceName = (workspaceName == null || workspaceName.isEmpty()) ? "" : workspaceName;
 
             AbstractVcsHelper.getInstance(myVcs.getProject()).showError(new VcsException(e), TFSVcs.TFVC_NAME);
         }

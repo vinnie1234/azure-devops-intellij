@@ -7,7 +7,6 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ApplicationStarter;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.microsoft.alm.plugin.idea.common.resources.TfPluginBundle;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,7 +71,7 @@ public abstract class ApplicationStarterBase implements ApplicationStarter {
         if (args.length < 2) {
             logger.error("Azure DevOps failed due to lack of commands. Please specify the command that you want Azure DevOps to execute");
             return false;
-        } else if (!StringUtils.equalsIgnoreCase(VSTS_COMMAND, args[0])) {
+        } else if (!(VSTS_COMMAND == null ? args[0] == null : VSTS_COMMAND.equalsIgnoreCase(args[0]))) {
             logger.error("Azure DevOps checkout failed due to the incorrect command being used. Expected \"vsts\" but found \"{}\".", args[0]);
             return false;
         } else {
@@ -90,9 +89,9 @@ public abstract class ApplicationStarterBase implements ApplicationStarter {
         }
         logger.debug("Args passed to Azure DevOps to process: {}", args);
         try {
-            if (StringUtils.startsWithIgnoreCase(args.get(1), URI_PREFIX)) {
+            if ((args.get(1) != null && args.get(1).regionMatches(true, 0, URI_PREFIX, 0, URI_PREFIX.length()))) {
                 // pass the uri but after removing it's prefix since it isn't needed anymore
-                processUri(args.get(1).replaceFirst(URI_PREFIX, StringUtils.EMPTY));
+                processUri(args.get(1).replaceFirst(URI_PREFIX, ""));
             } else {
                 List<String> argsList = new ArrayList<String>(args);
                 // remove first arg which is just the generic command "vsts" that got us to this point

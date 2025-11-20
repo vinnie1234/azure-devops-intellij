@@ -6,7 +6,6 @@ package com.microsoft.alm.plugin.external.commands;
 import com.microsoft.alm.common.utils.ArgumentHelper;
 import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.external.ToolRunner;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,17 +70,17 @@ public class GetBranchesCommand extends Command<List<String>> {
         for (String line : output) {
             // First see if this line holds the current item we passed in marked with >>
             // If it is the current item, then don't add it to the list
-            if (!StringUtils.startsWithIgnoreCase(line, CURRENT_PREFIX)) {
+            if (!(line != null && line.regionMatches(true, 0, CURRENT_PREFIX, 0, CURRENT_PREFIX.length()))) {
                 // Parse out the server path
                 final String serverPath;
-                final int branchedFromIndex = StringUtils.indexOf(line, BRANCHED_FROM_PREFIX);
+                final int branchedFromIndex = line.indexOf(BRANCHED_FROM_PREFIX);
                 if (branchedFromIndex >= 0) {
                     serverPath = line.substring(0, branchedFromIndex).trim();
                 } else {
                     serverPath = line.trim();
                 }
 
-                if (StringUtils.isNotBlank(line)) {
+                if (line != null && !line.trim().isEmpty()) {
                     result.add(serverPath);
                 }
             }

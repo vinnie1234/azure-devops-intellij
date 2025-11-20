@@ -16,7 +16,7 @@ import com.microsoft.alm.plugin.idea.common.ui.common.ServerContextLookupPageMod
 import com.microsoft.alm.plugin.idea.common.ui.common.ServerContextTableModel;
 import com.microsoft.alm.plugin.services.PluginServiceProvider;
 import com.microsoft.alm.plugin.services.PropertyService;
-import org.apache.commons.lang.StringUtils;
+import java.util.Objects;
 
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
@@ -55,7 +55,7 @@ public abstract class CheckoutPageModelImpl extends LoginPageModelImpl implement
 
         // Default the parent directory
         parentDirectory = PluginServiceProvider.getInstance().getPropertyService().getProperty(PropertyService.PROP_REPO_ROOT);
-        if (StringUtils.isEmpty(parentDirectory)) {
+        if ((parentDirectory == null || parentDirectory.isEmpty())) {
             parentDirectory = DEFAULT_SOURCE_PATH;
         }
 
@@ -105,7 +105,7 @@ public abstract class CheckoutPageModelImpl extends LoginPageModelImpl implement
 
     @Override
     public void setParentDirectory(final String parentDirectory) {
-        if (!StringUtils.equals(this.parentDirectory, parentDirectory)) {
+        if (!Objects.equals(this.parentDirectory, parentDirectory)) {
             this.parentDirectory = parentDirectory;
             setChangedAndNotify(PROP_PARENT_DIR);
         }
@@ -118,7 +118,7 @@ public abstract class CheckoutPageModelImpl extends LoginPageModelImpl implement
 
     @Override
     public void setDirectoryName(final String directoryName) {
-        if (!StringUtils.equals(this.directoryName, directoryName)) {
+        if (!Objects.equals(this.directoryName, directoryName)) {
             this.directoryName = directoryName;
             setChangedAndNotify(PROP_DIRECTORY_NAME);
         }
@@ -131,7 +131,7 @@ public abstract class CheckoutPageModelImpl extends LoginPageModelImpl implement
 
     @Override
     public void setRepositoryFilter(final String repositoryFilter) {
-        if (!StringUtils.equals(this.repositoryFilter, repositoryFilter)) {
+        if (!Objects.equals(this.repositoryFilter, repositoryFilter)) {
             this.repositoryFilter = repositoryFilter;
             setChangedAndNotify(PROP_REPO_FILTER);
             repositoryTableModel.setFilter(repositoryFilter);

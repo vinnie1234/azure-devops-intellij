@@ -5,7 +5,6 @@ package com.microsoft.alm.plugin.external.models;
 
 import com.microsoft.alm.common.utils.SystemHelper;
 import com.microsoft.tfs.model.connector.TfsItemInfo;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * This class represents the data returned by the TF command 'info'.
@@ -92,6 +91,6 @@ public class ItemInfo {
     }
 
     public boolean isFolder() {
-        return !StringUtils.equalsIgnoreCase(type, "file");
+        return !(type == null ? "file" == null : type.equalsIgnoreCase("file"));
     }
 }

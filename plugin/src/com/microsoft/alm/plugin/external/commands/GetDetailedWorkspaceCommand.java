@@ -7,7 +7,6 @@ import com.microsoft.alm.common.utils.ArgumentHelper;
 import com.microsoft.alm.plugin.authentication.AuthenticationInfo;
 import com.microsoft.alm.plugin.external.ToolRunner;
 import com.microsoft.alm.plugin.external.models.Workspace;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +49,7 @@ public class GetDetailedWorkspaceCommand extends Command<Workspace> {
         builder.add(workspaceName);
         builder.addAuthInfo(authInfo);
 
-        if (StringUtils.isNotEmpty(collection)) {
+        if ((collection != null && !collection.isEmpty())) {
             builder.addSwitch("collection", collection);
         }
         return builder;
@@ -84,37 +83,37 @@ public class GetDetailedWorkspaceCommand extends Command<Workspace> {
         super.throwIfError(stderr);
 
         // if for some reason no output is given return null
-        if (StringUtils.isEmpty(stdout)) {
+        if ((stdout == null || stdout.isEmpty())) {
             return null;
         }
 
         final String[] output = getLines(stdout);
-        String workspace = StringUtils.EMPTY;
-        String owner = StringUtils.EMPTY;
-        String computer = StringUtils.EMPTY;
-        String comment = StringUtils.EMPTY;
-        String location = StringUtils.EMPTY;
-        String collection = StringUtils.EMPTY;
+        String workspace = "";
+        String owner = "";
+        String computer = "";
+        String comment = "";
+        String location = "";
+        String collection = "";
         final List<Workspace.Mapping> mappings = new ArrayList<Workspace.Mapping>();
 
         // the output should be in this order but just in case it changes we check the prefixes first
         int count = 0;
         while (count < output.length) {
-            if (StringUtils.startsWith(output[count], WORKSPACE_PREFIX)) {
-                workspace = StringUtils.removeStart(output[count], WORKSPACE_PREFIX).trim();
-            } else if (StringUtils.startsWith(output[count], OWNER_PREFIX)) {
-                owner = StringUtils.removeStart(output[count], OWNER_PREFIX).trim();
-            } else if (StringUtils.startsWith(output[count], COMPUTER_PREFIX)) {
-                computer = StringUtils.removeStart(output[count], COMPUTER_PREFIX).trim();
-            } else if (StringUtils.startsWith(output[count], COMMENT_PREFIX)) {
-                comment = StringUtils.removeStart(output[count], COMMENT_PREFIX).trim();
-            } else if (StringUtils.startsWith(output[count], COLLECTION_PREFIX)) {
-                collection = StringUtils.removeStart(output[count], COLLECTION_PREFIX).trim();
-            } else if (StringUtils.startsWith(output[count], LOCATION_PREFIX)) {
-                location = StringUtils.removeStart(output[count], LOCATION_PREFIX).trim();
-            } else if (StringUtils.startsWith(output[count], MAPPING_PREFIX)) {
+            if ((output[count] != null && output[count].startsWith(WORKSPACE_PREFIX))) {
+                workspace = output[count].substring(WORKSPACE_PREFIX.length()).trim();
+            } else if ((output[count] != null && output[count].startsWith(OWNER_PREFIX))) {
+                owner = output[count].substring(OWNER_PREFIX.length()).trim();
+            } else if ((output[count] != null && output[count].startsWith(COMPUTER_PREFIX))) {
+                computer = output[count].substring(COMPUTER_PREFIX.length()).trim();
+            } else if ((output[count] != null && output[count].startsWith(COMMENT_PREFIX))) {
+                comment = output[count].substring(COMMENT_PREFIX.length()).trim();
+            } else if ((output[count] != null && output[count].startsWith(COLLECTION_PREFIX))) {
+                collection = output[count].substring(COLLECTION_PREFIX.length()).trim();
+            } else if ((output[count] != null && output[count].startsWith(LOCATION_PREFIX))) {
+                location = output[count].substring(LOCATION_PREFIX.length()).trim();
+            } else if ((output[count] != null && output[count].startsWith(MAPPING_PREFIX))) {
                 count = count + 2;
-                while (count < output.length && StringUtils.isNotEmpty(output[count])) {
+                while (count < output.length && (output[count] != null && !output[count].isEmpty())) {
                     Workspace.Mapping mapping = getMapping(output[count]);
                     if (mapping != null) {
                         mappings.add(mapping);

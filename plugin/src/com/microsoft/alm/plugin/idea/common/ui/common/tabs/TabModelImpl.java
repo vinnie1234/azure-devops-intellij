@@ -13,7 +13,7 @@ import com.microsoft.alm.plugin.idea.common.ui.common.VcsTabStatus;
 import com.microsoft.alm.plugin.idea.common.utils.VcsHelper;
 import com.microsoft.alm.plugin.idea.git.ui.vcsimport.ImportController;
 import com.microsoft.alm.plugin.operations.Operation;
-import org.apache.commons.lang.StringUtils;
+import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,7 @@ public abstract class TabModelImpl<T extends FilteredModel> extends AbstractMode
     private final String propertyStoragePrefix;
     protected TabLookupListenerImpl dataProvider;
     protected RepositoryContext repositoryContext;
-    private String filter = StringUtils.EMPTY;
+    private String filter = "";
     private boolean autoRefresh;
     private VcsTabStatus tabStatus = VcsTabStatus.NOT_TF_GIT_REPO;
     protected Operation.CredInputsImpl operationInputs;
@@ -40,7 +40,7 @@ public abstract class TabModelImpl<T extends FilteredModel> extends AbstractMode
         // Get the value of auto refresh from the property service
         // If the value is found, use it. Otherwise default to true;
         String autoRefreshText = PropertyServiceImpl.getInstance().getProperty(propertyStoragePrefix + PROP_AUTO_REFRESH);
-        autoRefresh = StringUtils.isEmpty(autoRefreshText) ? true : Boolean.parseBoolean(autoRefreshText);
+        autoRefresh = (autoRefreshText == null || autoRefreshText.isEmpty()) ? true : Boolean.parseBoolean(autoRefreshText);
 
         // need to create data provider after calling parent class since it passes the class to the provider
         createDataProvider();
@@ -105,7 +105,7 @@ public abstract class TabModelImpl<T extends FilteredModel> extends AbstractMode
     public abstract void createNewItem();
 
     public void setFilter(final String filter) {
-        if (!StringUtils.equals(this.filter, filter)) {
+        if (!Objects.equals(this.filter, filter)) {
             this.filter = filter;
             setChangedAndNotify(PROP_FILTER);
             viewForModel.setFilter(filter);

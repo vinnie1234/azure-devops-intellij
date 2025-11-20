@@ -7,7 +7,7 @@ import com.google.common.base.Objects;
 import com.microsoft.alm.common.utils.UrlHelper;
 import com.microsoft.tfs.model.connector.TfsDetailedWorkspaceInfo;
 import com.microsoft.tfs.model.connector.TfsWorkspaceInfo;
-import org.apache.commons.lang.StringUtils;
+import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
@@ -111,16 +111,16 @@ public class Workspace {
         }
 
         final Workspace workspace = (Workspace) object;
-        if (!StringUtils.equals(this.name, workspace.getName())) {
+        if (!Objects.equals(this.name, workspace.getName())) {
             return false;
         }
-        if (!StringUtils.equals(this.computer, workspace.getComputer())) {
+        if (!Objects.equals(this.computer, workspace.getComputer())) {
             return false;
         }
-        if (!StringUtils.equals(this.owner, workspace.getOwner())) {
+        if (!Objects.equals(this.owner, workspace.getOwner())) {
             return false;
         }
-        if (!StringUtils.equals(this.server, workspace.server)) {
+        if (!Objects.equals(this.server, workspace.server)) {
             return false;
         }
         return true;
@@ -204,9 +204,9 @@ public class Workspace {
         UNKNOWN;
 
         public static Location fromString(final String location) {
-            if (StringUtils.equalsIgnoreCase(location, LOCAL.name())) {
+            if (location == null ? LOCAL.name() == null : location.equalsIgnoreCase(LOCAL.name())) {
                 return LOCAL;
-            } else if (StringUtils.equalsIgnoreCase(location, SERVER.name())) {
+            } else if (location == null ? SERVER.name() == null : location.equalsIgnoreCase(SERVER.name())) {
                 return SERVER;
             } else {
                 return UNKNOWN;

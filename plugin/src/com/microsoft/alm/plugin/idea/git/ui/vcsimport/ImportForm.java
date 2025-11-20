@@ -21,7 +21,6 @@ import com.microsoft.alm.plugin.idea.common.ui.controls.BusySpinnerPanel;
 import com.microsoft.alm.plugin.idea.common.ui.controls.HelpPanel;
 import com.microsoft.alm.plugin.idea.common.ui.controls.HintTextFieldUI;
 import com.microsoft.alm.plugin.idea.common.ui.controls.UserAccountPanel;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NonNls;
 
 import javax.swing.JButton;
@@ -194,7 +193,7 @@ public class ImportForm implements BasicForm, Disposable {
     }
 
     public String getRepositoryName() {
-        return StringUtils.trim(repositoryName.getText());
+        return repositoryName.getText() == null ? null : repositoryName.getText().trim();
     }
 
     public JComponent getRepositoryNameComponent() {

@@ -6,7 +6,6 @@ package com.microsoft.alm.plugin.external.commands;
 import com.microsoft.alm.common.utils.ArgumentHelper;
 import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.external.ToolRunner;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * Use this command to get the local path of a file
@@ -27,7 +26,7 @@ public class GetLocalPathCommand extends Command<String> {
     public ToolRunner.ArgumentBuilder getArgumentBuilder() {
         final ToolRunner.ArgumentBuilder builder = super.getArgumentBuilder()
                 .add(serverPath);
-        if (StringUtils.isNotEmpty(workspace)) {
+        if ((workspace != null && !workspace.isEmpty())) {
             builder.addSwitch("workspace", workspace);
         }
         return builder;

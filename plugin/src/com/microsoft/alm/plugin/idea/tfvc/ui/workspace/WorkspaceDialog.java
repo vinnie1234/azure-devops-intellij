@@ -27,7 +27,6 @@ import com.microsoft.alm.plugin.external.models.Workspace;
 import com.microsoft.alm.plugin.idea.common.resources.TfPluginBundle;
 import com.microsoft.alm.plugin.idea.common.ui.common.BaseDialogImpl;
 import com.microsoft.alm.plugin.idea.common.ui.common.ValidationListener;
-import org.apache.commons.lang.StringUtils;
 
 import javax.swing.JComponent;
 import java.util.List;
@@ -51,7 +50,7 @@ public class WorkspaceDialog extends BaseDialogImpl {
     }
 
     public JComponent getComponent(final String componentPropName) {
-        if (StringUtils.isEmpty(componentPropName) || workspaceForm == null) {
+        if ((componentPropName == null || componentPropName.isEmpty()) || workspaceForm == null) {
             return null;
         }
         return workspaceForm.getComponent(componentPropName);

@@ -9,7 +9,6 @@ import com.microsoft.alm.plugin.authentication.AuthenticationInfo;
 import com.microsoft.alm.core.webapi.model.TeamProjectCollectionReference;
 import com.microsoft.alm.core.webapi.model.TeamProjectReference;
 import com.microsoft.alm.sourcecontrol.webapi.model.GitRepository;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +68,7 @@ public class ServerContextBuilder {
     }
 
     public ServerContextBuilder serverUri(final String serverUri) {
-        if (!StringUtils.isEmpty(serverUri)) {
+        if (!(serverUri == null || serverUri.isEmpty())) {
             this.serverUri = UrlHelper.createUri(serverUri);
         }
         return this;

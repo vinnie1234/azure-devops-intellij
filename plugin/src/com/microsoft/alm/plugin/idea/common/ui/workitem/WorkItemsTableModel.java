@@ -10,7 +10,6 @@ import com.microsoft.alm.common.utils.SystemHelper;
 import com.microsoft.alm.plugin.idea.common.ui.common.FilteredModel;
 import com.microsoft.alm.plugin.idea.common.ui.common.TableModelSelectionConverter;
 import com.microsoft.alm.workitemtracking.webapi.models.WorkItem;
-import org.apache.commons.lang.StringUtils;
 
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.ListSelectionModel;
@@ -216,7 +215,7 @@ public class WorkItemsTableModel extends AbstractTableModel implements FilteredM
     }
 
     public boolean hasFilter() {
-        return StringUtils.isNotEmpty(this.filter);
+        return (this.filter != null && !this.filter.isEmpty());
     }
 
     public void setFilter(final String filter) {
@@ -244,7 +243,8 @@ public class WorkItemsTableModel extends AbstractTableModel implements FilteredM
         // search for the string in a case insensitive way
         // check each column for a match, if any column contains the string the result is true
         for (int c = 0; c < columns.length; c++) {
-            if (StringUtils.containsIgnoreCase(getValueFor(item, c), filter)) {
+            String value = getValueFor(item, c);
+            if (value != null && filter != null && value.toLowerCase().contains(filter.toLowerCase())) {
                 return true;
             }
         }

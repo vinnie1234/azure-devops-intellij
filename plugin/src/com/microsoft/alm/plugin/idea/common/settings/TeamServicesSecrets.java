@@ -10,7 +10,6 @@ import com.intellij.ide.passwordSafe.PasswordSafeException;
 import com.intellij.openapi.components.ServiceManager;
 import com.microsoft.alm.plugin.authentication.AuthenticationInfo;
 import com.microsoft.alm.plugin.context.ServerContext;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +30,7 @@ public class TeamServicesSecrets {
         final String authInfoSerialized = readPassword(key);
 
         AuthenticationInfo info = null;
-        if (StringUtils.isNotEmpty(authInfoSerialized)) {
+        if ((authInfoSerialized != null && !authInfoSerialized.isEmpty())) {
             info = JsonHelper.read(authInfoSerialized, AuthenticationInfo.class);
         }
 
@@ -115,7 +114,7 @@ public class TeamServicesSecrets {
      * @return unencrypted password or and empty string if no password is found
      */
     private static String readPassword(final String key) {
-        String password = StringUtils.EMPTY;
+        String password = "";
         // try reading password using the new IDEA implementation
         try {
             final CredentialAttributes attributes = new CredentialAttributes(key);
@@ -144,6 +143,6 @@ public class TeamServicesSecrets {
         } catch (Throwable t) {
             logger.warn("Failed to read password", t);
         }
-        return StringUtils.EMPTY;
+        return "";
     }
 }

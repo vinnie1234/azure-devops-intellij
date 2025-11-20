@@ -46,7 +46,6 @@ import com.microsoft.alm.plugin.idea.tfvc.core.TFSVcs;
 import com.microsoft.alm.plugin.idea.tfvc.core.tfs.TfsFileUtil;
 import com.microsoft.alm.plugin.idea.tfvc.core.tfs.VersionControlPath;
 import com.microsoft.alm.plugin.idea.tfvc.ui.CreateBranchDialog;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,14 +106,14 @@ public class BranchAction extends SingleItemAction {
 
                     final String targetServerPath = d.getTargetPath();
                     logger.info("TargetServerPath from dialog: " + targetServerPath);
-                    String targetLocalPath = StringUtils.EMPTY;
+                    String targetLocalPath = "";
                     if (d.isCreateWorkingCopies()) {
                         logger.info("User selected to sync the new branched copies");
                         // See if the target path is already mapped
                         targetLocalPath = CommandUtils.tryGetLocalPath(serverContext, targetServerPath, workspace.getName());
                         ProgressManager.getInstance().getProgressIndicator().setFraction(.5);
                         logger.info("targetLocalPath: " + targetLocalPath);
-                        if (StringUtils.isEmpty(targetLocalPath)) {
+                        if (targetLocalPath == null || targetLocalPath.isEmpty()) {
                             logger.info("Opening the FileChooser dialog for the user to select where the unmapped branch should be mapped to.");
                             final FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor();
                             descriptor.setTitle(TfPluginBundle.message(TfPluginBundle.KEY_ACTIONS_TFVC_BRANCH_FILE_CHOOSE_TITLE));
@@ -179,7 +178,7 @@ public class BranchAction extends SingleItemAction {
                     targetLocalPath = CommandUtils.tryGetLocalPath(serverContext, targetServerPath, workspace.getName());
                     ProgressManager.getInstance().getProgressIndicator().setFraction(.9);
                     logger.info("targetLocalPath: " + targetLocalPath);
-                    if (StringUtils.isNotEmpty(targetLocalPath)) {
+                    if (targetLocalPath != null && !targetLocalPath.isEmpty()) {
                         logger.info("Refresh target parent directory to display in the editor.");
                         // need to refresh the parent directory to see the new branch show up
                         final File targetFile = new File(targetLocalPath);

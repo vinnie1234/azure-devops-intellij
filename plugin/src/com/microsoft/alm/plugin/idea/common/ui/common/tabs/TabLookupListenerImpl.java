@@ -10,7 +10,6 @@ import com.microsoft.alm.plugin.context.ServerContextManager;
 import com.microsoft.alm.plugin.idea.common.ui.common.VcsTabStatus;
 import com.microsoft.alm.plugin.idea.common.utils.IdeaHelper;
 import com.microsoft.alm.plugin.operations.Operation;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -89,7 +88,7 @@ public abstract class TabLookupListenerImpl implements Operation.Listener {
             if (AuthHelper.isNotAuthorizedError(results.getError())) {
                 newContext = ServerContextManager.getInstance().updateAuthenticationInfo(repositoryContext.getUrl()); //call this on a background thread, will hang UI thread if not
             } else if (results.getError() instanceof java.lang.AssertionError &&
-                    StringUtils.containsIgnoreCase(results.getError().getMessage(), "Microsoft.TeamFoundation.Git.Server.GitRepositoryNotFoundException")) {
+                    (results.getError().getMessage() != null && results.getError().getMessage().toLowerCase().contains("Microsoft.TeamFoundation.Git.Server.GitRepositoryNotFoundException".toLowerCase()))) {
                 //repo was probably deleted on the server
                 ServerContextManager.getInstance().remove(repositoryContext.getUrl());
                 newContext = null;

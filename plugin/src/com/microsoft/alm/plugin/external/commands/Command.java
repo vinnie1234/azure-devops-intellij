@@ -21,7 +21,6 @@ import com.microsoft.alm.plugin.idea.tfvc.ui.settings.LicenseKind;
 import com.microsoft.tfs.model.connector.TfsLocalPath;
 import com.microsoft.tfs.model.connector.TfsServerPath;
 import com.microsoft.tfs.model.connector.TfsWorkspaceMapping;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -126,7 +125,7 @@ public abstract class Command<T> {
             }
             if (useProxyIfAvailable) {
                 final String proxyURI = WorkspaceHelper.getProxyServer(collectionURI);
-                if (StringUtils.isNotEmpty(proxyURI)) {
+                if (proxyURI != null && !proxyURI.isEmpty()) {
                     builder.addSwitch("proxy", proxyURI);
                 }
             }
@@ -245,7 +244,7 @@ public abstract class Command<T> {
                     throw new ToolEulaNotAcceptedException(LicenseKind.CommandLineClient, error);
                 }
                 if (error instanceof RuntimeException) {
-                    logger.warn("Error: {}\nSync stack trace: {}", error, StringUtils.join(Thread.currentThread().getStackTrace(), "\n    at "));
+                    logger.warn("Error: {}\nSync stack trace: {}", error, String.join("\n    at ", Arrays.stream(Thread.currentThread().getStackTrace()).map(Object::toString).toArray(String[]::new)));
                     throw (RuntimeException) error;
                 } else {
                     // Wrap the exception
@@ -297,7 +296,7 @@ public abstract class Command<T> {
     }
 
     protected NodeList evaluateXPath(final String stdout, final String xpathQuery) {
-        if (StringUtils.isEmpty(stdout)) {
+        if (stdout == null || stdout.isEmpty()) {
             return null;
         }
 
@@ -327,7 +326,7 @@ public abstract class Command<T> {
     }
 
     protected String getXPathAttributeValue(final NamedNodeMap attributeMap, final String attributeName) {
-        String value = StringUtils.EMPTY;
+        String value = "";
         if (attributeMap != null) {
             final Node node = attributeMap.getNamedItem(attributeName);
             if (node != null) {
@@ -345,7 +344,7 @@ public abstract class Command<T> {
     protected String[] getLines(final String buffer, final boolean skipWarnings) {
         final List<String> lines = new ArrayList<String>(Arrays.asList(buffer.replace("\r\n", "\n").split("\n")));
         if (skipWarnings) {
-            while (lines.size() > 0 && StringUtils.startsWithIgnoreCase(lines.get(0), WARNING_PREFIX)) {
+            while (lines.size() > 0 && lines.get(0) != null && lines.get(0).regionMatches(true, 0, WARNING_PREFIX, 0, WARNING_PREFIX.length())) {
                 lines.remove(0);
             }
         }
@@ -360,7 +359,7 @@ public abstract class Command<T> {
      */
     protected String getChangesetNumber(final String buffer) {
         // parse output for changeset number
-        String changesetNumber = StringUtils.EMPTY;
+        String changesetNumber = "";
         final Matcher matcher = CHANGESET_NUMBER_PATTERN.matcher(buffer);
         if (matcher.find()) {
             changesetNumber = matcher.group(1);
@@ -382,7 +381,7 @@ public abstract class Command<T> {
      */
     protected boolean isOutputLineExpected(final String line, final String[] expectedPrefixes, final boolean filePathsAreExpected) {
         final String trimmed = line != null ? line.trim() : null;
-        if (StringUtils.isNotEmpty(trimmed)) {
+        if (trimmed != null && !trimmed.isEmpty()) {
             // If we are expecting file paths, check for a file path pattern (ex. /path/path2:)
             if (filePathsAreExpected && isFilePath(line)) {
                 // This matched our file path pattern, so it is expected
@@ -392,7 +391,7 @@ public abstract class Command<T> {
             // Next, check for one of the expected prefixes
             if (expectedPrefixes != null) {
                 for (final String prefix : expectedPrefixes) {
-                    if (StringUtils.startsWithIgnoreCase(line, prefix)) {
+                    if (line != null && line.regionMatches(true, 0, prefix, 0, prefix.length())) {
                         // The line starts with an expected prefix so it is expected
                         return true;
                     }
@@ -409,9 +408,9 @@ public abstract class Command<T> {
     }
 
     protected boolean isFilePath(final String line) {
-        if (StringUtils.endsWith(line, ":")) {
+        if (line != null && line.endsWith(":")) {
             // File paths are different on different OSes
-            if (StringUtils.containsAny(line, "\\/")) {
+            if (line.contains("\\") || line.contains("/")) {
                 return true;
             }
         }
@@ -420,9 +419,9 @@ public abstract class Command<T> {
 
     protected String getFilePath(final String path, final String filename, final String pathRoot) {
         // If the path still has a ':' at the end, remove it
-        String folderPath = StringUtils.removeEnd(path, ":");
+        String folderPath = (path.endsWith(":") ? path.substring(0, path.length() - ":".length()) : path);
         // If the path isn't rooted, add in the root
-        if (!Path.isAbsolute(folderPath) && StringUtils.isNotEmpty(pathRoot)) {
+        if (!Path.isAbsolute(folderPath) && pathRoot != null && !pathRoot.isEmpty()) {
             folderPath = Path.combine(pathRoot, folderPath);
         }
 
@@ -436,13 +435,13 @@ public abstract class Command<T> {
         }
 
         String serverFilePath = matcher.group(1);
-        if (StringUtils.isNotEmpty(serverFilePath)) {
+        if (serverFilePath != null && !serverFilePath.isEmpty()) {
             throw new DollarInPathException(serverFilePath);
         }
     }
 
     protected void throwIfError(final String stderr) {
-        if (StringUtils.isNotEmpty(stderr)) {
+        if (stderr != null && !stderr.isEmpty()) {
             //TODO what kind of exception should this be?
             throw new RuntimeException(stderr);
         }
@@ -455,7 +454,7 @@ public abstract class Command<T> {
      * "(cloaked) $/TFVC_11/folder1:"
      */
     protected Workspace.Mapping getMapping(final String line) {
-        final boolean isCloaked = StringUtils.startsWithIgnoreCase(line.trim(), "(cloaked)");
+        final boolean isCloaked = line.trim() != null && line.trim().regionMatches(true, 0, "(cloaked)", 0, "(cloaked)".length());
         final int endIndex = line.indexOf(":");
         final int startIndex = isCloaked ? line.indexOf(")") + 1 : 0;
         if (endIndex >= 0) {

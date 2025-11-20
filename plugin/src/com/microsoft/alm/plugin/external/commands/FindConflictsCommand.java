@@ -8,7 +8,6 @@ import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.external.ToolRunner;
 import com.microsoft.alm.plugin.external.models.Conflict;
 import com.microsoft.alm.plugin.external.models.ConflictResults;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,16 +72,16 @@ public class FindConflictsCommand extends Command<ConflictResults> {
             final int index = line.lastIndexOf(":");
             if (index != -1) {
                 final String localPath = line.substring(0, index);
-                if (StringUtils.endsWith(line, BOTH_CONFLICTS_SUFFIX)) {
+                if ((line != null && line.endsWith(BOTH_CONFLICTS_SUFFIX))) {
                     conflicts.add(createNameAndContentConflict(localPath));
-                } else if (StringUtils.endsWith(line, RENAME_CONFLICT_SUFFIX)) {
+                } else if ((line != null && line.endsWith(RENAME_CONFLICT_SUFFIX))) {
                     conflicts.add(createRenameConflict(localPath));
-                } else if (StringUtils.endsWith(line, MERGE_CONFLICT_SUFFIX)) {
+                } else if ((line != null && line.endsWith(MERGE_CONFLICT_SUFFIX))) {
                     conflicts.add(createMergeConflict(localPath));
-                } else if (StringUtils.endsWith(line, DELETE_CONFLICT_SUFFIX)
-                        || StringUtils.endsWith(line, MERGE_DELETE_SOURCE_CONFLICT_SUFFIX)) {
+                } else if ((line != null && line.endsWith(DELETE_CONFLICT_SUFFIX))
+                        || (line != null && line.endsWith(MERGE_DELETE_SOURCE_CONFLICT_SUFFIX))) {
                     conflicts.add(createDeleteConflict(localPath, false));
-                } else if (StringUtils.endsWith(line, MERGE_DELETE_TARGET_CONFLICT_SUFFIX)) {
+                } else if ((line != null && line.endsWith(MERGE_DELETE_TARGET_CONFLICT_SUFFIX))) {
                     conflicts.add(createDeleteConflict(localPath, true));
                 } else {
                     conflicts.add(createContentConflict(localPath));

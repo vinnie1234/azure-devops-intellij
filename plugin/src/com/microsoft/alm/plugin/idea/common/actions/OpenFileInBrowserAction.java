@@ -26,7 +26,6 @@ import git4idea.GitVcs;
 import git4idea.repo.GitRemote;
 import git4idea.repo.GitRepository;
 import git4idea.repo.GitRepositoryManager;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -164,7 +163,7 @@ public class OpenFileInBrowserAction extends DumbAwareAction {
         final String path = virtualFile.getPath();
         final String relativePath = path.substring(rootPath.length());
 
-        String gitRemoteBranchName = StringUtils.EMPTY;
+        String gitRemoteBranchName = "";
         final GitLocalBranch gitLocalBranch = gitRepository.getCurrentBranch();
         if (gitLocalBranch != null) {
             final GitRemoteBranch gitRemoteBranch = gitLocalBranch.findTrackedBranch(gitRepository);

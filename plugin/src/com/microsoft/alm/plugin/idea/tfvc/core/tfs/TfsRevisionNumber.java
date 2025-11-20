@@ -20,7 +20,6 @@
 package com.microsoft.alm.plugin.idea.tfvc.core.tfs;
 
 import com.intellij.openapi.vcs.history.VcsRevisionNumber;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +47,7 @@ public class TfsRevisionNumber extends VcsRevisionNumber.Int {
 
     public static TfsRevisionNumber tryParse(final String s) {
         try {
-            final String[] sections = StringUtils.split(s, SEPARATOR);
+            final String[] sections = s.split(SEPARATOR);
             if (sections == null || sections.length != 3) {
                 return null;
             }

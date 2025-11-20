@@ -29,7 +29,6 @@ import com.intellij.util.EventDispatcher;
 import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.idea.common.resources.TfPluginBundle;
 import com.microsoft.alm.plugin.idea.tfvc.ui.servertree.ServerBrowserDialog;
-import org.apache.commons.lang.StringUtils;
 
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
@@ -67,7 +66,7 @@ public class CreateBranchForm {
         targetLabel.setLabelFor(targetText.getChildComponent());
         targetText.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
-                final String serverPath = StringUtils.isNotEmpty(targetText.getText()) ? targetText.getText() : sourceText.getText();
+                final String serverPath = (targetText.getText() != null && !targetText.getText().isEmpty()) ? targetText.getText() : sourceText.getText();
                 final ServerBrowserDialog dialog =
                         new ServerBrowserDialog(TfPluginBundle.message(TfPluginBundle.KEY_ACTIONS_TFVC_BRANCH_BROWSE_TITLE),
                                 project, serverContext, serverPath, true, true);

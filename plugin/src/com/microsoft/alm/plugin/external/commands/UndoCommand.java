@@ -7,7 +7,6 @@ import com.microsoft.alm.common.utils.ArgumentHelper;
 import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.exceptions.TeamServicesException;
 import com.microsoft.alm.plugin.external.ToolRunner;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +61,7 @@ public class UndoCommand extends Command<List<String>> {
         final String[] output = getLines(stdout);
 
         // check for failure
-        if (StringUtils.isNotEmpty(stderr)) {
+        if ((stderr != null && !stderr.isEmpty())) {
             String[] errorLines = stderr.split("\n");
             boolean hasUnknownError = false;
 
@@ -80,7 +79,7 @@ public class UndoCommand extends Command<List<String>> {
                 logger.error("Undo failed with the following stderr: " + stderr);
                 for (String s : output) {
                     // finding error message by eliminating all other known output lines since we can't parse for the error line itself (it's unknown to us)
-                    if (StringUtils.isNotEmpty(s) && isOutputLineExpected(s, new String[]{UNDO_LINE_PREFIX}, true)) {
+                    if ((s != null && !s.isEmpty()) && isOutputLineExpected(s, new String[]{UNDO_LINE_PREFIX}, true)) {
                         throw new RuntimeException(s);
                     }
                 }
@@ -93,11 +92,11 @@ public class UndoCommand extends Command<List<String>> {
         final List<String> filesUndone = new ArrayList<>();
 
         // parse output for directory paths and file names to combine
-        String path = StringUtils.EMPTY;
+        String path = "";
         for (String s : output) {
             if (isFilePath(s)) {
                 path = s;
-            } else if (StringUtils.isNotEmpty(s)) {
+            } else if ((s != null && !s.isEmpty())) {
                 filesUndone.add(getFilePath(path, s, "")); //TODO: Need to pass in the path root
             }
         }

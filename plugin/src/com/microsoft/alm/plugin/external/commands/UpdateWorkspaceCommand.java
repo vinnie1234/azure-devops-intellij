@@ -7,7 +7,6 @@ import com.microsoft.alm.common.utils.ArgumentHelper;
 import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.external.ToolRunner;
 import com.microsoft.alm.plugin.external.models.Workspace;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * This command updates the workspace properties comment, name, filetime, and permission.
@@ -45,10 +44,10 @@ public class UpdateWorkspaceCommand extends Command<String> {
     public ToolRunner.ArgumentBuilder getArgumentBuilder() {
         final ToolRunner.ArgumentBuilder builder = super.getArgumentBuilder()
                 .add(currentWorkspaceName);
-        if (StringUtils.isNotEmpty(newName)) {
+        if ((newName != null && !newName.isEmpty())) {
             builder.addSwitch("newname", newName);
         }
-        if (StringUtils.isNotEmpty(newComment)) {
+        if ((newComment != null && !newComment.isEmpty())) {
             builder.addSwitch("comment", newComment);
         }
         if (newFileTime != null) {
@@ -71,6 +70,6 @@ public class UpdateWorkspaceCommand extends Command<String> {
     public String parseOutput(final String stdout, final String stderr) {
         super.throwIfError(stderr);
         // There is no useful output on success
-        return StringUtils.EMPTY;
+        return "";
     }
 }

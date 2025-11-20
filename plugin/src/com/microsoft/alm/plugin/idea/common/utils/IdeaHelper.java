@@ -22,7 +22,6 @@ import com.microsoft.alm.plugin.services.PluginServiceProvider;
 import com.microsoft.alm.plugin.services.PropertyService;
 import git4idea.GitVcs;
 import git4idea.config.GitExecutableValidator;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,9 +103,9 @@ public class IdeaHelper {
      */
     public static boolean isTFConfigured(@NotNull final Project project) {
         String tfLocation = TfTool.getLocation();
-        if (StringUtils.isEmpty(tfLocation)) {
+        if ((tfLocation == null || tfLocation.isEmpty())) {
             tfLocation = TfTool.tryDetectTf();
-            if (!StringUtils.isEmpty(tfLocation)) {
+            if (!(tfLocation == null || tfLocation.isEmpty())) {
                 PluginServiceProvider.getInstance().getPropertyService().setProperty(PropertyService.PROP_TF_HOME, tfLocation);
                 return true;
             }
@@ -174,7 +173,7 @@ public class IdeaHelper {
      * @param throwable
      */
     public static void showErrorDialog(@NotNull final Project project, final Throwable throwable) {
-        if (throwable != null && StringUtils.isNotEmpty(throwable.getMessage())) {
+        if (throwable != null && (throwable.getMessage() != null && !throwable.getMessage().isEmpty())) {
             showErrorDialog(project, throwable.getMessage());
         } else {
             showErrorDialog(project, TfPluginBundle.message(TfPluginBundle.KEY_MESSAGE_TEAM_SERVICES_UNEXPECTED_ERROR));
@@ -211,7 +210,7 @@ public class IdeaHelper {
         // find location of the resource
         String resourcePath = resourceUrl.getPath();
         resourcePath = URLDecoder.decode(resourcePath, CHARSET_UTF8);
-        resourcePath = StringUtils.chomp(resourcePath, "/");
+        resourcePath = (resourcePath.endsWith("/") ? resourcePath.substring(0, resourcePath.length() - "/".length()) : resourcePath);
 
         // When running the plugin inside of the idea for test, the path to the app needs to be
         // manipulated to look in a different location than where the resource resides in production.
@@ -259,7 +258,8 @@ public class IdeaHelper {
      * @return
      */
     public static boolean isRider() {
-        return StringUtils.equalsIgnoreCase(ApplicationNamesInfo.getInstance().getProductName(), RIDER_PRODUCT_NAME);
+        String productName = ApplicationNamesInfo.getInstance().getProductName();
+        return (productName != null && productName.equalsIgnoreCase(RIDER_PRODUCT_NAME));
     }
 
     /**

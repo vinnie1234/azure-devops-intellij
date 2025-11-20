@@ -41,7 +41,7 @@ import com.microsoft.alm.plugin.idea.common.ui.common.ModelValidationInfo;
 import com.microsoft.alm.plugin.idea.common.utils.IdeaHelper;
 import com.microsoft.alm.plugin.idea.common.utils.VcsHelper;
 import com.microsoft.alm.plugin.operations.OperationExecutor;
-import org.apache.commons.lang.StringUtils;
+import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,7 +95,7 @@ public class WorkspaceModel extends AbstractModel {
     }
 
     public void setName(final String name) {
-        if (!StringUtils.equals(this.name, name)) {
+        if (!Objects.equals(this.name, name)) {
             this.name = name;
             super.setChangedAndNotify(PROP_NAME);
         }
@@ -106,7 +106,7 @@ public class WorkspaceModel extends AbstractModel {
     }
 
     public void setComputer(final String computer) {
-        if (!StringUtils.equals(this.computer, computer)) {
+        if (!Objects.equals(this.computer, computer)) {
             this.computer = computer;
             super.setChangedAndNotify(PROP_COMPUTER);
         }
@@ -117,7 +117,7 @@ public class WorkspaceModel extends AbstractModel {
     }
 
     public void setOwner(final String owner) {
-        if (!StringUtils.equals(this.owner, owner)) {
+        if (!Objects.equals(this.owner, owner)) {
             this.owner = owner;
             super.setChangedAndNotify(PROP_OWNER);
         }
@@ -128,7 +128,7 @@ public class WorkspaceModel extends AbstractModel {
     }
 
     public void setComment(final String comment) {
-        if (!StringUtils.equals(this.comment, comment)) {
+        if (!Objects.equals(this.comment, comment)) {
             this.comment = comment;
             super.setChangedAndNotify(PROP_COMMENT);
         }
@@ -139,7 +139,7 @@ public class WorkspaceModel extends AbstractModel {
     }
 
     public void setServer(final String server) {
-        if (!StringUtils.equals(this.server, server)) {
+        if (!Objects.equals(this.server, server)) {
             this.server = server;
             super.setChangedAndNotify(PROP_SERVER);
         }
@@ -171,7 +171,7 @@ public class WorkspaceModel extends AbstractModel {
     }
 
     public ModelValidationInfo validate() {
-        if (StringUtils.isEmpty(getName())) {
+        if ((getName() == null || getName().isEmpty())) {
             return ModelValidationInfo.createWithResource(PROP_NAME,
                     TfPluginBundle.KEY_WORKSPACE_DIALOG_ERRORS_NAME_EMPTY);
         }
@@ -191,7 +191,7 @@ public class WorkspaceModel extends AbstractModel {
             try {
                 logger.info("loadWorkspace: getting repository context");
                 final RepositoryContext repositoryContext = VcsHelper.getRepositoryContext(project);
-                if (repositoryContext == null || StringUtils.isEmpty(repositoryContext.getUrl()) || StringUtils.isEmpty(repositoryContext.getTeamProjectName())) {
+                if (repositoryContext == null || (repositoryContext.getUrl() == null || repositoryContext.getUrl().isEmpty()) || (repositoryContext.getTeamProjectName() == null || repositoryContext.getTeamProjectName().isEmpty())) {
                     logger.warn("loadWorkspace: Could not determine repositoryContext for project");
                     throw new RuntimeException(TfPluginBundle.message(TfPluginBundle.KEY_WORKSPACE_DIALOG_ERRORS_CONTEXT_FAILED));
                 }

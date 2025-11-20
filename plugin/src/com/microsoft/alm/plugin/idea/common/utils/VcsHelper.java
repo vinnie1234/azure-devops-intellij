@@ -21,7 +21,6 @@ import git4idea.branch.GitBranchUtil;
 import git4idea.repo.GitRemote;
 import git4idea.repo.GitRepository;
 import git4idea.repo.GitRepositoryManager;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,7 +77,7 @@ public class VcsHelper {
             // https://github.com/JetBrains/intellij-community/commit/7e459335eda7c90b6eb0c7e1c3b35e329dffe197
             logger.warn("Error hit while trying to detect Vcs", t);
         }
-        return vcs != null && StringUtils.isNotEmpty(vcs.getName()) ? vcs.getName() : UNKNOWN;
+        return vcs != null && (vcs.getName() != null && !vcs.getName().isEmpty()) ? vcs.getName() : UNKNOWN;
     }
 
     /**
@@ -194,8 +193,8 @@ public class VcsHelper {
      * @return
      */
     public static String getTeamProjectFromTfvcServerPath(final String serverPath) {
-        if (StringUtils.isNotEmpty(serverPath) &&
-                StringUtils.startsWith(serverPath, TFVC_ROOT) &&
+        if ((serverPath != null && !serverPath.isEmpty()) &&
+                (serverPath != null && serverPath.startsWith(TFVC_ROOT)) &&
                 serverPath.length() > 2) {
             // Find the next separator after the $/
             final int index = serverPath.indexOf(TFVC_SEPARATOR, 2);
@@ -207,7 +206,7 @@ public class VcsHelper {
         }
 
         logger.info("getTeamProjectFromTfvcServerPath: No project was found.");
-        return StringUtils.EMPTY;
+        return "";
     }
 
     public static List<Integer> getWorkItemIdsFromMessage(final String commitMessage) {
@@ -221,7 +220,9 @@ public class VcsHelper {
         // finds all matches in the string where it is a # followed by an int
         while (matcher.find()) {
             try {
-                final int workItemId = Integer.parseInt(StringUtils.removeStart(matcher.group(), "#"));
+                String matchedGroup = matcher.group();
+                String workItemStr = matchedGroup.startsWith("#") ? matchedGroup.substring("#".length()) : matchedGroup;
+                final int workItemId = Integer.parseInt(workItemStr);
                 workItems.add(workItemId);
             } catch (NumberFormatException e) {
                 logger.warn("Error converting work item id into integer: " + matcher.group(1));

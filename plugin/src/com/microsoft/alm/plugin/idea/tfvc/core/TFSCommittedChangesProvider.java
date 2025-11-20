@@ -44,7 +44,6 @@ import com.microsoft.alm.plugin.idea.common.resources.TfPluginBundle;
 import com.microsoft.alm.plugin.idea.tfvc.core.tfs.TFVCUtil;
 import com.microsoft.alm.plugin.idea.tfvc.core.tfs.TfsRevisionNumber;
 import com.microsoft.alm.plugin.idea.tfvc.ui.TFSVersionFilterComponent;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -144,12 +143,12 @@ public class TFSCommittedChangesProvider implements CachingCommittedChangesProvi
         logger.info("Loading committed changes for file {}, range {}", tfsRepositoryLocation.getRoot(), range);
         final ServerContext context = TFSVcs.getInstance(project).getServerContext(false);
         final List<ChangeSet> changeSets = CommandUtils.getHistoryCommand(context, tfsRepositoryLocation.getRoot().getPath(),
-                range.toString(), maxCount, true, settings.getUserFilter() == null ? StringUtils.EMPTY : settings.getUserFilter());
+                range.toString(), maxCount, true, settings.getUserFilter() == null ? "" : settings.getUserFilter());
 
         // no changesets were found with the parameters
         if (changeSets.isEmpty()) {
             logger.info(String.format("No changesets were found in history for the range %s and user %s"
-                    , range, settings.getUserFilter() == null ? StringUtils.EMPTY : settings.getUserFilter()));
+                    , range, settings.getUserFilter() == null ? "" : settings.getUserFilter()));
             consumer.finished();
             return;
         }
@@ -160,7 +159,7 @@ public class TFSCommittedChangesProvider implements CachingCommittedChangesProvi
             consumer.consume(tfsChangeListBuilder.createChangeList(changeSets.get(i), changeSets.get(i + 1).getIdAsInt(), changeSets.get(i + 1).getDate()));
         }
         // this is the first checkin to the repo so there is no previous checkin to refer to
-        consumer.consume(tfsChangeListBuilder.createChangeList(changeSets.get(changeSets.size() - 1), 0, StringUtils.EMPTY));
+        consumer.consume(tfsChangeListBuilder.createChangeList(changeSets.get(changeSets.size() - 1), 0, ""));
         consumer.finished();
     }
 

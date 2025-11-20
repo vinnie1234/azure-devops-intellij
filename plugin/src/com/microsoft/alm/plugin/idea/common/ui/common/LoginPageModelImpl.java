@@ -11,7 +11,7 @@ import com.microsoft.alm.plugin.context.ServerContextBuilder;
 import com.microsoft.alm.plugin.context.ServerContextManager;
 import com.microsoft.alm.plugin.idea.common.resources.TfPluginBundle;
 import com.microsoft.alm.secret.TokenPair;
-import org.apache.commons.lang.StringUtils;
+import java.util.Objects;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -88,7 +88,7 @@ public abstract class LoginPageModelImpl extends AbstractModel implements LoginP
 
     @Override
     public void setUserName(final String userName) {
-        if (!StringUtils.equals(this.userName, userName)) {
+        if (!Objects.equals(this.userName, userName)) {
             this.userName = userName;
             setChangedAndNotify(PROP_USER_NAME);
         }
@@ -114,19 +114,19 @@ public abstract class LoginPageModelImpl extends AbstractModel implements LoginP
 
     @Override
     public void setServerName(final String serverName) {
-        if (!StringUtils.equals(this.serverName, serverName)) {
+        if (!Objects.equals(this.serverName, serverName)) {
             final String newServerName;
             // Allow just the server name as a short hand
-            if (StringUtils.isNotEmpty(serverName) && !StringUtils.contains(serverName, UrlHelper.URL_SEPARATOR)
-                    && !StringUtils.equals(serverName, TfPluginBundle.message(TfPluginBundle.KEY_USER_ACCOUNT_PANEL_VSO_SERVER_NAME))
-                    && !StringUtils.containsIgnoreCase(serverName, UrlHelper.HOST_VSO)
-                    && !StringUtils.containsIgnoreCase(serverName, UrlHelper.HOST_TFS_ALL_IN)) {
+            if ((serverName != null && !serverName.isEmpty()) && (serverName != null && !serverName.contains(UrlHelper.URL_SEPARATOR))
+                    && !Objects.equals(serverName, TfPluginBundle.message(TfPluginBundle.KEY_USER_ACCOUNT_PANEL_VSO_SERVER_NAME))
+                    && !(serverName != null && serverName.toLowerCase().contains(UrlHelper.HOST_VSO.toLowerCase()))
+                    && !(serverName != null && serverName.toLowerCase().contains(UrlHelper.HOST_TFS_ALL_IN.toLowerCase()))) {
                 // no slash, not "Microsoft Account" and does not contain visualstudio.com or tfsallin.net
                 // means it must just be a on-premise TFS server name, so add all the normal stuff
                 newServerName = String.format(DEFAULT_SERVER_FORMAT, serverName);
-            } else if ((!StringUtils.contains(serverName, UrlHelper.URL_SEPARATOR)
-                    && (StringUtils.containsIgnoreCase(serverName, UrlHelper.HOST_VSO) ||
-                        StringUtils.containsIgnoreCase(serverName, UrlHelper.HOST_TFS_ALL_IN))) ||
+            } else if ((!(serverName != null && serverName.contains(UrlHelper.URL_SEPARATOR))
+                    && ((serverName != null && serverName.toLowerCase().contains(UrlHelper.HOST_VSO.toLowerCase())) ||
+                        (serverName != null && serverName.toLowerCase().contains(UrlHelper.HOST_TFS_ALL_IN.toLowerCase())))) ||
                     (UrlHelper.isOrganizationUrl(String.format(DEFAULT_VSTS_ACCOUNT_FORMAT, serverName)) )) {
                 // add "https://" to VSTS accounts if it isn't provided
                 newServerName = String.format(DEFAULT_VSTS_ACCOUNT_FORMAT, serverName);

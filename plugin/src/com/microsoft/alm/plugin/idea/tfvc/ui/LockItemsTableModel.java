@@ -24,7 +24,6 @@ import com.intellij.util.ui.JBUI;
 import com.microsoft.alm.plugin.external.commands.LockCommand;
 import com.microsoft.alm.plugin.external.models.ExtendedItemInfo;
 import com.microsoft.alm.plugin.idea.common.resources.TfPluginBundle;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -60,7 +59,7 @@ public class LockItemsTableModel extends AbstractTableModel {
                         return TfPluginBundle.message(TfPluginBundle.KEY_TFVC_LOCK_DIALOG_LOCK_LEVEL_CHECKOUT);
                 }
                 // "None" is just the empty string
-                return StringUtils.EMPTY;
+                return "";
             }
         },
         LockOwner(TfPluginBundle.message(TfPluginBundle.KEY_TFVC_LOCK_DIALOG_LOCKED_BY_COLUMN), 130) {

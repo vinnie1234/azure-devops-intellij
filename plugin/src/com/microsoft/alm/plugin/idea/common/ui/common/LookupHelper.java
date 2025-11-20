@@ -21,7 +21,7 @@ import com.microsoft.alm.plugin.operations.AccountLookupOperation;
 import com.microsoft.alm.plugin.operations.Operation;
 import com.microsoft.alm.plugin.operations.OperationFactory;
 import com.microsoft.alm.plugin.operations.ServerContextLookupOperation;
-import org.apache.commons.lang.StringUtils;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +42,7 @@ public class LookupHelper {
 
         // Make sure we have a server url
         final String serverName = loginPageModel.getServerName();
-        if (StringUtils.isEmpty(serverName)) {
+        if ((serverName == null || serverName.isEmpty())) {
             loginPageModel.addError(ModelValidationInfo.createWithResource(LoginPageModel.PROP_SERVER_NAME,
                     TfPluginBundle.KEY_LOGIN_FORM_TFS_ERRORS_NO_SERVER_NAME));
             loginPageModel.setConnected(false);
@@ -291,7 +291,7 @@ public class LookupHelper {
     }
 
     private static boolean isValidVsoURL(final String serverName) {
-        return !StringUtils.equals(serverName,
+        return !Objects.equals(serverName,
                         TfPluginBundle.message(TfPluginBundle.KEY_USER_ACCOUNT_PANEL_VSO_SERVER_NAME))
                     && UrlHelper.isValidUrl(serverName)
                     && UrlHelper.isVSO(UrlHelper.createUri(serverName))
@@ -299,7 +299,7 @@ public class LookupHelper {
     }
 
     public static String getVsspsUrlFromDisplayName(final String displayName) {
-        return StringUtils.equals(TfPluginBundle.message(TfPluginBundle.KEY_USER_ACCOUNT_PANEL_VSO_SERVER_NAME), displayName)
+        return Objects.equals(TfPluginBundle.message(TfPluginBundle.KEY_USER_ACCOUNT_PANEL_VSO_SERVER_NAME), displayName)
                     ? VsoAuthenticationProvider.VSO_AUTH_URL
                     : displayName;
     }

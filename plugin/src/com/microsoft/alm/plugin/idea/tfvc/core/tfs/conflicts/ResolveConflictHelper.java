@@ -58,7 +58,6 @@ import com.microsoft.alm.plugin.idea.tfvc.exceptions.MergeFailedException;
 import com.microsoft.alm.plugin.idea.tfvc.ui.resolve.ContentTriplet;
 import com.microsoft.alm.plugin.idea.tfvc.ui.resolve.NameMergerResolution;
 import com.microsoft.alm.plugin.idea.tfvc.ui.resolve.ResolveConflictsModel;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -297,7 +296,7 @@ public class ResolveConflictHelper {
         VcsUtil.runVcsProcessWithProgress(resolveRunnable, TfPluginBundle.message(TfPluginBundle.KEY_TFVC_CONFLICT_RESOLVING_PROGRESS_BAR), false, project);
 
         // The following code is in this method instead of resolveConflict so that it will be called from tests
-        if (nameMergerResolution != null && StringUtils.isEmpty(nameMergerResolution.getResolvedLocalPath())) {
+        if (nameMergerResolution != null && (nameMergerResolution.getResolvedLocalPath() == null || nameMergerResolution.getResolvedLocalPath().isEmpty())) {
             // If we didn't get back what we expected from resolving the conflict, just default to the path we have
             nameMergerResolution.setResolvedLocalPath(nameMergerResolution.getUserSelection());
         }
@@ -444,9 +443,9 @@ public class ResolveConflictHelper {
                     }
                 }
 
-                contentTriplet.baseContent = original != null ? original : StringUtils.EMPTY;
-                contentTriplet.localContent = myLocalChanges != null ? myLocalChanges : StringUtils.EMPTY;
-                contentTriplet.serverContent = serverChanges != null ? serverChanges : StringUtils.EMPTY;
+                contentTriplet.baseContent = original != null ? original : "";
+                contentTriplet.localContent = myLocalChanges != null ? myLocalChanges : "";
+                contentTriplet.serverContent = serverChanges != null ? serverChanges : "";
             }
         } catch (Exception e) {
             logger.error("Error loading contents for files");

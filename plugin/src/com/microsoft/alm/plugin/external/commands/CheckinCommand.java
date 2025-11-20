@@ -7,7 +7,6 @@ import com.microsoft.alm.common.utils.ArgumentHelper;
 import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.exceptions.TeamServicesException;
 import com.microsoft.alm.plugin.external.ToolRunner;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +43,7 @@ public class CheckinCommand extends Command<String> {
         for (final String file : files) {
             builder.add(file);
         }
-        if (StringUtils.isNotEmpty(comment)) {
+        if ((comment != null && !comment.isEmpty())) {
             builder.addSwitch("comment", getComment());
         }
         if (workItemsToAssociate != null && workItemsToAssociate.size() > 0) {
@@ -96,7 +95,7 @@ public class CheckinCommand extends Command<String> {
     @Override
     public String parseOutput(final String stdout, final String stderr) {
         // check for failed checkin
-        if (StringUtils.isNotEmpty(stderr)) {
+        if ((stderr != null && !stderr.isEmpty())) {
             logger.error("Checkin failed with the following stdout:\n" + stdout);
             final String[] output = getLines(stdout);
             final StringBuilder errorMessage = new StringBuilder();
@@ -107,8 +106,10 @@ public class CheckinCommand extends Command<String> {
                     errorMessage.append(output[i]).append("\n");
                 }
             }
-            if (StringUtils.isNotEmpty(errorMessage.toString())) {
-                throw new RuntimeException(StringUtils.chomp(errorMessage.toString()));
+            if ((errorMessage.toString() != null && !errorMessage.toString().isEmpty())) {
+                String message = errorMessage.toString();
+                message = (message.endsWith("\n") ? message.substring(0, message.length() - "\n".length()) : message);
+                throw new RuntimeException(message);
             }
             // couldn't figure out error message parsing so returning generic error
             logger.error("Parsing of the stdout failed to get the error message");

@@ -42,7 +42,6 @@ import com.microsoft.alm.plugin.versioncontrol.path.ServerPath;
 import com.microsoft.tfs.model.connector.TfsLocalPath;
 import com.microsoft.tfs.model.connector.TfsPath;
 import com.microsoft.tfs.model.connector.TfsServerPath;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,7 +100,7 @@ public class TfsFileUtil {
     }
 
     public static boolean isServerItem(final String itemPath) {
-        return StringUtils.startsWithIgnoreCase(itemPath, "$/");
+        return (itemPath != null && itemPath.regionMatches(true, 0, "$/", 0, "$/".length()));
     }
 
     public static List<FilePath> getFilePaths(@NotNull final VirtualFile[] files) {

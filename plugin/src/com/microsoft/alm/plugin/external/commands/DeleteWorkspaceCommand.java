@@ -6,7 +6,6 @@ package com.microsoft.alm.plugin.external.commands;
 import com.microsoft.alm.common.utils.ArgumentHelper;
 import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.external.ToolRunner;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * This command deletes a workspace.
@@ -45,15 +44,15 @@ public class DeleteWorkspaceCommand extends Command<String> {
     @Override
     public String parseOutput(final String stdout, final String stderr) {
         // First check stderr for "not found" message
-        if (StringUtils.containsIgnoreCase(stderr, "could not be found")) {
+        if ((stderr != null && stderr.toLowerCase().contains("could not be found".toLowerCase()))) {
             // No workspace existed, so ignore the error
-            return StringUtils.EMPTY;
+            return "";
         }
         // Throw if there was any other error
         super.throwIfError(stderr);
 
         // There is no useful output on success
-        return StringUtils.EMPTY;
+        return "";
     }
 
     @Override

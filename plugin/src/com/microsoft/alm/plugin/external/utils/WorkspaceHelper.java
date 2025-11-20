@@ -6,7 +6,7 @@ package com.microsoft.alm.plugin.external.utils;
 import com.microsoft.alm.common.utils.ArgumentHelper;
 import com.microsoft.alm.plugin.external.models.Workspace;
 import com.microsoft.alm.plugin.services.PluginServiceProvider;
-import org.apache.commons.lang.StringUtils;
+import java.util.Objects;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,8 +61,8 @@ public class WorkspaceHelper {
                 return true;
             }
             if (mapping1.isCloaked() != mapping2.isCloaked() ||
-                    !StringUtils.equals(mapping1.getLocalPath(), mapping2.getLocalPath()) ||
-                    !StringUtils.equals(mapping1.getServerPath(), mapping2.getServerPath())) {
+                    !Objects.equals(mapping1.getLocalPath(), mapping2.getLocalPath()) ||
+                    !Objects.equals(mapping1.getServerPath(), mapping2.getServerPath())) {
                 return true;
             }
         }
@@ -151,14 +151,18 @@ public class WorkspaceHelper {
      * This metho appends the one level mapping suffix to the server path.
      */
     public static String getOneLevelServerPath(final String serverPath) {
-        if (StringUtils.isEmpty(serverPath)) {
+        if ((serverPath == null || serverPath.isEmpty())) {
             // This is a strange case, but it seems correct to simply return the suffix
             return ONE_LEVEL_MAPPING_SUFFIX;
         }
 
         if (!isOneLevelMapping(serverPath)) {
             // remove any remaining /'s and add the /*
-            return StringUtils.stripEnd(serverPath, "/") + ONE_LEVEL_MAPPING_SUFFIX;
+            String cleanPath = serverPath;
+            while (cleanPath.endsWith("/")) {
+                cleanPath = cleanPath.substring(0, cleanPath.length() - 1);
+            }
+            return cleanPath + ONE_LEVEL_MAPPING_SUFFIX;
         }
 
         // It already has the /* at the end
@@ -169,7 +173,7 @@ public class WorkspaceHelper {
      * This method returns true if the serverPath ends with /*
      */
     public static boolean isOneLevelMapping(final String serverPath) {
-        return StringUtils.endsWith(serverPath, ONE_LEVEL_MAPPING_SUFFIX);
+        return (serverPath != null && serverPath.endsWith(ONE_LEVEL_MAPPING_SUFFIX));
     }
 
     /**
@@ -178,12 +182,12 @@ public class WorkspaceHelper {
      * @return
      */
     public static String getProxyServer(final String serverURI) {
-        if (StringUtils.isEmpty(serverURI)) {
+        if ((serverURI == null || serverURI.isEmpty())) {
             return null;
         }
         final String propertyName = getProxyPropertyName(serverURI);
         final String currentProxy = PluginServiceProvider.getInstance().getPropertyService().getProperty(propertyName);
-        if (StringUtils.isEmpty(currentProxy)) {
+        if ((currentProxy == null || currentProxy.isEmpty())) {
             return null;
         }
 
@@ -196,11 +200,11 @@ public class WorkspaceHelper {
      * @param proxyURI
      */
     public static void setProxyServer(final String serverURI, final String proxyURI) {
-        if (StringUtils.isEmpty(serverURI)) {
+        if ((serverURI == null || serverURI.isEmpty())) {
             return;
         }
         final String propertyName = getProxyPropertyName(serverURI);
-        if (StringUtils.isEmpty(proxyURI)) {
+        if ((proxyURI == null || proxyURI.isEmpty())) {
             PluginServiceProvider.getInstance().getPropertyService().removeProperty(propertyName);
         } else {
             PluginServiceProvider.getInstance().getPropertyService().setProperty(propertyName, proxyURI);
@@ -209,6 +213,10 @@ public class WorkspaceHelper {
 
     private static String getProxyPropertyName(final String serverURI) {
         // add prefix, remove any trailing slash, uppercase
-        return "PROXY_" + StringUtils.upperCase(StringUtils.stripEnd(serverURI, "/"));
+        String cleanUri = serverURI;
+        while (cleanUri.endsWith("/")) {
+            cleanUri = cleanUri.substring(0, cleanUri.length() - 1);
+        }
+        return "PROXY_" + (cleanUri != null ? cleanUri.toUpperCase() : "");
     }
 }

@@ -20,7 +20,6 @@ import com.microsoft.alm.plugin.idea.common.utils.IdeaHelper;
 import com.microsoft.alm.plugin.idea.common.utils.VcsHelper;
 import com.microsoft.alm.plugin.idea.git.utils.TfGitHelper;
 import com.microsoft.alm.plugin.idea.tfvc.core.TFSVcs;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,7 +91,7 @@ public class SelectWorkItemsAction extends DumbAwareAction {
 
             SelectWorkItemsDialog dialog = new SelectWorkItemsDialog(project);
             if (dialog.showAndGet()) {
-                if (StringUtils.isNotEmpty(commitMessage)) {
+                if ((commitMessage != null && !commitMessage.isEmpty())) {
                     commitMessage += "\n" + dialog.getComment();
                 } else {
                     commitMessage = dialog.getComment();

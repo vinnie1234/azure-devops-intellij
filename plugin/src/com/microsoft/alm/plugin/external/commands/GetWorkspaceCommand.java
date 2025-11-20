@@ -8,7 +8,7 @@ import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.external.ToolRunner;
 import com.microsoft.alm.plugin.external.models.Workspace;
 import com.microsoft.alm.plugin.external.utils.WorkspaceHelper;
-import org.apache.commons.lang.StringUtils;
+import java.util.Objects;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 
@@ -59,9 +59,9 @@ public class GetWorkspaceCommand extends Command<Workspace> {
                 final NamedNodeMap mappingAttributes = mappingsNodeList.item(i).getAttributes();
                 final String localPath = getXPathAttributeValue(mappingAttributes, "local-item");
                 final String depth = getXPathAttributeValue(mappingAttributes, "depth");
-                final boolean isCloaked = !StringUtils.equals(getXPathAttributeValue(mappingAttributes, "type"), "map");
+                final boolean isCloaked = !Objects.equals(getXPathAttributeValue(mappingAttributes, "type"), "map");
                 String serverPath = getXPathAttributeValue(mappingAttributes, "server-item");
-                if (!StringUtils.equals(depth, "full")) {
+                if (!Objects.equals(depth, "full")) {
                     // The normal way to denote one level mappings (not full mappings) is to end the server path
                     // with a /*. This indicates that the mapping is not recursive to all subfolders.
                     serverPath = WorkspaceHelper.getOneLevelServerPath(serverPath);
@@ -71,7 +71,7 @@ public class GetWorkspaceCommand extends Command<Workspace> {
 
             // Get owner name (display name may not be available
             String owner = getXPathAttributeValue(workspaceAttributes, "owner-display-name");
-            if (StringUtils.isEmpty(owner)) {
+            if ((owner == null || owner.isEmpty())) {
                 owner = getXPathAttributeValue(workspaceAttributes, "owner");
             }
 

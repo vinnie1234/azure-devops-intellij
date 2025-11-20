@@ -19,7 +19,6 @@
 
 package com.microsoft.alm.plugin.idea.tfvc.ui.resolve;
 
-import org.apache.commons.lang.StringUtils;
 
 public class NameMergerResolution {
     final String theirNameChoice;
@@ -46,7 +45,7 @@ public class NameMergerResolution {
     }
 
     public boolean userChoseTheirs() {
-        return StringUtils.equalsIgnoreCase(theirNameChoice, userSelection);
+        return theirNameChoice == null ? userSelection == null : theirNameChoice.equalsIgnoreCase(userSelection);
     }
 
     public void setResolvedLocalPath(String resolvedLocalPath) {

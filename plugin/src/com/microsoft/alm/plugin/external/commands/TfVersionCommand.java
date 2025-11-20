@@ -5,7 +5,6 @@ package com.microsoft.alm.plugin.external.commands;
 
 import com.microsoft.alm.plugin.external.ToolRunner;
 import com.microsoft.alm.plugin.external.models.ToolVersion;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * This command calls the command line doing a simple call to get the help for the add command.
@@ -36,10 +35,12 @@ public class TfVersionCommand extends Command<ToolVersion> {
         throwIfError(stderr);
         final String[] lines = getLines(stdout);
         for(final String line : lines) {
-            if (StringUtils.isNotEmpty(line)) {
+            if ((line != null && !line.isEmpty())) {
                 final int start = line.toLowerCase().indexOf(VERSION_PREFIX);
                 if (start >= 0) {
-                    return new ToolVersion(StringUtils.removeEnd(line.substring(start + VERSION_PREFIX.length()), ")"));
+                    String versionStr = line.substring(start + VERSION_PREFIX.length());
+                    versionStr = (versionStr.endsWith(")") ? versionStr.substring(0, versionStr.length() - ")".length()) : versionStr);
+                    return new ToolVersion(versionStr);
                 }
             }
         }

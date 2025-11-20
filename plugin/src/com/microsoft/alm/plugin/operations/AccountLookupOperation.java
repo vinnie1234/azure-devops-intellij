@@ -11,7 +11,6 @@ import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.context.ServerContextBuilder;
 import com.microsoft.alm.plugin.context.ServerContextManager;
 import com.microsoft.alm.plugin.exceptions.TeamServicesException;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -159,7 +158,8 @@ public class AccountLookupOperation extends Operation {
         final List<JsonNode> nodes = rootNode.findValues(TFS_SERVICE_URL_PROPERTY_NAME);
         for (final JsonNode node : nodes)
         {
-            accountUris.add(StringUtils.removeEnd(node.path("$value").asText(), "/"));
+            String accountUri = node.path("$value").asText();
+            accountUris.add(accountUri.endsWith("/") ? accountUri.substring(0, accountUri.length() - "/".length()) : accountUri);
         }
         return accountUris;
     }

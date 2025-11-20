@@ -3,13 +3,12 @@
 
 package com.microsoft.alm.plugin.external.models;
 
-import org.apache.commons.lang.StringUtils;
 
 /**
  * This class represents the version of a command line tool.
  */
 public class ToolVersion {
-    public static final ToolVersion UNKNOWN = new ToolVersion(StringUtils.EMPTY);
+    public static final ToolVersion UNKNOWN = new ToolVersion("");
 
     private final int major;
     private final int minor;
@@ -21,14 +20,14 @@ public class ToolVersion {
      * Ex. 14.0.3.201603291047
      */
     public ToolVersion(final String versionString) {
-        final String[] parts = StringUtils.split(versionString, '.');
+        final String[] parts = versionString.split("\\.");
         major = getIntegerPart(parts, 0, 0);
         minor = getIntegerPart(parts, 1, 0);
         revision = getIntegerPart(parts, 2, 0);
         if (parts.length > 3) {
             build = parts[3];
         } else {
-            build = StringUtils.EMPTY;
+            build = "";
         }
     }
 
@@ -77,7 +76,7 @@ public class ToolVersion {
     @Override
     public String toString() {
         final String version = String.format("%d.%d.%d", getMajor(), getMinor(), getRevision());
-        if (StringUtils.isNotEmpty(getBuild())) {
+        if ((getBuild() != null && !getBuild().isEmpty())) {
             return version + "." + getBuild();
         } else {
             return version;

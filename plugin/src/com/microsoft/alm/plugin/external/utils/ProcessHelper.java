@@ -4,7 +4,6 @@
 package com.microsoft.alm.plugin.external.utils;
 
 import com.intellij.execution.configurations.GeneralCommandLine;
-import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +18,7 @@ public class ProcessHelper {
         pb.environment().put("TF_ADDITIONAL_JAVA_ARGS", "-Duser.country=US -Duser.language=en -Dfile.encoding=utf-8");
         pb.environment().put("PATH", getPatchedPathWithCurrentJavaBinLocation());
 
-        if (StringUtils.isNotEmpty(workingDirectory)) {
+        if ((workingDirectory != null && !workingDirectory.isEmpty())) {
             pb.directory(new File(workingDirectory));
         }
         return pb.start();

@@ -34,7 +34,7 @@ import com.microsoft.alm.plugin.idea.common.ui.common.treetable.CellRenderer;
 import com.microsoft.alm.plugin.idea.common.ui.common.treetable.ContentProvider;
 import com.microsoft.alm.plugin.idea.common.ui.common.treetable.CustomTreeTable;
 import com.microsoft.alm.plugin.idea.common.ui.common.treetable.TreeTableColumn;
-import org.apache.commons.lang.StringUtils;
+import java.util.Objects;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -151,7 +151,7 @@ public class ManageWorkspacesForm {
             } else if (value instanceof Workspace) {
                 return ((Workspace) value).getName();
             }
-            return StringUtils.EMPTY;
+            return "";
         }
     };
 
@@ -160,7 +160,7 @@ public class ManageWorkspacesForm {
             if (value instanceof Server) {
                 return ((Server) value).getName();
             }
-            return StringUtils.EMPTY;
+            return "";
         }
     };
 
@@ -169,7 +169,7 @@ public class ManageWorkspacesForm {
             if (value instanceof Workspace) {
                 return ((Workspace) value).getComment();
             }
-            return StringUtils.EMPTY;
+            return "";
         }
     };
 
@@ -250,7 +250,7 @@ public class ManageWorkspacesForm {
             if (selectedServerOrWorkspace instanceof Server && o instanceof Server) {
                 final Server server1 = (Server) selectedServerOrWorkspace;
                 final Server server2 = (Server) o;
-                if (StringUtils.equals(server1.getName(), server2.getName())) {
+                if (Objects.equals(server1.getName(), server2.getName())) {
                     newSelection = o;
                     break;
                 }

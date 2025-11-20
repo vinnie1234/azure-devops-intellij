@@ -9,7 +9,6 @@ import com.microsoft.alm.core.webapi.model.TeamProjectReference;
 import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.context.ServerContextBuilder;
 import com.microsoft.alm.sourcecontrol.webapi.model.GitRepository;
-import org.apache.commons.lang.StringUtils;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -80,7 +79,7 @@ public class ServerContextState {
         if (userId != null) {
             return userId.toString();
         } else {
-            return StringUtils.EMPTY;
+            return "";
         }
     }
 }

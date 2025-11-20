@@ -8,7 +8,6 @@ import com.microsoft.alm.common.utils.ArgumentHelper;
 import com.microsoft.alm.plugin.events.ServerEvent;
 import com.microsoft.alm.plugin.events.ServerEventManager;
 import git4idea.repo.GitRepository;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +30,7 @@ public class EventContextHelper {
 
     public static Map<String,Object> createContext(final String sender) {
         final Map<String,Object> eventContext = new HashMap<String, Object>();
-        if (!StringUtils.isEmpty(sender)) {
+        if (!(sender == null || sender.isEmpty())) {
             setSender(eventContext, sender);
         }
         return eventContext;

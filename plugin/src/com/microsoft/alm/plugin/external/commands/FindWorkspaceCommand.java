@@ -13,7 +13,6 @@ import com.microsoft.tfs.model.connector.TfsBasicWorkspaceInfo;
 import com.microsoft.tfs.model.connector.TfsDetailedWorkspaceInfo;
 import com.microsoft.tfs.model.connector.TfsWorkspaceInfo;
 import com.microsoft.tfs.model.connector.TfsWorkspaceMapping;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -56,8 +55,8 @@ public class FindWorkspaceCommand extends Command<TfsWorkspaceInfo> {
         super("workfold", null);
         ArgumentHelper.checkNotEmptyString(localPath, "localPath");
         this.localPath = localPath;
-        this.collection = StringUtils.EMPTY;
-        this.workspace = StringUtils.EMPTY;
+        this.collection = "";
+        this.workspace = "";
         this.authInfo = authenticationInfo;
         this.allowBasicInformation = allowBasicInformation;
     }
@@ -69,19 +68,19 @@ public class FindWorkspaceCommand extends Command<TfsWorkspaceInfo> {
         this.collection = collection;
         this.workspace = workspace;
         this.authInfo = authInfo;
-        this.localPath = StringUtils.EMPTY;
+        this.localPath = "";
         this.allowBasicInformation = false;
     }
 
     @Override
     public ToolRunner.ArgumentBuilder getArgumentBuilder() {
         final ToolRunner.ArgumentBuilder builder = super.getArgumentBuilder();
-        if (StringUtils.isNotEmpty(localPath)) {
+        if ((localPath != null && !localPath.isEmpty())) {
             // To find the workspace we set the working directory to the localPath and call workfold with no arguments
             // NOTE Calling workfold with the localPath forces it to refresh the workspace from the server. Calling it with
             //      no arguments does not refresh it from the server.
             builder.setWorkingDirectory(localPath);
-        } else if (StringUtils.isNotEmpty(collection) && StringUtils.isNotEmpty(workspace)) {
+        } else if ((collection != null && !collection.isEmpty()) && (workspace != null && !workspace.isEmpty())) {
             // need both collection and workspace name to make this call local
             builder.addSwitch("collection", UrlHelper.getCmdLineFriendlyUrl(collection));
             builder.addSwitch("workspace", workspace);
@@ -89,7 +88,7 @@ public class FindWorkspaceCommand extends Command<TfsWorkspaceInfo> {
 
         if (authInfo != null) {
             builder.addAuthInfo(authInfo);
-        } else if (!StringUtils.isEmpty(localPath)) {
+        } else if (!(localPath == null || localPath.isEmpty())) {
             logger.info("Using fake credentials for a FindWorkspaceCommand on the local workspace \"" + localPath + "\"");
             // because the credentials are required even in cases when they're unused
             builder.addSwitch("login", "username,pw");
@@ -102,7 +101,7 @@ public class FindWorkspaceCommand extends Command<TfsWorkspaceInfo> {
     public boolean shouldPrepareCachedRunner() {
         // This command may be called on non-workspace location, so we shouldn't generally prepare a runner for the new
         // workspace in advance. So, we should cache only "static" invocations with no working directory override.
-        return StringUtils.isEmpty(localPath);
+        return (localPath == null || localPath.isEmpty());
     }
 
     /**
@@ -110,7 +109,7 @@ public class FindWorkspaceCommand extends Command<TfsWorkspaceInfo> {
      * nonfatal error. Will return false if no errors were discovered.
      */
     private boolean checkErrors(String stderr) {
-        if (StringUtils.startsWith(stderr, AUTH_ERROR_SERVER) || StringUtils.contains(stderr, AUTH_ERROR_FEDERATED)) {
+        if ((stderr != null && stderr.startsWith(AUTH_ERROR_SERVER)) || (stderr != null && stderr.contains(AUTH_ERROR_FEDERATED))) {
             logger.warn("Authentication exception hit when running 'tf workfold'");
 
             // Basic information could be extracted even in case of authentication error, so we should ignore the error.
@@ -119,7 +118,7 @@ public class FindWorkspaceCommand extends Command<TfsWorkspaceInfo> {
             }
 
             throw new ToolAuthenticationException();
-        } else if (StringUtils.contains(stderr, WORKSPACE_COULD_NOT_BE_DETERMINED)) {
+        } else if ((stderr != null && stderr.contains(WORKSPACE_COULD_NOT_BE_DETERMINED))) {
             throw new WorkspaceCouldNotBeDeterminedException();
         }
         super.throwIfError(stderr);

@@ -40,7 +40,6 @@ import com.microsoft.alm.plugin.idea.tfvc.core.tfs.ServerStatus;
 import com.microsoft.alm.plugin.idea.tfvc.core.tfs.StatusProvider;
 import com.microsoft.alm.plugin.idea.tfvc.core.tfs.TFVCUtil;
 import com.microsoft.alm.plugin.idea.tfvc.core.tfs.TfsFileUtil;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -180,7 +179,7 @@ public class TFSFileListener extends VcsVFSListener {
 
     @NotNull
     protected String getDeleteTitle() {
-        return StringUtils.EMPTY; // never called
+        return ""; // never called
     }
 
     protected String getSingleFileDeleteTitle() {

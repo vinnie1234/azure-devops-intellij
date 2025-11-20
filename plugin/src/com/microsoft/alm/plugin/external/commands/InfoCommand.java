@@ -7,7 +7,6 @@ import com.microsoft.alm.common.utils.ArgumentHelper;
 import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.external.ToolRunner;
 import com.microsoft.alm.plugin.external.models.ExtendedItemInfo;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -74,22 +73,22 @@ public class InfoCommand extends Command<List<ExtendedItemInfo>> {
 
         String prefix = "";
         for (final String line : output) {
-            if (StringUtils.startsWithIgnoreCase(line, "local information:")) {
+            if (line != null && line.regionMatches(true, 0, "local information:", 0, "local information:".length())) {
                 // switch to local mode
                 prefix = "";
                 if (!propertyMap.isEmpty()) {
                     itemInfos.add(getItemInfo(propertyMap));
                 }
                 propertyMap.clear();
-            } else if (StringUtils.startsWithIgnoreCase(line, "server information:")) {
+            } else if (line != null && line.regionMatches(true, 0, "server information:", 0, "server information:".length())) {
                 // switch to server mode
                 prefix = "server ";
-            } else if (StringUtils.isNotBlank(line)) {
+            } else if (line != null && !line.trim().isEmpty()) {
                 // add property
                 final int colonPos = line.indexOf(":");
                 if (colonPos > 0) {
                     final String key = prefix + line.substring(0, colonPos).trim().toLowerCase();
-                    final String value = colonPos + 1 < line.length() ? line.substring(colonPos + 1).trim() : StringUtils.EMPTY;
+                    final String value = colonPos + 1 < line.length() ? line.substring(colonPos + 1).trim() : "";
                     propertyMap.put(key, value);
                 }
             }

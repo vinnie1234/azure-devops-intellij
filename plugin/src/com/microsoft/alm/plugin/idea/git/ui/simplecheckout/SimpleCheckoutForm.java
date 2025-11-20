@@ -9,7 +9,6 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.microsoft.alm.plugin.idea.common.resources.TfPluginBundle;
 import com.microsoft.alm.plugin.idea.common.ui.common.forms.BasicForm;
-import org.apache.commons.lang.StringUtils;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -44,9 +43,9 @@ public class SimpleCheckoutForm implements BasicForm {
      */
     @Override
     public JComponent getPreferredFocusedComponent() {
-        if (StringUtils.isEmpty(getParentDirectory())) {
+        if (getParentDirectory() == null || getParentDirectory().isEmpty()) {
             return parentDirectory;
-        } else if (StringUtils.isEmpty(getDirectoryName())) {
+        } else if (getDirectoryName() == null || getDirectoryName().isEmpty()) {
             return directoryName;
         } else {
             return null;
@@ -74,7 +73,7 @@ public class SimpleCheckoutForm implements BasicForm {
     }
 
     public String getParentDirectory() {
-        return StringUtils.trim(parentDirectory.getText());
+        return parentDirectory.getText() == null ? null : parentDirectory.getText().trim();
     }
 
     private JComponent getParentDirectoryComponent() {
@@ -86,7 +85,7 @@ public class SimpleCheckoutForm implements BasicForm {
     }
 
     public String getDirectoryName() {
-        return StringUtils.trim(directoryName.getText());
+        return directoryName.getText() == null ? null : directoryName.getText().trim();
     }
 
     private JComponent getDirectoryNameComponent() {

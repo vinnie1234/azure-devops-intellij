@@ -6,7 +6,6 @@ package com.microsoft.alm.plugin.external.commands;
 import com.microsoft.alm.common.utils.ArgumentHelper;
 import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.external.ToolRunner;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,11 +44,12 @@ public class LockCommand extends Command<String> {
          * @return
          */
         public static LockLevel fromString(final String level) {
-            if (StringUtils.equalsIgnoreCase(StringUtils.remove(level, "-"), CHECKIN.toString())) {
+            String cleanedLevel = level.replace("-", "");
+            if ((cleanedLevel == null ? CHECKIN.toString() == null : cleanedLevel.equalsIgnoreCase(CHECKIN.toString()))) {
                 return CHECKIN;
-            } else if (StringUtils.equalsIgnoreCase(StringUtils.remove(level, "-"), CHECKOUT.toString())) {
+            } else if ((cleanedLevel == null ? CHECKOUT.toString() == null : cleanedLevel.equalsIgnoreCase(CHECKOUT.toString()))) {
                 return CHECKOUT;
-            } else if (StringUtils.isEmpty(level) || StringUtils.equalsIgnoreCase(level, NONE.toString())) {
+            } else if ((level == null || level.isEmpty()) || (level == null ? NONE.toString() == null : level.equalsIgnoreCase(NONE.toString()))) {
                 return NONE;
             }
             throw new IllegalArgumentException("level");
@@ -109,16 +109,16 @@ public class LockCommand extends Command<String> {
     @Override
     public String parseOutput(final String stdout, final String stderr) {
         // If we only have errors, just throw them
-        if (StringUtils.isEmpty(stdout)) {
+        if ((stdout == null || stdout.isEmpty())) {
             throwIfError(stderr);
         }
 
         // If we have normal output but still have errors,
         // Find any "real" errors; ignore cannot unlock errors
-        if (StringUtils.isNotEmpty(stderr)) {
+        if ((stderr != null && !stderr.isEmpty())) {
             final StringBuilder errors = new StringBuilder();
             for (final String line : getLines(stderr)) {
-                if (StringUtils.startsWith(line, CANNOT_UNLOCK_PREFIX) && StringUtils.endsWith(line, CANNOT_UNLOCK_SUFFIX)) {
+                if ((line != null && line.startsWith(CANNOT_UNLOCK_PREFIX)) && (line != null && line.endsWith(CANNOT_UNLOCK_SUFFIX))) {
                     // Found a warning that the file could not be unlocked because it is not locked
                     // Ignoring this error
                     continue;
@@ -131,7 +131,7 @@ public class LockCommand extends Command<String> {
 
         // We aren't going to bother parsing the output further.
         // It's just a list of the local file paths that we passed in.
-        return StringUtils.EMPTY;
+        return "";
     }
 
     @Override

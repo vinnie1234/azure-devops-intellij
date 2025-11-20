@@ -4,7 +4,6 @@
 package com.microsoft.alm.plugin.external.models;
 
 import com.microsoft.tfs.model.connector.TfsServerStatusType;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,25 +35,26 @@ public enum ServerStatusType {
      * @return
      */
     public static List<ServerStatusType> getServerStatusTypes(final String statusString) {
-        final String[] args = StringUtils.split(statusString, ",");
+        final String[] args = statusString.split(",");
         final List<ServerStatusType> types = new ArrayList<ServerStatusType>(args.length);
 
         for (int i = 0; i < args.length; i++) {
-            if (StringUtils.equalsIgnoreCase(args[i].trim(), ADD.name())) {
+            String trimmed = args[i].trim();
+            if ((trimmed == null ? ADD.name() == null : trimmed.equalsIgnoreCase(ADD.name()))) {
                 types.add(ADD);
-            } else if (StringUtils.equalsIgnoreCase(args[i].trim(), DELETE.name())) {
+            } else if ((trimmed == null ? DELETE.name() == null : trimmed.equalsIgnoreCase(DELETE.name()))) {
                 types.add(DELETE);
-            } else if (StringUtils.equalsIgnoreCase(args[i].trim(), EDIT.name()) || StringUtils.equalsIgnoreCase(args[i].trim(), PROPERTY_X)) {
+            } else if ((trimmed == null ? EDIT.name() == null : trimmed.equalsIgnoreCase(EDIT.name())) || (trimmed == null ? PROPERTY_X == null : trimmed.equalsIgnoreCase(PROPERTY_X))) {
                 types.add(EDIT);
-            } else if (StringUtils.equalsIgnoreCase(args[i].trim(), RENAME.name()) || StringUtils.equalsIgnoreCase(args[i].trim(), SOURCE_RENAME)) {
+            } else if ((trimmed == null ? RENAME.name() == null : trimmed.equalsIgnoreCase(RENAME.name())) || (trimmed == null ? SOURCE_RENAME == null : trimmed.equalsIgnoreCase(SOURCE_RENAME))) {
                 types.add(RENAME);
-            } else if (StringUtils.equalsIgnoreCase(args[i].trim(), UNDELETE.name())) {
+            } else if ((trimmed == null ? UNDELETE.name() == null : trimmed.equalsIgnoreCase(UNDELETE.name()))) {
                 types.add(UNDELETE);
-            } else if (StringUtils.containsIgnoreCase(args[i].trim(), LOCK.name())) {
+            } else if ((trimmed != null && trimmed.toLowerCase().contains(LOCK.name().toLowerCase()))) {
                 types.add(LOCK);
-            } else if (StringUtils.containsIgnoreCase(args[i].trim(), BRANCH.name())) {
+            } else if ((trimmed != null && trimmed.toLowerCase().contains(BRANCH.name().toLowerCase()))) {
                 types.add(BRANCH);
-            } else if (StringUtils.containsIgnoreCase(args[i].trim(), MERGE.name())) {
+            } else if ((trimmed != null && trimmed.toLowerCase().contains(MERGE.name().toLowerCase()))) {
                 types.add(MERGE);
             } else {
                 logger.error("Undocumented status from server: " + args[i]);

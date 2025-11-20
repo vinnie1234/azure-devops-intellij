@@ -56,7 +56,7 @@ public class VisualStudioTfvcClient {
     public static Path detectClientPath() {
         if (!SystemInfo.isWindows) return null;
         String programFilesPath = SystemInfo.is32Bit ? System.getenv("ProgramFiles") : System.getenv("ProgramFiles(x86)");
-        if (StringUtils.isEmpty(programFilesPath))
+        if (programFilesPath == null || programFilesPath.isEmpty())
             programFilesPath = "C:\\Program Files (x86)";
         Path visualStudioPath = Paths.get(programFilesPath, "Microsoft Visual Studio");
         for (String vsVersion : SUPPORTED_VS_VERSIONS) {

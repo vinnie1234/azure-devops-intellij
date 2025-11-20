@@ -59,7 +59,7 @@ import com.microsoft.alm.plugin.idea.tfvc.core.TfvcDeleteResult;
 import com.microsoft.alm.plugin.idea.tfvc.core.TfvcWorkspaceLocator;
 import com.microsoft.tfs.model.connector.TfsDetailedWorkspaceInfo;
 import com.microsoft.tfs.model.connector.TfvcCheckoutResult;
-import org.apache.commons.lang.StringUtils;
+import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -197,7 +197,7 @@ public class CommandUtils {
         final Command<String> getLocalPathCommand = new GetLocalPathCommand(context, serverPath, workspace);
         try {
             final String result = getLocalPathCommand.runSynchronously();
-            if (StringUtils.startsWithIgnoreCase(result, "ERROR [main] Application - Unexpected exception:")) {
+            if ((result != null && result.regionMatches(true, 0, "ERROR [main] Application - Unexpected exception:", 0, "ERROR [main] Application - Unexpected exception:".length()))) {
                 return null;
             }
             return result;
@@ -220,7 +220,7 @@ public class CommandUtils {
     }
 
     public static ChangeSet getLastHistoryEntryForAnyUser(final ServerContext context, final String localPath) {
-        final List<ChangeSet> results = getHistoryCommand(context, localPath, null, 1, false, StringUtils.EMPTY);
+        final List<ChangeSet> results = getHistoryCommand(context, localPath, null, 1, false, "");
         return results.isEmpty() ? null : results.get(0);
     }
 
@@ -422,7 +422,7 @@ public class CommandUtils {
         String localPath = originalConflict.getLocalPath();
 
         // Check for the rename case (signified by the fact that the local path didn't provide legitimate info)
-        if (StringUtils.isEmpty(conflictInfo.getServerItem())) {
+        if (conflictInfo.getServerItem() == null || conflictInfo.getServerItem().isEmpty()) {
             // To handle the rename in both branches case we have to find the matching mapping in a very complex way
             // We have a local path in the original conflict that doesn't actually exist and no way to construct the correct
             // server path to match. The only way to find the mapping is use the Resolve command to get the local path from
@@ -437,7 +437,7 @@ public class CommandUtils {
                         final Conflict mappingConflict = conflictResults.getConflicts().get(0);
                         final String mappingLocalPath = Path.combine(workingFolder, mappingConflict.getLocalPath());
                         // If the local paths match, then we have the right mapping
-                        if (StringUtils.equalsIgnoreCase(mappingLocalPath, originalConflict.getLocalPath())) {
+                        if ((mappingLocalPath == null ? originalConflict.getLocalPath() == null : mappingLocalPath.equalsIgnoreCase(originalConflict.getLocalPath()))) {
                             // Now that we have the right mapping, let's figure out the right local path
                             final ItemInfo info = getItemInfo(context, workingFolder, mapping.getToServerItem());
                             localPath = info.getLocalItem();
@@ -451,7 +451,7 @@ public class CommandUtils {
             // Use the server path to find the matching mapping
             final String serverPath = conflictInfo.getServerItem();
             for (final MergeMapping mapping : mergeResults.getMappings()) {
-                if (StringUtils.equalsIgnoreCase(mapping.getToServerItem(), serverPath)) {
+                if ((mapping.getToServerItem() == null ? serverPath == null : mapping.getToServerItem().equalsIgnoreCase(serverPath))) {
                     conflictMapping = mapping;
                     break;
                 }
@@ -486,8 +486,8 @@ public class CommandUtils {
     private static RenameConflict searchChangeSetForRename(final ServerContext context, final String serverName,
                                                            final String root, final Conflict.ConflictType type,
                                                            final int stopAfter) {
-        final List<ChangeSet> changeSets = CommandUtils.getHistoryCommand(context, serverName, StringUtils.EMPTY,
-                stopAfter, false, StringUtils.EMPTY, true);
+        final List<ChangeSet> changeSets = CommandUtils.getHistoryCommand(context, serverName, "",
+                stopAfter, false, "", true);
 
         // step through most current changesets to find the one that did the rename
         for (int index = 0; index < changeSets.size(); index++) {
@@ -672,7 +672,7 @@ public class CommandUtils {
         final CreateLabelCommand createLabelCommand = new CreateLabelCommand(context, workingFolder,
                 name, comment, recursive, itemSpecs);
         final String result = createLabelCommand.runSynchronously();
-        return StringUtils.equalsIgnoreCase(result, CreateLabelCommand.LABEL_CREATED);
+        return (result == null ? CreateLabelCommand.LABEL_CREATED == null : result.equalsIgnoreCase(CreateLabelCommand.LABEL_CREATED));
     }
 
     /**

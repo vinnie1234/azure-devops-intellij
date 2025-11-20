@@ -11,7 +11,6 @@ import com.microsoft.alm.plugin.idea.common.resources.TfPluginBundle;
 import com.microsoft.alm.plugin.idea.common.ui.workitem.VcsWorkItemsController;
 import com.microsoft.alm.plugin.idea.common.utils.IdeaHelper;
 import com.microsoft.alm.plugin.idea.common.utils.VcsHelper;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +42,7 @@ public class VcsWorkItemContentProvider implements ChangesViewContentProvider {
         if (controller != null) {
             return controller.getPanel();
         } else {
-            return new JLabel(TfPluginBundle.message(TfPluginBundle.KEY_VCS_WIT_UNEXPECTED_ERRORS, t != null ? t.getMessage() : StringUtils.EMPTY),
+            return new JLabel(TfPluginBundle.message(TfPluginBundle.KEY_VCS_WIT_UNEXPECTED_ERRORS, t != null ? t.getMessage() : ""),
                     AllIcons.General.Warning, 0);
         }
     }

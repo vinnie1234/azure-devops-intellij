@@ -13,7 +13,6 @@ import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.idea.common.resources.TfPluginBundle;
 import com.microsoft.alm.plugin.idea.common.utils.VcsHelper;
 import com.microsoft.alm.sourcecontrol.webapi.model.GitRepository;
-import org.apache.commons.lang.StringUtils;
 
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.ListSelectionModel;
@@ -278,7 +277,7 @@ public class ServerContextTableModel extends AbstractTableModel {
     }
 
     public boolean hasFilter() {
-        return StringUtils.isNotEmpty(this.filter);
+        return (this.filter != null && !this.filter.isEmpty());
     }
 
     public void setFilter(final String filter) {
@@ -307,7 +306,8 @@ public class ServerContextTableModel extends AbstractTableModel {
         // search for the string in a case insensitive way
         // check each column for a match, if any column contains the string the result is true
         for (int c = 0; c < columns.length; c++) {
-            if (StringUtils.containsIgnoreCase(getValueFor(repositoryRow, c), filter)) {
+            String value = getValueFor(repositoryRow, c);
+            if (value != null && filter != null && value.toLowerCase().contains(filter.toLowerCase())) {
                 return true;
             }
         }

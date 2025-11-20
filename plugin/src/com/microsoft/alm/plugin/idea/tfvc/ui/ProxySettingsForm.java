@@ -25,7 +25,6 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import com.intellij.util.EventDispatcher;
 import com.microsoft.alm.common.utils.UrlHelper;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.AbstractButton;
@@ -167,7 +166,7 @@ public class ProxySettingsForm {
     private final EventDispatcher<Listener> myEventDispatcher = EventDispatcher.create(Listener.class);
 
     public ProxySettingsForm(final String initialProxyUri) {
-        if (StringUtils.isEmpty(initialProxyUri)) {
+        if (initialProxyUri == null || initialProxyUri.isEmpty()) {
             noProxyRadio.setSelected(true);
         } else {
             useProxyRadio.setSelected(true);
@@ -189,7 +188,7 @@ public class ProxySettingsForm {
             }
         });
 
-        infoLabel.setText(StringUtils.EMPTY);
+        infoLabel.setText("");
 
         updateContols();
     }

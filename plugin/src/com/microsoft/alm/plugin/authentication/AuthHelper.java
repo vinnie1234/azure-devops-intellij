@@ -9,7 +9,7 @@ import com.microsoft.alm.common.utils.SystemHelper;
 import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.services.PluginServiceProvider;
 import com.microsoft.alm.plugin.services.PropertyService;
-import org.apache.commons.lang.StringUtils;
+import java.util.Objects;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.NTCredentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -161,13 +161,13 @@ public class AuthHelper {
         //If the message gets localized, we won't detect the auth error
         if (throwable != null && (throwable instanceof NotAuthorizedException ||
                 (throwable instanceof VssServiceResponseException &&
-                        StringUtils.containsIgnoreCase(throwable.getMessage(), "unauthorized")))) {
+                        (throwable.getMessage() != null && throwable.getMessage().toLowerCase().contains("unauthorized".toLowerCase()))))) {
             return true;
         }
 
         if (throwable != null && throwable.getCause() != null && (throwable.getCause() instanceof NotAuthorizedException ||
                 (throwable.getCause() instanceof VssServiceResponseException &&
-                        (StringUtils.containsIgnoreCase(throwable.getMessage(), "unauthorized"))))) {
+                        ((throwable.getMessage() != null && throwable.getMessage().toLowerCase().contains("unauthorized".toLowerCase())))))) {
             return true;
         }
 
@@ -177,7 +177,7 @@ public class AuthHelper {
     public static void setDeviceFlowEnvFromSettingsFile() {
         final String savedAuthMethod = getAuthTypeInSettingsFile();
 
-        if (StringUtils.isEmpty(savedAuthMethod)) {
+        if (savedAuthMethod == null || savedAuthMethod.isEmpty()) {
             return;
         }
 
@@ -189,7 +189,7 @@ public class AuthHelper {
     }
 
     public static boolean isAuthTypeFromSettingsFileSet() {
-        return StringUtils.isNotEmpty(getAuthTypeInSettingsFile());
+        return (getAuthTypeInSettingsFile() != null && !getAuthTypeInSettingsFile().isEmpty());
     }
 
     public static String getAuthTypeInSettingsFile() {
@@ -207,7 +207,7 @@ public class AuthHelper {
     }
 
     public static void setDeviceFlowEnvVariableFalse() {
-        setDeviceFlowEnvVariable(StringUtils.EMPTY);
+        setDeviceFlowEnvVariable("");
     }
 
     private static void setDeviceFlowEnvVariable(final String value) {
@@ -215,8 +215,8 @@ public class AuthHelper {
     }
 
     public static boolean isDeviceFlowEnvSetTrue() {
-        final String property = System.getProperty(DEVICE_FLOW_PROPERTY, StringUtils.EMPTY);
-        if (StringUtils.isNotEmpty(property) && StringUtils.equals(ENABLE_DEVICE_FLOW_VALUE, property)) {
+        final String property = System.getProperty(DEVICE_FLOW_PROPERTY, "");
+        if ((property != null && !property.isEmpty()) && Objects.equals(ENABLE_DEVICE_FLOW_VALUE, property)) {
             return true;
         }
         return false;

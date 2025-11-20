@@ -6,7 +6,6 @@ package com.microsoft.alm.plugin.idea.common.starters;
 import com.intellij.openapi.application.ApplicationNamesInfo;
 import com.microsoft.alm.plugin.idea.common.resources.TfPluginBundle;
 import com.microsoft.alm.plugin.idea.git.starters.SimpleCheckoutStarter;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +37,7 @@ public class VstsStarter extends ApplicationStarterBase {
 
         // can be expanded upon if more commands are added
         StarterBase starter;
-        if (StringUtils.equalsIgnoreCase(SimpleCheckoutStarter.SUB_COMMAND_NAME, command)) {
+        if (SimpleCheckoutStarter.SUB_COMMAND_NAME == null ? command == null : SimpleCheckoutStarter.SUB_COMMAND_NAME.equalsIgnoreCase(command)) {
             starter = SimpleCheckoutStarter.createWithCommandLineArgs(args);
         } else {
             throw new RuntimeException(TfPluginBundle.message(TfPluginBundle.STARTER_ERRORS_SUB_COMMAND_NOT_RECOGNIZED, command));
@@ -59,7 +58,7 @@ public class VstsStarter extends ApplicationStarterBase {
 
         // can be expanded upon if more commands are added
         StarterBase starter;
-        if (StringUtils.equalsIgnoreCase(SimpleCheckoutStarter.SUB_COMMAND_NAME, command)) {
+        if (SimpleCheckoutStarter.SUB_COMMAND_NAME == null ? command == null : SimpleCheckoutStarter.SUB_COMMAND_NAME.equalsIgnoreCase(command)) {
             starter = SimpleCheckoutStarter.createWithUriAttributes(attributes);
         } else {
             throw new RuntimeException(TfPluginBundle.message(TfPluginBundle.STARTER_ERRORS_SUB_COMMAND_NOT_RECOGNIZED, command));
@@ -81,7 +80,7 @@ public class VstsStarter extends ApplicationStarterBase {
             final int index = arg.indexOf('=');
             if (index != -1) {
                 final String key = arg.substring(0, index);
-                final String value = arg.length() > index + 1 ? arg.substring(index + 1) : StringUtils.EMPTY;
+                final String value = arg.length() > index + 1 ? arg.substring(index + 1) : "";
                 attributes.put(key, value);
             }
         }

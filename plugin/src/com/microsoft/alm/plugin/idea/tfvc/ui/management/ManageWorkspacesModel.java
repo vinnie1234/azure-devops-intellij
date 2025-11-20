@@ -23,7 +23,6 @@ import com.microsoft.alm.plugin.idea.common.utils.IdeaHelper;
 import com.microsoft.alm.plugin.idea.common.utils.VcsHelper;
 import com.microsoft.alm.plugin.idea.tfvc.ui.ProxySettingsDialog;
 import com.microsoft.alm.plugin.idea.tfvc.ui.workspace.WorkspaceController;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -199,7 +198,7 @@ public class ManageWorkspacesModel extends AbstractModel {
                         // open edit dialog
                         final WorkspaceController controller = new WorkspaceController(project, context, workspace);
                         if (controller.showModalDialog(false)) {
-                            controller.saveWorkspace(StringUtils.EMPTY, false, update);
+                            controller.saveWorkspace("", false, update);
                         }
                     }
                 }, true);

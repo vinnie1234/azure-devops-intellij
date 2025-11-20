@@ -21,7 +21,6 @@ package com.microsoft.alm.plugin.idea.tfvc.ui.resolve;
 
 import com.microsoft.alm.plugin.external.models.Conflict;
 import com.microsoft.alm.plugin.idea.common.resources.TfPluginBundle;
-import org.apache.commons.lang.StringUtils;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
@@ -57,7 +56,7 @@ public class ConflictsTableModel extends AbstractTableModel {
                     case RESOLVED:
                         return TfPluginBundle.message(TfPluginBundle.KEY_TFVC_CONFLICT_COLUMN_TYPE_RESOLVED);
                 }
-                return StringUtils.EMPTY;
+                return "";
             }
         };
 

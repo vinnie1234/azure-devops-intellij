@@ -7,7 +7,6 @@ import com.microsoft.alm.common.utils.UrlHelper;
 import com.microsoft.alm.plugin.idea.common.resources.TfPluginBundle;
 import com.microsoft.alm.workitemtracking.webapi.models.WorkItem;
 import com.microsoft.alm.workitemtracking.webapi.models.WorkItemRelation;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -62,7 +61,7 @@ public class WorkItemHelper {
                 }
             }
         }
-        return StringUtils.EMPTY;
+        return "";
     }
 
     public static String getRelationUrl(@NotNull final WorkItem item, @NotNull final String attributeName, @NotNull final String attributeValue) {
@@ -75,7 +74,7 @@ public class WorkItemHelper {
                 }
             }
         }
-        return StringUtils.EMPTY;
+        return "";
     }
 
     public static String getLocalizedFieldName(final String wellKnownFieldName) {
@@ -93,7 +92,7 @@ public class WorkItemHelper {
             return TfPluginBundle.message(TfPluginBundle.KEY_WIT_FIELD_WORK_ITEM_TYPE);
         }
 
-        return StringUtils.EMPTY;
+        return "";
     }
 
     public static String getWorkItemCommitMessage(final WorkItem item) {

@@ -17,7 +17,6 @@ import com.microsoft.alm.plugin.context.ServerContextManager;
 import com.microsoft.alm.plugin.idea.common.resources.TfPluginBundle;
 import com.microsoft.alm.plugin.idea.common.ui.common.AbstractModel;
 import com.microsoft.alm.plugin.idea.common.ui.common.ServerContextTableModel;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,7 +66,7 @@ public class TeamServicesSettingsModel extends AbstractModel {
      */
     private void loadAuthMethod() {
         final String savedAuthMethod = AuthHelper.getAuthTypeInSettingsFile();
-        originalAuthType = StringUtils.isNotEmpty(savedAuthMethod) ? AuthTypes.getEnum(savedAuthMethod.toUpperCase()) : AuthTypes.CREDS;
+        originalAuthType = (savedAuthMethod != null && !savedAuthMethod.isEmpty()) ? AuthTypes.getEnum(savedAuthMethod.toUpperCase()) : AuthTypes.CREDS;
         updatedAuthType = originalAuthType;
     }
 

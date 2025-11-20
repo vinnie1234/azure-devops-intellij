@@ -27,7 +27,6 @@ import com.microsoft.alm.workitemtracking.webapi.models.Link;
 import com.microsoft.alm.workitemtracking.webapi.models.WorkItem;
 import com.microsoft.visualstudio.services.webapi.patch.json.JsonPatchDocument;
 import com.microsoft.visualstudio.services.webapi.patch.json.JsonPatchOperation;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -158,7 +157,7 @@ public class VcsWorkItemsModel extends TabModelImpl<WorkItemsTableModel> {
         // create link object to add to the work item
         final Link link = new Link();
         link.setUrl(gitRefArtifactID.encodeURI());
-        link.setTitle(StringUtils.EMPTY);
+        link.setTitle("");
         link.setRel(ARTIFACT_LINK_RELATION);
         link.setAttributes(attributes);
 

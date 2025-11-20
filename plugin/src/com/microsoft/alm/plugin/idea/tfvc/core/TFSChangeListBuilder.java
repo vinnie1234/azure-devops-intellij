@@ -10,7 +10,6 @@ import com.microsoft.alm.plugin.external.models.ServerStatusType;
 import com.microsoft.alm.plugin.external.models.Workspace;
 import com.microsoft.alm.plugin.idea.tfvc.core.tfs.TfsFileUtil;
 import com.microsoft.alm.plugin.idea.tfvc.core.tfs.VersionControlPath;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +47,7 @@ public class TFSChangeListBuilder {
                 path = filePathCache.get(pendingChange.getServerItem());
             } else {
                 final String localPath = TfsFileUtil.translateServerItemToLocalItem(workspace.getMappings(), pendingChange.getServerItem());
-                if (StringUtils.isEmpty(localPath)) {
+                if ((localPath == null || localPath.isEmpty())) {
                     logger.warn("Could not find a local path for file: " + pendingChange.getServerItem());
                     continue;
                 }

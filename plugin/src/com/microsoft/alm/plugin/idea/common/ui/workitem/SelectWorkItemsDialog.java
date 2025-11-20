@@ -7,7 +7,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ValidationInfo;
 import com.microsoft.alm.plugin.idea.common.resources.TfPluginBundle;
 import com.microsoft.alm.plugin.idea.common.ui.common.BaseDialogImpl;
-import org.apache.commons.lang.StringUtils;
 
 import javax.swing.JComponent;
 
@@ -35,7 +34,7 @@ public class SelectWorkItemsDialog extends BaseDialogImpl {
 
     @Override
     protected ValidationInfo doValidate() {
-        if (StringUtils.isEmpty(getComment())) {
+        if ((getComment() == null || getComment().isEmpty())) {
             return new ValidationInfo(TfPluginBundle.message(TfPluginBundle.KEY_WIT_SELECT_DIALOG_ERRORS_WORK_ITEM_NOT_SELECTED));
         }
 

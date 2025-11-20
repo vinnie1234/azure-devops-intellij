@@ -24,7 +24,6 @@ import com.microsoft.alm.plugin.operations.PullRequestLookupOperation;
 import com.microsoft.alm.sourcecontrol.webapi.model.GitPullRequest;
 import com.microsoft.alm.sourcecontrol.webapi.model.PullRequestStatus;
 import git4idea.repo.GitRepository;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +50,7 @@ public class VcsPullRequestsModel extends TabModelImpl<PullRequestsTreeModel> {
         if (isTfGitRepository()) {
             final ServerContext context = TfGitHelper.getSavedServerContext(gitRepository);
             if (context != null && context.getGitRepository() != null) {
-                if (StringUtils.isNotEmpty(context.getGitRepository().getRemoteUrl())) {
+                if ((context.getGitRepository().getRemoteUrl() != null && !context.getGitRepository().getRemoteUrl().isEmpty())) {
                     BrowserUtil.browse(context.getGitRepository().getRemoteUrl()
                             .concat(UrlHelper.URL_SEPARATOR).concat("pullrequests"));
                 }
@@ -146,7 +145,7 @@ public class VcsPullRequestsModel extends TabModelImpl<PullRequestsTreeModel> {
             final ServerContext context = TfGitHelper.getSavedServerContext(gitRepository);
 
             if (context != null && context.getGitRepository() != null) {
-                if (StringUtils.isNotEmpty(context.getGitRepository().getRemoteUrl())) {
+                if ((context.getGitRepository().getRemoteUrl() != null && !context.getGitRepository().getRemoteUrl().isEmpty())) {
                     return viewForModel.getSelectedPullRequest();
                 }
             }

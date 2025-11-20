@@ -8,7 +8,6 @@ import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.external.ToolRunner;
 import com.microsoft.alm.plugin.external.models.Workspace;
 import com.microsoft.alm.plugin.external.utils.WorkspaceHelper;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * This command allows you to add or remove workspace mappings
@@ -70,7 +69,7 @@ public class UpdateWorkspaceMappingCommand extends Command<String> {
         } else {
             builder.add(mapping.getServerPath());
         }
-        if (StringUtils.equalsIgnoreCase(subCommand, SUB_MAP)) {
+        if (subCommand == null ? SUB_MAP == null : subCommand.equalsIgnoreCase(SUB_MAP)) {
             builder.add(mapping.getLocalPath());
         }
         return builder;
@@ -84,6 +83,6 @@ public class UpdateWorkspaceMappingCommand extends Command<String> {
     public String parseOutput(final String stdout, final String stderr) {
         super.throwIfError(stderr);
         // There is no output on success
-        return StringUtils.EMPTY;
+        return "";
     }
 }

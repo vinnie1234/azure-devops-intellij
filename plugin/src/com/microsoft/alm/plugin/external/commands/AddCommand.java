@@ -6,7 +6,6 @@ package com.microsoft.alm.plugin.external.commands;
 import com.microsoft.alm.common.utils.ArgumentHelper;
 import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.external.ToolRunner;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,11 +49,11 @@ public class AddCommand extends Command<List<String>> {
         final String[] output = getLines(stdout);
 
         // parse output for directory paths and file names to combine
-        String path = StringUtils.EMPTY;
+        String path = "";
         for (final String line : output) {
             if (isFilePath(line)) {
                 path = line;
-            } else if (StringUtils.isNotEmpty(line)) {
+            } else if ((line != null && !line.isEmpty())) {
                 filesAdded.add(getFilePath(path, line, ""));
             }
         }

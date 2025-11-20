@@ -6,7 +6,6 @@ package com.microsoft.alm.plugin.external.commands;
 import com.microsoft.alm.common.utils.ArgumentHelper;
 import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.external.ToolRunner;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * This command renames or moves a file
@@ -43,6 +42,6 @@ public class RenameCommand extends Command<String> {
     public String parseOutput(final String stdout, final String stderr) {
         throwIfError(stderr);
 
-        return StringUtils.EMPTY;
+        return "";
     }
 }

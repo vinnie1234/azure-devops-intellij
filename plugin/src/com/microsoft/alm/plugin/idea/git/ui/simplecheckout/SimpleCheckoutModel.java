@@ -36,7 +36,7 @@ import git4idea.branch.GitBrancher;
 import git4idea.commands.Git;
 import git4idea.repo.GitRepository;
 import git4idea.repo.GitRepositoryManager;
-import org.apache.commons.lang.StringUtils;
+import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,7 +76,7 @@ public class SimpleCheckoutModel extends AbstractModel {
 
         this.parentDirectory = PluginServiceProvider.getInstance().getPropertyService().getProperty(PropertyService.PROP_REPO_ROOT);
         // use default root if no repo root is found
-        if (StringUtils.isEmpty(this.parentDirectory)) {
+        if (this.parentDirectory == null || this.parentDirectory.isEmpty()) {
             this.parentDirectory = DEFAULT_SOURCE_PATH;
         }
 
@@ -85,7 +85,7 @@ public class SimpleCheckoutModel extends AbstractModel {
         if (matcher.find() && matcher.groupCount() == 1) {
             this.directoryName = matcher.group(1);
         } else {
-            this.directoryName = StringUtils.EMPTY;
+            this.directoryName = "";
         }
     }
 
@@ -98,7 +98,7 @@ public class SimpleCheckoutModel extends AbstractModel {
     }
 
     public void setParentDirectory(final String parentDirectory) {
-        if (!StringUtils.equals(this.parentDirectory, parentDirectory)) {
+        if (!Objects.equals(this.parentDirectory, parentDirectory)) {
             this.parentDirectory = parentDirectory;
             setChangedAndNotify(PROP_PARENT_DIR);
         }
@@ -109,7 +109,7 @@ public class SimpleCheckoutModel extends AbstractModel {
     }
 
     public void setDirectoryName(final String directoryName) {
-        if (!StringUtils.equals(this.directoryName, directoryName)) {
+        if (!Objects.equals(this.directoryName, directoryName)) {
             this.directoryName = directoryName;
             setChangedAndNotify(PROP_DIRECTORY_NAME);
         }
@@ -218,7 +218,7 @@ public class SimpleCheckoutModel extends AbstractModel {
 
                         // check if ref is not master and if currentProject is not null
                         // if currentProject is null that means the user chose not to create the project so not checking the branch out
-                        if (StringUtils.isNotEmpty(ref) && !StringUtils.equals(ref, MASTER_BRANCH) && currentProject != null) {
+                        if ((ref != null && !ref.isEmpty()) && !Objects.equals(ref, MASTER_BRANCH) && currentProject != null) {
                             logger.info("Non-master branch detected to checkout");
                             checkoutBranch(ref, currentProject, projectDirectory);
                         }
@@ -249,17 +249,17 @@ public class SimpleCheckoutModel extends AbstractModel {
                             // TODO: use more direct manner to get repo but right now due to timing we can't
                             final GitRepository gitRepository = gitRepositoryManager.getRepositories().get(0);
                             ArgumentHelper.checkNotNull(gitRepository, "GitRepository");
-                            String fullRefName = StringUtils.EMPTY;
+                            String fullRefName = "";
 
                             // find remote red name from given name
                             for (final GitRemoteBranch remoteBranch : TfGitHelper.getRemoteBranchesCompat(gitRepository.getInfo())) {
-                                final String remoteBranchName = remoteBranch.getName().replaceFirst(remoteBranch.getRemote().getName() + "/", StringUtils.EMPTY);
+                                final String remoteBranchName = remoteBranch.getName().replaceFirst(remoteBranch.getRemote().getName() + "/", "");
                                 if (ref.equals(remoteBranchName)) {
                                     fullRefName = remoteBranch.getName();
                                 }
                             }
 
-                            if (StringUtils.isNotEmpty(fullRefName)) {
+                            if (fullRefName != null && !fullRefName.isEmpty()) {
                                 final String remoteRef = fullRefName;
                                 // Checking out a branch using the brancher has to start on the UI thread but moves to the background
                                 IdeaHelper.runOnUIThread(new Runnable() {

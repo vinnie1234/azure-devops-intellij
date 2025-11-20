@@ -6,7 +6,6 @@ package com.microsoft.alm.plugin.external.commands;
 import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.external.ToolRunner;
 import com.microsoft.alm.plugin.external.models.TfvcLabel;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -41,10 +40,10 @@ public class GetLabelsCommand extends Command<List<TfvcLabel>> {
     public ToolRunner.ArgumentBuilder getArgumentBuilder() {
         ToolRunner.ArgumentBuilder builder = super.getArgumentBuilder()
                 .addSwitch("format", "xml");
-        if (StringUtils.isNotEmpty(workingFolder)) {
+        if ((workingFolder != null && !workingFolder.isEmpty())) {
             builder.setWorkingDirectory(workingFolder);
         }
-        if (StringUtils.isNotEmpty(labelNameFilter)) {
+        if ((labelNameFilter != null && !labelNameFilter.isEmpty())) {
             builder.add(labelNameFilter);
         }
         return builder;
@@ -72,7 +71,7 @@ public class GetLabelsCommand extends Command<List<TfvcLabel>> {
         final List<TfvcLabel> labels = new ArrayList<TfvcLabel>();
 
         // Check for no labels (which is not in xml format)
-        if (StringUtils.containsIgnoreCase(stdout, NO_LABELS)) {
+        if (stdout != null && stdout.toLowerCase().contains(NO_LABELS.toLowerCase())) {
             // If there aren't any labels just return the empty list.
             return labels;
         }

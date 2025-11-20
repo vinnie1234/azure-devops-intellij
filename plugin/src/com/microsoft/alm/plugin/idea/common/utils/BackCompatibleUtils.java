@@ -4,7 +4,6 @@
 package com.microsoft.alm.plugin.idea.common.utils;
 
 import com.intellij.util.net.HttpConfigurable;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +37,7 @@ public class BackCompatibleUtils {
                 return (String) proxyLoginField.get(HttpConfigurable.getInstance());
             } catch (Exception oldImplementationException) {
                 logger.warn("Failed to get proxy login using PROXY_LOGIN field", oldImplementationException);
-                return StringUtils.EMPTY;
+                return "";
             }
         }
     }

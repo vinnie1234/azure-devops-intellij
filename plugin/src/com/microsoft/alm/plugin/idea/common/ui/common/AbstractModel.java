@@ -4,7 +4,6 @@
 package com.microsoft.alm.plugin.idea.common.ui.common;
 
 import com.intellij.ide.BrowserUtil;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.Observable;
 
@@ -20,7 +19,7 @@ public class AbstractModel extends Observable {
     }
 
     public void gotoLink(final String url) {
-        if (StringUtils.isNotEmpty(url)) {
+        if ((url != null && !url.isEmpty())) {
             BrowserUtil.browse(url);
         }
     }

@@ -10,7 +10,6 @@ import com.microsoft.alm.plugin.idea.tfvc.core.tfs.TfsFileUtil;
 import com.microsoft.tfs.model.connector.TfsLocalPath;
 import com.microsoft.tfs.model.connector.TfvcCheckoutResult;
 import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
@@ -62,7 +61,7 @@ public class CheckoutCommand extends Command<TfvcCheckoutResult> {
     private static void parseStdErr(String stderr, List<TfsLocalPath> notFoundFiles, List<String> errorMessages) {
         String[] lines = stderr.split("\r\n|\n");
         for (String line : lines) {
-            if (StringUtils.isEmpty(line))
+            if ((line == null || line.isEmpty()))
                 continue;
 
             Matcher notFoundMatcher = ITEM_NOT_FOUND_PATTERN.matcher(line);
@@ -78,10 +77,10 @@ public class CheckoutCommand extends Command<TfvcCheckoutResult> {
 
     private void parseStdOut(String stdout, List<TfsLocalPath> checkedOutFiles) {
         final String[] lines = getLines(stdout);
-        String path = StringUtils.EMPTY;
+        String path = "";
 
         for (final String line : lines) {
-            if (StringUtils.isEmpty(line))
+            if ((line == null || line.isEmpty()))
                 continue;
 
             if (line.endsWith(":")) {

@@ -35,7 +35,6 @@ import com.microsoft.alm.plugin.idea.tfvc.core.tfs.StatusProvider;
 import com.microsoft.alm.plugin.idea.tfvc.core.tfs.TfsFileUtil;
 import com.microsoft.tfs.model.connector.TfsLocalPath;
 import com.microsoft.tfs.model.connector.TfsPath;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,7 +91,7 @@ public class ScheduleForDeletion {
                         // if an unversioned delete, IDE has already deleted the file and now TFVC has to delete it
                         if (pendingChange.getChangeTypes().contains(ServerStatusType.DELETE)) {
                             logger.info("ScheduleForDeletion: unversioned deleted file " + localPath.getPath());
-                            scheduleForDeletion.add(StringUtils.isNotEmpty(pendingChange.getSourceItem()) ? pendingChange.getSourceItem() : pendingChange.getLocalItem());
+                            scheduleForDeletion.add((pendingChange.getSourceItem() != null && !pendingChange.getSourceItem().isEmpty()) ? pendingChange.getSourceItem() : pendingChange.getLocalItem());
                         } else {
                             // do nothing because file isn't recognized
                             logger.info("ScheduleForDeletion: do nothing for unversioned file " + localPath.getPath());
@@ -155,7 +154,7 @@ public class ScheduleForDeletion {
                 if (!pendingChanges.isEmpty()) {
                     workspace = pendingChanges.get(0).getWorkspace();
                 } else {
-                    workspace = StringUtils.EMPTY;
+                    workspace = "";
                 }
 
                 TfvcDeleteResult deleteResult = CommandUtils.deleteFiles(

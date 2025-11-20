@@ -11,7 +11,6 @@ import com.microsoft.alm.plugin.external.exceptions.WorkspaceCouldNotBeDetermine
 import com.microsoft.alm.plugin.external.models.Workspace;
 import com.microsoft.tfs.model.connector.TfsDetailedWorkspaceInfo;
 import com.microsoft.tfs.model.connector.TfsWorkspaceInfo;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -106,6 +105,6 @@ public class TfvcWorkspaceLocator {
         if (workspace != null) {
             return workspace.getName();
         }
-        return StringUtils.EMPTY;
+        return "";
     }
 }

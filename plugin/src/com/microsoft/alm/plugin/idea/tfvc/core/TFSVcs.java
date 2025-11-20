@@ -66,7 +66,6 @@ import com.microsoft.alm.plugin.idea.common.services.LocalizationServiceImpl;
 import com.microsoft.alm.plugin.idea.common.utils.IdeaHelper;
 import com.microsoft.alm.plugin.idea.common.utils.VcsHelper;
 import com.microsoft.alm.plugin.idea.tfvc.core.tfs.TfsRevisionNumber;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -275,8 +274,8 @@ public class TFSVcs extends AbstractVcs {
         logger.info("TFSVcs.getServerContext repositoryContext is null: " + (repositoryContext == null));
 
         final ServerContext serverContext = repositoryContext != null
-                && StringUtils.isNotEmpty(repositoryContext.getTeamProjectName())
-                && StringUtils.isNotEmpty(repositoryContext.getUrl()) ?
+                && (repositoryContext.getTeamProjectName() != null && !repositoryContext.getTeamProjectName().isEmpty())
+                && (repositoryContext.getUrl() != null && !repositoryContext.getUrl().isEmpty()) ?
                 ServerContextManager.getInstance().createContextFromTfvcServerUrl(
                         URI.create(repositoryContext.getUrl()), repositoryContext.getTeamProjectName(), true)
                 : null;
@@ -307,7 +306,7 @@ public class TFSVcs extends AbstractVcs {
                     try {
                         logger.info("Attempting to check the version of the TF command line.");
                         TfTool.checkVersion();
-                        versionMessage.set(StringUtils.EMPTY);
+                        versionMessage.set("");
                     } catch (final ToolException ex) {
                         String error = ToolException.KEY_TF_EXE_NOT_FOUND.equals(ex.getMessageKey())
                             ? TfPluginBundle.message(TfPluginBundle.KEY_TOOLEXCEPTION_TF_HOME_NOT_SET) // more suitable for notification than the default message
@@ -324,7 +323,7 @@ public class TFSVcs extends AbstractVcs {
                 public void onSuccess() {
                     try {
                         final String error = versionMessage.get();
-                        if (StringUtils.isNotEmpty(error)) {
+                        if ((error != null && !error.isEmpty())) {
                             logger.info("Notifying the user of the min version problem.");
                             // Notify the user that they should upgrade their version of the TF command line
                             VcsNotifier.getInstance(getProject()).notifyImportantWarning(

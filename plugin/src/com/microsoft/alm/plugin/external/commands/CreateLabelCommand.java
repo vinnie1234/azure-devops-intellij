@@ -6,7 +6,6 @@ package com.microsoft.alm.plugin.external.commands;
 import com.microsoft.alm.common.utils.ArgumentHelper;
 import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.external.ToolRunner;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +61,7 @@ public class CreateLabelCommand extends Command<String> {
             builder.addSwitch("recursive");
         }
 
-        if (StringUtils.isNotEmpty(comment)) {
+        if (comment != null && !comment.isEmpty()) {
             builder.addSwitch("comment", comment);
         }
 
@@ -84,13 +83,13 @@ public class CreateLabelCommand extends Command<String> {
         throwIfError(stderr);
 
         // Check for the created prefix
-        int prefixIndex = StringUtils.indexOf(stdout, CREATED_LABEL_PREFIX);
+        int prefixIndex = stdout.indexOf(CREATED_LABEL_PREFIX);
         if (prefixIndex >= 0) {
             return LABEL_CREATED;
         }
 
         // Check for the updated prefix
-        prefixIndex = StringUtils.indexOf(stdout, UPDATED_LABEL_PREFIX);
+        prefixIndex = stdout.indexOf(UPDATED_LABEL_PREFIX);
         if (prefixIndex >= 0) {
             return LABEL_UPDATED;
         }

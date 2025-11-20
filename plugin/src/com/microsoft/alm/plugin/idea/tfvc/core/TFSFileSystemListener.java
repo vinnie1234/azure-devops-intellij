@@ -30,7 +30,6 @@ import com.microsoft.alm.plugin.idea.tfvc.ui.settings.EULADialog;
 import com.microsoft.tfs.model.connector.TfsLocalPath;
 import com.microsoft.tfs.model.connector.TfsPath;
 import com.microsoft.tfs.model.connector.TfsServerPath;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -211,7 +210,7 @@ public class TFSFileSystemListener implements LocalFileOperationsHandler, Dispos
             ourLogger.info("Deleting file with TFVC after undoing pending changes");
             // PendingChanges will always have at least 1 element or else we wouldn't have gotten this far
             PendingChange pendingChange = pendingChanges.get(0);
-            TfsPath itemToDelete = StringUtils.isNotEmpty(pendingChange.getSourceItem())
+            TfsPath itemToDelete = (pendingChange.getSourceItem() != null && !pendingChange.getSourceItem().isEmpty())
                     ? new TfsServerPath(pendingChange.getWorkspace(), pendingChange.getSourceItem())
                     : TfsFileUtil.createLocalPath(pendingChange.getLocalItem());
             TfvcDeleteResult operationResult = tfvcClient.deleteFilesRecursively(

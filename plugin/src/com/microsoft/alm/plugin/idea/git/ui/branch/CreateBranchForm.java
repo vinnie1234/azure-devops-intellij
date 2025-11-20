@@ -53,7 +53,7 @@ public class CreateBranchForm implements BasicForm {
                 @Override
                 public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                     return super.getListCellRendererComponent(list,
-                            value != null ? ((GitRemoteBranch) value).getName() : StringUtils.EMPTY,
+                            value != null ? ((GitRemoteBranch) value).getName() : "",
                             index,
                             isSelected,
                             cellHasFocus);

@@ -10,7 +10,7 @@ import com.microsoft.alm.plugin.idea.common.resources.TfPluginBundle;
 import com.microsoft.alm.plugin.idea.tfvc.exceptions.TfsException;
 import com.microsoft.alm.sourcecontrol.webapi.model.TfvcItem;
 import com.microsoft.alm.sourcecontrol.webapi.model.TfvcVersionDescriptor;
-import org.apache.commons.lang.StringUtils;
+import java.util.Objects;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +48,7 @@ public class TfsTreeContext {
             // API returns the parent along with its children so remove the parent from the list
             TfvcItem parentItem = null;
             for (final TfvcItem item : items) {
-                if (StringUtils.equals(item.getPath(), path)) {
+                if (Objects.equals(item.getPath(), path)) {
                     logger.info("Parent item found and being removed from children list");
                     parentItem = item;
                     break;

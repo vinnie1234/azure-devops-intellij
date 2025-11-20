@@ -19,7 +19,7 @@ import git4idea.GitRemoteBranch;
 import git4idea.repo.GitRepository;
 import git4idea.ui.GitCommitListWithDiffPanel;
 import git4idea.util.GitCommitCompareInfo;
-import org.apache.commons.lang.StringUtils;
+import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.ComboBoxModel;
@@ -192,8 +192,8 @@ public class CreatePullRequestForm implements BasicForm {
         final GitRemoteBranch gitRemoteBranch = this.getSelectedRemoteBranch();
         final String currBranch = this.sourceBranch.getText();
 
-        if (gitRemoteBranch != null && StringUtils.equals(gitRemoteBranch.getName(), targetBranchBeingCompared)
-                && StringUtils.isNotEmpty(currBranch) && StringUtils.equals(currBranch, sourceBranchBeingCompared)) {
+        if (gitRemoteBranch != null && Objects.equals(gitRemoteBranch.getName(), targetBranchBeingCompared)
+                && (currBranch != null && !currBranch.isEmpty()) && Objects.equals(currBranch, sourceBranchBeingCompared)) {
 
             this.quickDiffPane.removeAll();
 

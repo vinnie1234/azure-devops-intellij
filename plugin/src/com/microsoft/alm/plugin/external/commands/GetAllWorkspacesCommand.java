@@ -9,7 +9,6 @@ import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.external.ToolRunner;
 import com.microsoft.alm.plugin.external.models.Server;
 import com.microsoft.alm.plugin.external.models.Workspace;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,7 +43,7 @@ public class GetAllWorkspacesCommand extends Command<List<Server>> {
     public GetAllWorkspacesCommand(final ServerContext context) {
         super("workspaces", context);
         authInfo = null;
-        serverUrl = StringUtils.EMPTY;
+        serverUrl = "";
     }
 
     /**
@@ -67,7 +66,7 @@ public class GetAllWorkspacesCommand extends Command<List<Server>> {
         final ToolRunner.ArgumentBuilder builder = super.getArgumentBuilder();
 
         // if you have one you should have the other based on the constructor checks
-        if (authInfo != null && StringUtils.isNotEmpty(serverUrl)) {
+        if (authInfo != null && (serverUrl != null && !serverUrl.isEmpty())) {
             builder.addAuthInfo(authInfo);
             builder.addSwitch("collection", serverUrl);
         }
@@ -104,9 +103,9 @@ public class GetAllWorkspacesCommand extends Command<List<Server>> {
         int count = 0;
 
         while (count < output.length) {
-            if (StringUtils.startsWith(output[count], COLLECTION_PREFIX)) {
+            if (output[count] != null && output[count].startsWith(COLLECTION_PREFIX)) {
                 final List<Workspace> workspaces = new ArrayList<Workspace>();
-                final String serverName = StringUtils.removeStart(output[count], COLLECTION_PREFIX);
+                final String serverName = output[count].substring(COLLECTION_PREFIX.length());
 
                 // move past collection name and column headers
                 count = count + 2;
@@ -117,7 +116,7 @@ public class GetAllWorkspacesCommand extends Command<List<Server>> {
                 }
 
                 // get the size of the columns from the number of dashes
-                final String[] dashes = StringUtils.split(output[count], " ");
+                final String[] dashes = output[count].split(" ");
                 int lastIndexName = dashes.length > 0 ? dashes[0].length() : 0;
                 int lastIndexOwner = dashes.length > 1 ? lastIndexName + dashes[1].length() + 1 : 0;
                 int lastIndexComputer = dashes.length > 2 ? lastIndexOwner + dashes[2].length() + 1 : 0;
@@ -126,12 +125,12 @@ public class GetAllWorkspacesCommand extends Command<List<Server>> {
                 count++;
 
                 // loop through the following lines to get the associated workspaces until an empty line is met
-                while (count < output.length && !StringUtils.isEmpty(output[count])) {
+                while (count < output.length && (output[count] != null && !output[count].isEmpty())) {
                     final Workspace workspace = new Workspace(serverName,
-                            StringUtils.substring(output[count], 0, lastIndexName).trim(),
-                            StringUtils.substring(output[count], lastIndexOwner, lastIndexComputer).trim(),
-                            StringUtils.substring(output[count], lastIndexName, lastIndexOwner).trim(),
-                            StringUtils.substring(output[count], lastIndexComputer).trim(),
+                            output[count].substring(0, lastIndexName).trim(),
+                            output[count].substring(lastIndexOwner, lastIndexComputer).trim(),
+                            output[count].substring(lastIndexName, lastIndexOwner).trim(),
+                            output[count].substring(lastIndexComputer).trim(),
                             Collections.<Workspace.Mapping>emptyList());
                     workspaces.add(workspace);
                     count++;

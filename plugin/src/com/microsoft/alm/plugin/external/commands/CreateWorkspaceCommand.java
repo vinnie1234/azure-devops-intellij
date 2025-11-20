@@ -8,7 +8,6 @@ import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.external.ToolRunner;
 import com.microsoft.alm.plugin.external.exceptions.WorkspaceAlreadyExistsException;
 import com.microsoft.alm.plugin.external.models.Workspace;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -73,7 +72,7 @@ public class CreateWorkspaceCommand extends Command<String> {
                 .addSwitch("new")
                 .addSwitch("location", location.toParameterString())
                 .add(workspaceName);
-        if (StringUtils.isNotEmpty(comment)) {
+        if ((comment != null && !comment.isEmpty())) {
             builder.addSwitch("comment", comment);
         }
         if (fileTime != null) {
@@ -95,7 +94,7 @@ public class CreateWorkspaceCommand extends Command<String> {
     public String parseOutput(final String stdout, final String stderr) {
         throwIfError(stderr);
         // There is no useful output on success
-        return StringUtils.EMPTY;
+        return "";
     }
 
     /**
@@ -105,7 +104,7 @@ public class CreateWorkspaceCommand extends Command<String> {
      */
     @Override
     protected void throwIfError(final String stderr) {
-        if (StringUtils.isNotEmpty(stderr)) {
+        if ((stderr != null && !stderr.isEmpty())) {
             final Pattern pattern = Pattern.compile(String.format(WORKSPACE_EXISTS_ERROR, workspaceName));
             final Matcher matcher = pattern.matcher(stderr);
             if (matcher.find())

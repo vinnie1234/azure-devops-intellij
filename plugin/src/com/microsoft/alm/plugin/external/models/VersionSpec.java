@@ -4,7 +4,6 @@
 package com.microsoft.alm.plugin.external.models;
 
 import com.microsoft.alm.common.utils.ArgumentHelper;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.Date;
 
@@ -31,7 +30,7 @@ public class VersionSpec {
         }
 
         public static Type fromString(final String typeString) {
-            if (StringUtils.isNotEmpty(typeString)) {
+            if ((typeString != null && !typeString.isEmpty())) {
                 switch (typeString.toUpperCase().charAt(0)) {
                     case 'C':
                         return Changeset;
@@ -66,7 +65,7 @@ public class VersionSpec {
         }
 
         public static Range create(final String rangeString) {
-            final String[] parts = StringUtils.split(rangeString, RANGE_SEPARATOR);
+            final String[] parts = rangeString.split(String.valueOf(RANGE_SEPARATOR));
             if (parts.length == 2) {
                 return new Range(VersionSpec.create(parts[0]), VersionSpec.create(parts[1]));
             } else if (parts.length == 1) {
@@ -89,7 +88,7 @@ public class VersionSpec {
         }
     }
 
-    public static final VersionSpec LATEST = new VersionSpec(Type.Latest, StringUtils.EMPTY);
+    public static final VersionSpec LATEST = new VersionSpec(Type.Latest, "");
 
     private final Type type;
     private final String value;
@@ -100,7 +99,7 @@ public class VersionSpec {
     }
 
     public static VersionSpec create(final String versionSpecString) {
-        if (StringUtils.isEmpty(versionSpecString)) {
+        if (versionSpecString == null || versionSpecString.isEmpty()) {
             return LATEST;
         }
 

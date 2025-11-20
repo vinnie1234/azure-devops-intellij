@@ -9,7 +9,6 @@ import com.microsoft.alm.common.utils.UrlHelper;
 import com.microsoft.alm.core.webapi.model.TeamProjectCollectionReference;
 import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.exceptions.TeamServicesException;
-import org.apache.commons.lang.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -113,7 +112,7 @@ public class CatalogServiceImpl implements CatalogService {
         final List<TeamProjectCollectionReference> collections = getProjectCollections();
         for (final TeamProjectCollectionReference collection : collections) {
             // the collection name is a display name so there are spaces while the collection name is encoded
-            if (StringUtils.equalsIgnoreCase(collection.getName().replace(" ", "%20"), collectionName)) {
+            if (collection.getName().replace(" ", "%20") == null ? collectionName == null : collection.getName().replace(" ", "%20").equalsIgnoreCase(collectionName)) {
                 return collection;
             }
         }

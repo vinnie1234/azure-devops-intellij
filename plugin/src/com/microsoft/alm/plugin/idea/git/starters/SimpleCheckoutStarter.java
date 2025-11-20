@@ -12,7 +12,6 @@ import com.microsoft.alm.common.utils.UrlHelper;
 import com.microsoft.alm.plugin.idea.common.resources.TfPluginBundle;
 import com.microsoft.alm.plugin.idea.common.starters.StarterBase;
 import com.microsoft.alm.plugin.idea.git.ui.simplecheckout.SimpleCheckoutController;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +69,7 @@ public class SimpleCheckoutStarter implements StarterBase {
             throw new RuntimeException(TfPluginBundle.message(TfPluginBundle.STARTER_ERRORS_SIMPLECHECKOUT_INVALID_COMMAND_LINE_ARGS));
         }
 
-        return createWithGitUrl(args.get(0), args.size() < 2 ? StringUtils.EMPTY : args.get(1));
+        return createWithGitUrl(args.get(0), args.size() < 2 ? "" : args.get(1));
     }
 
     /**
@@ -86,19 +85,19 @@ public class SimpleCheckoutStarter implements StarterBase {
         String ref = args.get(REF_ARGUMENT);
         String encoding = args.get(ENCODING_ARGUMENT);
 
-        if (StringUtils.isEmpty(url)) {
+        if ((url == null || url.isEmpty())) {
             throw new RuntimeException(TfPluginBundle.message(TfPluginBundle.STARTER_ERRORS_SIMPLECHECKOUT_URI_MISSING_GIT_URL));
         }
 
         // if an encoding scheme is found then decode the url
-        if (StringUtils.isNotEmpty(encoding)) {
+        if ((encoding != null && !encoding.isEmpty())) {
             url = URLDecoder.decode(url, encoding);
         }
 
-        if (StringUtils.isNotEmpty(ref)) {
+        if ((ref != null && !ref.isEmpty())) {
             ref = URLDecoder.decode(ref, encoding);
         } else {
-            ref = StringUtils.EMPTY;
+            ref = "";
         }
 
         return createWithGitUrl(url, ref);

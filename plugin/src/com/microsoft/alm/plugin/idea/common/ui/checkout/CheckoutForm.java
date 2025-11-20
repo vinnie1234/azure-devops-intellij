@@ -24,7 +24,6 @@ import com.microsoft.alm.plugin.idea.common.ui.controls.BusySpinnerPanel;
 import com.microsoft.alm.plugin.idea.common.ui.controls.HelpPanel;
 import com.microsoft.alm.plugin.idea.common.ui.controls.HintTextFieldUI;
 import com.microsoft.alm.plugin.idea.common.ui.controls.UserAccountPanel;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NonNls;
 
 import javax.swing.JButton;
@@ -226,7 +225,7 @@ public class CheckoutForm implements BasicForm, Disposable {
     }
 
     public String getParentDirectory() {
-        return StringUtils.trim(parentDirectory.getText());
+        return parentDirectory.getText() == null ? null : parentDirectory.getText().trim();
     }
 
     public JComponent getParentDirectoryComponent() {
@@ -238,7 +237,7 @@ public class CheckoutForm implements BasicForm, Disposable {
     }
 
     public String getDirectoryName() {
-        return StringUtils.trim(directoryName.getText());
+        return directoryName.getText() == null ? null : directoryName.getText().trim();
     }
 
     public JComponent getDirectoryNameComponent() {

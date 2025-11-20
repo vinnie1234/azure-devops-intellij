@@ -99,7 +99,7 @@ public class MergeBranchAction extends SingleItemAction implements DumbAware {
                         // Make sure we have a mapping for the target
                         final String targetLocalPath = CommandUtils.tryGetLocalPath(serverContext, targetServerPath, workspace.getName());
                         logger.info("targetLocalPath: " + targetLocalPath);
-                        if (StringUtils.isEmpty(targetLocalPath)) {
+                        if ((targetLocalPath == null || targetLocalPath.isEmpty())) {
                             logger.info("Target path not mapped in current workspace.");
                             throw new VcsException(TfPluginBundle.message(TfPluginBundle.KEY_ACTIONS_TFVC_MERGE_BRANCH_ERRORS_NO_MAPPING_FOUND, targetServerPath, workspace.getName()));
                         }
@@ -171,7 +171,7 @@ public class MergeBranchAction extends SingleItemAction implements DumbAware {
         public List<String> getBranches(final String source) {
             ArgumentHelper.checkNotEmptyString(source, "source");
             // If the source is the same as the last time we were called, we return the same result
-            if (!StringUtils.equalsIgnoreCase(lastSourceUsed, source)) {
+            if (!(lastSourceUsed != null && lastSourceUsed.equalsIgnoreCase(source))) {
                 // Not the same so get the list of branches for this new source
                 lastBranchesRetrieved = CommandUtils.getBranches(serverContext, workingFolder, source);
                 lastSourceUsed = source;

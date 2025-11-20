@@ -8,7 +8,6 @@ import com.microsoft.alm.plugin.exceptions.TeamServicesException;
 import com.microsoft.alm.plugin.external.exceptions.ToolException;
 import com.microsoft.alm.plugin.idea.common.resources.TfPluginBundle;
 import com.microsoft.alm.plugin.services.LocalizationService;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -65,7 +64,7 @@ public class LocalizationServiceImpl implements LocalizationService {
 
         //exception message is not set
         //Use the message on the cause if there is one
-        if (StringUtils.isEmpty(message) && t.getCause() != null) {
+        if ((message == null || message.isEmpty()) && t.getCause() != null) {
             if (t.getCause() instanceof LocalizedException) {
                 final LocalizedException localizedException = (LocalizedException) t.getCause();
                 final String key = localizedException.getMessageKey();
@@ -78,7 +77,7 @@ public class LocalizationServiceImpl implements LocalizationService {
         }
 
         //No message on the exception and the cause, just use description from toString
-        if (StringUtils.isEmpty(message)) {
+        if ((message == null || message.isEmpty())) {
             message = t.toString();
         }
 

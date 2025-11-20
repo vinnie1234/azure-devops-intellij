@@ -4,7 +4,6 @@
 package com.microsoft.alm.plugin.external.models;
 
 import com.microsoft.tfs.model.connector.TfsPendingChange;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,7 +25,7 @@ public class PendingChange {
     private final String sourceItem;
 
     public PendingChange(final String serverItem, final String changeType) {
-        this(serverItem, null, null, null, null, null, changeType, null, null, false, StringUtils.EMPTY);
+        this(serverItem, null, null, null, null, null, changeType, null, null, false, "");
     }
 
     public PendingChange(final String serverItem, final String localItem, final String version,

@@ -6,7 +6,6 @@ package com.microsoft.alm.plugin.versioncontrol.path;
 import com.microsoft.alm.common.utils.ArgumentHelper;
 import com.microsoft.alm.common.utils.FileHelper;
 import com.microsoft.alm.plugin.exceptions.ServerPathFormatException;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -390,7 +389,7 @@ public abstract class ServerPath {
              * Compare lengths of canonical strings.
              */
             if (serverPath.length() == relativeTo.length()) {
-                return StringUtils.EMPTY;
+                return "";
             }
 
             /*

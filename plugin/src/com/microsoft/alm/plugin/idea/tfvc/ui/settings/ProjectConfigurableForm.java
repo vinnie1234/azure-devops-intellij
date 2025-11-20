@@ -40,7 +40,6 @@ import com.microsoft.alm.plugin.external.visualstudio.VisualStudioTfvcClient;
 import com.microsoft.alm.plugin.idea.common.resources.TfPluginBundle;
 import com.microsoft.alm.plugin.idea.common.services.LocalizationServiceImpl;
 import com.microsoft.alm.plugin.services.PropertyService;
-import org.apache.commons.lang.StringUtils;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -82,8 +81,8 @@ public class ProjectConfigurableForm {
     private JLabel reactiveClientMemoryLimitLabel;
     private JSpinner reactiveClientMemoryLimitSpinner;
     private JLabel reactiveClientMemoryLimitInfo;
-    private String originalTfLocation = StringUtils.EMPTY;
-    private String originalVsClientPath = StringUtils.EMPTY;
+    private String originalTfLocation = "";
+    private String originalVsClientPath = "";
 
     public ProjectConfigurableForm(final Project project) {
         myProject = project;
@@ -121,7 +120,7 @@ public class ProjectConfigurableForm {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 String tfCmdPath = tfExeField.getText();
-                if (StringUtils.isEmpty(tfCmdPath)) {
+                if (tfCmdPath == null || tfCmdPath.isEmpty()) {
                     Messages.showErrorDialog(myContentPane,
                             TfPluginBundle.message(TfPluginBundle.KEY_TFVC_SETTINGS_PATH_EMPTY),
                             TfPluginBundle.message(TfPluginBundle.KEY_TFVC_TF_VERSION_WARNING_TITLE));
@@ -253,10 +252,10 @@ public class ProjectConfigurableForm {
         PropertyService propertyService = PropertyService.getInstance();
 
         String tfLocation = propertyService.getProperty(PropertyService.PROP_TF_HOME);
-        tfLocation = StringUtils.isEmpty(tfLocation) ? TfTool.tryDetectTf() : tfLocation;
+        tfLocation = (tfLocation == null || tfLocation.isEmpty()) ? TfTool.tryDetectTf() : tfLocation;
         // if no path was found then default to an empty string
-        originalTfLocation = StringUtils.isEmpty(tfLocation) ? StringUtils.EMPTY : tfLocation;
-        if (StringUtils.isEmpty(originalTfLocation)) {
+        originalTfLocation = (tfLocation == null || tfLocation.isEmpty()) ? "" : tfLocation;
+        if (originalTfLocation == null || originalTfLocation.isEmpty()) {
             downloadLinkPane.setVisible(true);
         }
         tfExeField.setText(originalTfLocation);
@@ -325,7 +324,7 @@ public class ProjectConfigurableForm {
 
     private void testVisualStudioClient() {
         String visualStudioClientPathString = getCurrentVisualStudioClientPath();
-        if (StringUtils.isEmpty(visualStudioClientPathString)) {
+        if (visualStudioClientPathString == null || visualStudioClientPathString.isEmpty()) {
             Messages.showErrorDialog(
                     myContentPane,
                     TfPluginBundle.message(TfPluginBundle.KEY_TFVC_SETTINGS_VS_CLIENT_PATH_EMPTY),
