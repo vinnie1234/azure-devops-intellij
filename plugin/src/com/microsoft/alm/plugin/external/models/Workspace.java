@@ -3,16 +3,15 @@
 
 package com.microsoft.alm.plugin.external.models;
 
-import com.google.common.base.Objects;
 import com.microsoft.alm.common.utils.UrlHelper;
 import com.microsoft.tfs.model.connector.TfsDetailedWorkspaceInfo;
 import com.microsoft.tfs.model.connector.TfsWorkspaceInfo;
-import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -128,7 +127,7 @@ public class Workspace {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(name, computer, owner, server);
+        return Objects.hash(name, computer, owner, server);
     }
 
     /**
