@@ -106,19 +106,25 @@ public class TfGitHelper {
     public static Collection<GitRemoteBranch> getRemoteBranchesCompat(@NotNull final GitRepoInfo repoInfo) {
         try {
             Method targetMethod = null;
+            
             for (Method method : GitRepoInfo.class.getMethods()) {
-                if (method.getName().equals("getRemoteBranches") && method.getParameterCount() == 0) {
+                if (method.getName().equals("getRemoteBranchesWithHashes") && method.getParameterCount() == 0) {
                     targetMethod = method;
                     break;
                 }
             }
             
             if (targetMethod == null) {
-                StringBuilder availableMethods = new StringBuilder("Available methods: ");
-                for (Method m : GitRepoInfo.class.getMethods()) {
-                    availableMethods.append(m.getName()).append("(").append(m.getParameterCount()).append("), ");
+                for (Method method : GitRepoInfo.class.getMethods()) {
+                    if (method.getName().equals("getRemoteBranches") && method.getParameterCount() == 0) {
+                        targetMethod = method;
+                        break;
+                    }
                 }
-                throw new RuntimeException("Method getRemoteBranches() not found on GitRepoInfo. " + availableMethods);
+            }
+            
+            if (targetMethod == null) {
+                throw new RuntimeException("Neither getRemoteBranchesWithHashes() nor getRemoteBranches() found on GitRepoInfo");
             }
             
             Object result = targetMethod.invoke(repoInfo);
@@ -129,7 +135,7 @@ public class TfGitHelper {
                 return (Collection<GitRemoteBranch>) result;
             }
             
-            throw new RuntimeException("Unexpected return type from getRemoteBranches(): " + result.getClass());
+            throw new RuntimeException("Unexpected return type from " + targetMethod.getName() + ": " + result.getClass());
         } catch (Exception e) {
             if (e instanceof RuntimeException) {
                 throw (RuntimeException) e;
