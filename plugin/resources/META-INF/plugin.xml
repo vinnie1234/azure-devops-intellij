@@ -4,8 +4,8 @@
   -->
 
 <idea-plugin allow-bundled-update="true">
-    <id>com.microsoft.vso.idea</id>
-    <name>Azure DevOps</name>
+    <id>com.vincent.devops.pullrequest</id>
+    <name>DevOps Pull Request</name>
     <!-- <version>1.162.2</version> NOTE: Version is set automatically on build, update it in gradle.properties -->
     <category>VCS Integration</category>
     <vendor url="https://github.com/vinnie1234/azure-devops-intellij">Vincent Maarschalkerweerd</vendor>
