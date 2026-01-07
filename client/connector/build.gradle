@@ -14,7 +14,6 @@ sourceSets {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "com.jetbrains.rd:rd-framework:$rdGenVersion"
 }
 
