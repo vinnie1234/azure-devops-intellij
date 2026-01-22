@@ -327,8 +327,9 @@ public class TFSVcs extends AbstractVcs {
                             logger.info("Notifying the user of the min version problem.");
                             // Notify the user that they should upgrade their version of the TF command line
                             VcsNotifier.getInstance(getProject()).notifyImportantWarning(
+                                    null,
                                     TfPluginBundle.message(TfPluginBundle.KEY_TFVC_TF_VERSION_WARNING_TITLE),
-                                    error, "");
+                                    error);
                         }
                     } catch (Exception e) {
                         logger.warn("Failed to warn user about min version of TF command line.", e);

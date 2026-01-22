@@ -156,10 +156,10 @@ public class VcsPullRequestsModel extends TabModelImpl<PullRequestsTreeModel> {
     private void notifyOperationStatus(final boolean success, final String message) {
         if (success) {
             VcsNotifier.getInstance(project).notifySuccess(
-                    TfPluginBundle.message(TfPluginBundle.KEY_VCS_PR_TITLE), message);
+                    null, TfPluginBundle.message(TfPluginBundle.KEY_VCS_PR_TITLE), message);
         } else {
             VcsNotifier.getInstance(project).notifyError(
-                    TfPluginBundle.message(TfPluginBundle.KEY_VCS_PR_TITLE), message, "");
+                    null, TfPluginBundle.message(TfPluginBundle.KEY_VCS_PR_TITLE), message);
         }
 
         // Update the PR tab and any other UI that is listening for PR Changed events (even on failure updating the tab is a good idea)

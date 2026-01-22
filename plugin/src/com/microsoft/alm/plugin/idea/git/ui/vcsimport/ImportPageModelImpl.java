@@ -275,7 +275,7 @@ public abstract class ImportPageModelImpl extends LoginPageModelImpl implements 
                 } finally {
                     if ((remoteUrlForDisplay != null && !remoteUrlForDisplay.isEmpty())) {
                         // Notify the user that we are done and provide a link to the repo
-                        VcsNotifier.getInstance(project).notifyImportantInfo(TfPluginBundle.message(TfPluginBundle.KEY_IMPORT_SUCCEEDED),
+                        VcsNotifier.getInstance(project).notifyImportantInfo(null, TfPluginBundle.message(TfPluginBundle.KEY_IMPORT_SUCCEEDED),
                                 TfPluginBundle.message(TfPluginBundle.KEY_IMPORT_SUCCEEDED_MESSAGE, project.getName(), remoteUrlForDisplay, repositoryName),
                                 NotificationListener.URL_OPENING_LISTENER);
                     }
@@ -593,7 +593,7 @@ public abstract class ImportPageModelImpl extends LoginPageModelImpl implements 
     }
 
     private void notifyImportError(final Project project, final String message) {
-        VcsNotifier.getInstance(project).notifyError(TfPluginBundle.message(TfPluginBundle.KEY_IMPORT_FAILED), message, "");
+        VcsNotifier.getInstance(project).notifyError(null, TfPluginBundle.message(TfPluginBundle.KEY_IMPORT_FAILED), message);
     }
 
     @Override

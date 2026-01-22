@@ -340,6 +340,7 @@ public class WorkspaceModel extends AbstractModel {
                 // Notify the user of success and provide a link to sync the workspace
                 // (It doesn't make sense to tell the user we are done here if there is another thread still doing work)
                 VcsNotifier.getInstance(project).notifyImportantInfo(
+                        null,
                         TfPluginBundle.message(TfPluginBundle.KEY_WORKSPACE_DIALOG_NOTIFY_SUCCESS_TITLE),
                         TfPluginBundle.message(TfPluginBundle.KEY_WORKSPACE_DIALOG_NOTIFY_SUCCESS_MESSAGE),
                         (notification, hyperlinkEvent) -> syncWorkspaceAsync(serverContext, project, workspaceRootPath)
@@ -348,6 +349,7 @@ public class WorkspaceModel extends AbstractModel {
         } catch (final Throwable t) {
             //TODO on failure we could provide a link that reopened the dialog with the values they tried to save
             VcsNotifier.getInstance(project).notifyError(
+                    null,
                     TfPluginBundle.message(TfPluginBundle.KEY_WORKSPACE_DIALOG_NOTIFY_FAILURE_TITLE),
                     LocalizationServiceImpl.getInstance().getExceptionMessage(t));
         }
@@ -368,10 +370,12 @@ public class WorkspaceModel extends AbstractModel {
 
                     // Notify the user of a successful sync
                     VcsNotifier.getInstance(project).notifySuccess(
+                            null,
                             TfPluginBundle.message(TfPluginBundle.KEY_WORKSPACE_DIALOG_NOTIFY_SUCCESS_TITLE),
                             TfPluginBundle.message(TfPluginBundle.KEY_WORKSPACE_DIALOG_NOTIFY_SUCCESS_SYNC_MESSAGE));
                 } catch (final Throwable t) {
                     VcsNotifier.getInstance(project).notifyError(
+                            null,
                             TfPluginBundle.message(TfPluginBundle.KEY_WORKSPACE_DIALOG_NOTIFY_FAILURE_TITLE),
                             LocalizationServiceImpl.getInstance().getExceptionMessage(t));
                 }

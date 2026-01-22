@@ -130,6 +130,7 @@ public class VcsWorkItemsModel extends TabModelImpl<WorkItemsTableModel> {
                                     UrlHelper.getSpecificWorkItemURI(context.getTeamProjectURI(), workItem.getId()), String.valueOf(workItem.getId()), UrlHelper.getBranchURI(context.getUri(), branchName), branchName);
 
                             VcsNotifier.getInstance(project).notifyImportantInfo(
+                                    null,
                                     TfPluginBundle.message(wasWorkItemAssociated ? TfPluginBundle.KEY_WIT_ASSOCIATION_SUCCESSFUL_TITLE : TfPluginBundle.KEY_WIT_ASSOCIATION_FAILED_TITLE),
                                     notificationMsg,
                                     NotificationListener.URL_OPENING_LISTENER

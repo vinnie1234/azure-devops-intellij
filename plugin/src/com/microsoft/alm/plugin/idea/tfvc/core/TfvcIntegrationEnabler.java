@@ -329,7 +329,7 @@ public class TfvcIntegrationEnabler extends VcsIntegrationEnabler {
             });
 
             if (success) {
-                vcsNotifier.notifySuccess("TFVC Import", 
+                vcsNotifier.notifySuccess(null, "TFVC Import",
                         TfPluginBundle.message(
                                 TfPluginBundle.KEY_TFVC_REPOSITORY_IMPORT_SUCCESS,
                                 projectDir.getPresentableUrl()));
@@ -337,6 +337,7 @@ public class TfvcIntegrationEnabler extends VcsIntegrationEnabler {
         } catch (Throwable error) {
             ourLogger.error(error);
             vcsNotifier.notifyError(
+                    null,
                     TfPluginBundle.message(
                             TfPluginBundle.KEY_TFVC_REPOSITORY_IMPORT_ERROR,
                             projectDir.getPresentableUrl()),
