@@ -98,7 +98,7 @@ public class TFSVcs extends AbstractVcs {
     private DiffProvider myDiffProvider;
     private TFSCheckinEnvironment myCheckinEnvironment;
     private UpdateEnvironment myUpdateEnvironment;
-    //private VcsVFSListener fileListener;
+    private VcsVFSListener fileListener;
     private TFSFileSystemListener tfsFileSystemListener;
     private CommittedChangesProvider<TFSChangeList, ChangeBrowserSettings> committedChangesProvider;
     private EditFileProvider myEditFileProvider;
@@ -126,7 +126,12 @@ public class TFSVcs extends AbstractVcs {
 
     @Override
     public void activate() {
-        //fileListener = new TFSFileListener(getProject(), this);
+        try {
+            fileListener = new TFSFileListener(getProject(), this);
+        } catch (Throwable throwable) {
+            logger.error("TFSFileListener cannot be initialized", throwable);
+        }
+
         if (tfsFileSystemListener == null) {
             tfsFileSystemListener = new TFSFileSystemListener(myProject);
         }
@@ -136,7 +141,10 @@ public class TFSVcs extends AbstractVcs {
 
     @Override
     public void deactivate() {
-        //Disposer.dispose(fileListener);
+        if (fileListener != null) {
+            Disposer.dispose(fileListener);
+        }
+
         tfsFileSystemListener.dispose();
         tfsFileSystemListener = null;
     }

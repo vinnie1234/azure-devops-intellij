@@ -13,6 +13,12 @@ sourceSets {
     }
 }
 
+configurations {
+    all {
+        exclude group: 'org.jetbrains.kotlinx', module: 'kotlinx-coroutines-core-jvm'
+    }
+}
+
 dependencies {
     implementation "com.jetbrains.rd:rd-framework:$rdGenVersion"
 }

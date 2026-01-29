@@ -14,6 +14,12 @@ dependencies {
     implementation 'junit:junit:4.12'
 }
 
+configurations {
+    all {
+        exclude group: 'org.jetbrains.kotlinx', module: 'kotlinx-coroutines-core-jvm'
+    }
+}
+
 compileKotlin {
     // Note: protocol dependency disabled due to rdgen compatibility issues  
     // Generated files are manually maintained
