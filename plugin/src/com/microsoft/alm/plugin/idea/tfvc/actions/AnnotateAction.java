@@ -6,8 +6,7 @@ package com.microsoft.alm.plugin.idea.tfvc.actions;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.vcsUtil.VcsUtil;
+import com.microsoft.alm.common.utils.FileHelper;
 import com.microsoft.alm.common.utils.UrlHelper;
 import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.idea.common.actions.OpenFileInBrowserAction;
@@ -31,7 +30,7 @@ public class AnnotateAction extends SingleItemAction {
 
     @Override
     public void update(@NotNull final AnActionEvent e) {
-        final VirtualFile file = VcsUtil.getOneVirtualFile(e);
+       final var file = FileHelper.getOneVirtualFile(e);
 
         // disable for directories
         if (file == null || file.isDirectory()) {

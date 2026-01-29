@@ -28,7 +28,7 @@ import com.intellij.openapi.vcs.AbstractVcsHelper;
 import com.intellij.openapi.vcs.FileStatusManager;
 import com.intellij.openapi.vcs.VcsException;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.vcsUtil.VcsUtil;
+import com.microsoft.alm.common.utils.FileHelper;
 import com.microsoft.alm.plugin.idea.common.resources.TfPluginBundle;
 import com.microsoft.alm.plugin.idea.tfvc.core.TFSVcs;
 import com.microsoft.alm.plugin.idea.tfvc.core.tfs.TfsFileUtil;
@@ -48,7 +48,8 @@ public class AddAction extends DumbAwareAction {
     @Override
     public void actionPerformed(final AnActionEvent anActionEvent) {
         final Project project = anActionEvent.getData(CommonDataKeys.PROJECT);
-        final VirtualFile[] files = VcsUtil.getVirtualFiles(anActionEvent);
+
+        final VirtualFile[] files = FileHelper.getVirtualFiles(anActionEvent);
 
         final List<VcsException> errors = new ArrayList<VcsException>();
         ProgressManager.getInstance().runProcessWithProgressSynchronously(new Runnable() {
@@ -66,12 +67,13 @@ public class AddAction extends DumbAwareAction {
     @Override
     public void update(final AnActionEvent anActionEvent) {
         final Project project = anActionEvent.getProject();
-        final VirtualFile[] files = VcsUtil.getVirtualFiles(anActionEvent);
+        final VirtualFile[] files = FileHelper.getVirtualFiles(anActionEvent);
+
         anActionEvent.getPresentation().setEnabled(isEnabled(project, files));
     }
 
     private static boolean isEnabled(final Project project, final VirtualFile[] files) {
-        if (files.length == 0) {
+        if (files == null || files.length == 0) {
             return false;
         }
 
@@ -81,6 +83,7 @@ public class AddAction extends DumbAwareAction {
         }
 
         final FileStatusManager fileStatusManager = FileStatusManager.getInstance(project);
+
         return TfsFileUtil.findUnknownFiles(files, fileStatusManager);
     }
 }

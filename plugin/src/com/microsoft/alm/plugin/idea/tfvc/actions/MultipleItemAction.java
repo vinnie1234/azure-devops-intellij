@@ -33,7 +33,7 @@ import com.intellij.openapi.vcs.FileStatusManager;
 import com.intellij.openapi.vcs.VcsException;
 import com.intellij.openapi.vcs.actions.VcsContextFactory;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.vcsUtil.VcsUtil;
+import com.microsoft.alm.common.utils.FileHelper;
 import com.microsoft.alm.helpers.Path;
 import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.external.models.ItemInfo;
@@ -73,7 +73,7 @@ public abstract class MultipleItemAction<TItemInfo extends ItemInfo> extends Dum
     @Override
     public void update(final AnActionEvent anActionEvent) {
         final Project project = anActionEvent.getData(CommonDataKeys.PROJECT);
-        final VirtualFile[] files = VcsUtil.getVirtualFiles(anActionEvent);
+        final VirtualFile[] files = FileHelper.getVirtualFiles(anActionEvent);
         anActionEvent.getPresentation().setEnabled(isEnabled(project, files));
     }
 
@@ -85,7 +85,7 @@ public abstract class MultipleItemAction<TItemInfo extends ItemInfo> extends Dum
 
         final MultipleItemActionContext context = new MultipleItemActionContext();
         context.project = anActionEvent.getData(CommonDataKeys.PROJECT);
-        final VirtualFile[] files = VcsUtil.getVirtualFiles(anActionEvent);
+        final VirtualFile[] files = FileHelper.getVirtualFiles(anActionEvent);
 
         logger.info("Finding the list of selected files and getting itemInfos for each one");
         runWithProgress(context, new Runnable() {
@@ -107,10 +107,12 @@ public abstract class MultipleItemAction<TItemInfo extends ItemInfo> extends Dum
                 if (context.itemInfos.size() > 0) {
                     logger.info("Setting the defaultLocalPath and workingFolder");
                     context.defaultLocalPath = context.itemInfos.get(0).getLocalItem();
-                    context.isFolder = Path.directoryExists(context.defaultLocalPath);
-                    context.workingFolder = context.isFolder ?
-                            context.defaultLocalPath :
-                            Path.getDirectoryName(context.defaultLocalPath);
+                    if (context.defaultLocalPath != null) {
+                        context.isFolder = Path.directoryExists(context.defaultLocalPath);
+                        context.workingFolder = context.isFolder ?
+                                context.defaultLocalPath :
+                                Path.getDirectoryName(context.defaultLocalPath);
+                    }
                 }
             }
         }, TfPluginBundle.message(TfPluginBundle.KEY_ACTIONS_TFVC_LABEL_PROGRESS_GATHERING_INFORMATION));
@@ -174,7 +176,7 @@ public abstract class MultipleItemAction<TItemInfo extends ItemInfo> extends Dum
      * @return
      */
     protected boolean isEnabled(final Project project, final VirtualFile[] files) {
-        if (files.length == 0 || project == null) {
+        if (files == null || files.length == 0 || project == null) {
             return false;
         }
 

@@ -35,6 +35,7 @@ import com.intellij.openapi.vcs.VcsException;
 import com.intellij.openapi.vcs.actions.VcsContextFactory;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.vcsUtil.VcsUtil;
+import com.microsoft.alm.common.utils.FileHelper;
 import com.microsoft.alm.plugin.context.ServerContext;
 import com.microsoft.alm.plugin.external.models.ItemInfo;
 import com.microsoft.alm.plugin.external.utils.CommandUtils;
@@ -71,7 +72,7 @@ public abstract class SingleItemAction extends DumbAwareAction {
 
     public void actionPerformed(final AnActionEvent e) {
         final Project project = e.getData(CommonDataKeys.PROJECT);
-        final VirtualFile file = VcsUtil.getOneVirtualFile(e);
+        final VirtualFile file = FileHelper.getOneVirtualFile(e);
 
         if (project == null || file == null) {
             // This shouldn't happen, but just in case
@@ -110,7 +111,7 @@ public abstract class SingleItemAction extends DumbAwareAction {
     }
 
     public void update(@NotNull final AnActionEvent e) {
-        e.getPresentation().setEnabled(isEnabled(e.getProject(), VcsUtil.getOneVirtualFile(e)));
+        e.getPresentation().setEnabled(isEnabled(e.getProject(), FileHelper.getOneVirtualFile(e)));
     }
 
     protected String getProgressMessage() {
