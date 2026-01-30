@@ -160,7 +160,7 @@ project(":plugin") {
         tasks.register('prepareBackendSandbox', Copy) {
             dependsOn ":client:backend:installDist"
             from reactiveBackend
-            into layout.buildDirectory.dir("idea-sandbox/plugins/${project.name}")
+            into layout.buildDirectory.dir("idea-sandbox/IC-${ideaVersion}/plugins/${project.name}")
         }
         
         tasks.named('prepareSandbox') {
