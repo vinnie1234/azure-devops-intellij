@@ -30,7 +30,8 @@ public class BranchCompareInfo {
     }
 
     public void put(final GitRepository repository, final Pair<List<GitCommit>, List<GitCommit>> commitsPair) {
-        branchToHeadCommits = commitsPair.first != null ? commitsPair.first : Collections.<GitCommit>emptyList();
+        // commitsPair.second = git log <commonParent>.. = commits on current branch since common ancestor
+        branchToHeadCommits = commitsPair.second != null ? commitsPair.second : Collections.<GitCommit>emptyList();
     }
 
     public List<GitCommit> getBranchToHeadCommits(final GitRepository repository) {
