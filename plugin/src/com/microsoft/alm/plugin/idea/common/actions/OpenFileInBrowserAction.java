@@ -5,7 +5,7 @@ package com.microsoft.alm.plugin.idea.common.actions;
 
 import com.intellij.ide.BrowserUtil;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.openapi.project.Project;
@@ -15,6 +15,7 @@ import com.intellij.openapi.vcs.changes.Change;
 import com.intellij.openapi.vcs.changes.ChangeListManager;
 import com.intellij.openapi.vfs.InvalidVirtualFileAccessException;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.microsoft.alm.common.utils.FileHelper;
 import com.microsoft.alm.common.utils.UrlHelper;
 import com.microsoft.alm.plugin.idea.common.resources.Icons;
 import com.microsoft.alm.plugin.idea.common.resources.TfPluginBundle;
@@ -53,7 +54,7 @@ public class OpenFileInBrowserAction extends DumbAwareAction {
             return;
         }
 
-        final VirtualFile[] vFiles = anActionEvent.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY);
+        final VirtualFile[] vFiles = FileHelper.getVirtualFiles(anActionEvent);
         if (vFiles == null || vFiles.length == 0 || vFiles[0] == null) {
             // quick exit if no valid file selected
             presentation.setEnabledAndVisible(false);
@@ -144,8 +145,8 @@ public class OpenFileInBrowserAction extends DumbAwareAction {
 
     @Override
     public void actionPerformed(final AnActionEvent anActionEvent) {
-        final Project project = anActionEvent.getRequiredData(CommonDataKeys.PROJECT);
-        final VirtualFile virtualFile = anActionEvent.getRequiredData(CommonDataKeys.VIRTUAL_FILE);
+        final Project project = anActionEvent.getData(LangDataKeys.PROJECT);
+        final VirtualFile virtualFile = FileHelper.getOneVirtualFile(anActionEvent);
 
         final GitRepositoryManager manager = GitUtil.getRepositoryManager(project);
         final GitRepository gitRepository = manager.getRepositoryForFileQuick(virtualFile);

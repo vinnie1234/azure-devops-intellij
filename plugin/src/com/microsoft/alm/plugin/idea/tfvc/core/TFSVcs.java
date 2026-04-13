@@ -126,7 +126,12 @@ public class TFSVcs extends AbstractVcs {
 
     @Override
     public void activate() {
-        fileListener = new TFSFileListener(getProject(), this);
+        try {
+            fileListener = new TFSFileListener(getProject(), this);
+        } catch (Throwable throwable) {
+            logger.error("TFSFileListener cannot be initialized", throwable);
+        }
+
         if (tfsFileSystemListener == null) {
             tfsFileSystemListener = new TFSFileSystemListener(myProject);
         }
@@ -136,7 +141,10 @@ public class TFSVcs extends AbstractVcs {
 
     @Override
     public void deactivate() {
-        Disposer.dispose(fileListener);
+        if (fileListener != null) {
+            Disposer.dispose(fileListener);
+        }
+
         tfsFileSystemListener.dispose();
         tfsFileSystemListener = null;
     }
@@ -327,8 +335,9 @@ public class TFSVcs extends AbstractVcs {
                             logger.info("Notifying the user of the min version problem.");
                             // Notify the user that they should upgrade their version of the TF command line
                             VcsNotifier.getInstance(getProject()).notifyImportantWarning(
+                                    null,
                                     TfPluginBundle.message(TfPluginBundle.KEY_TFVC_TF_VERSION_WARNING_TITLE),
-                                    error, "");
+                                    error);
                         }
                     } catch (Exception e) {
                         logger.warn("Failed to warn user about min version of TF command line.", e);

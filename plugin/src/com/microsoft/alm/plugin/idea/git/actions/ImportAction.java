@@ -56,7 +56,7 @@ public class ImportAction extends DumbAwareAction {
         } catch (Throwable t) {
             //unexpected error
             logger.warn("ImportAction doActionPerformed failed unexpected error", t);
-            VcsNotifier.getInstance(project).notifyError(TfPluginBundle.message(TfPluginBundle.KEY_ACTIONS_IMPORT),
+            VcsNotifier.getInstance(project).notifyError(null, TfPluginBundle.message(TfPluginBundle.KEY_ACTIONS_IMPORT),
                     TfPluginBundle.message(TfPluginBundle.KEY_IMPORT_ERRORS_UNEXPECTED, t.getMessage()));
         }
     }

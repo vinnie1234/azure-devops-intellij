@@ -33,7 +33,7 @@ public class ReactiveTfvcClientHolder implements Disposable {
 
     public static Path getClientBackendPath() {
         return Paths.get(
-                Objects.requireNonNull(PluginManager.getPlugin(IdeaHelper.PLUGIN_ID)).getPath().getAbsolutePath(),
+                Objects.requireNonNull(PluginManager.getLoadedPlugins().stream().filter(p -> p.getPluginId().getIdString().equalsIgnoreCase(IdeaHelper.PLUGIN_ID.getIdString()) || p.getName().equalsIgnoreCase(IdeaHelper.PLUGIN_ID.getIdString())).findFirst().orElse(null)).getPath().getAbsolutePath(),
                 "backend");
     }
 

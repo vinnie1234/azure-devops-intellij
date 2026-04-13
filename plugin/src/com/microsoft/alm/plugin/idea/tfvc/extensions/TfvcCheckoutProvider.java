@@ -54,7 +54,7 @@ public class TfvcCheckoutProvider implements CheckoutProvider {
             controller.showModalDialog();
         } catch (Throwable t) {
             logger.warn("doCheckout failed unexpectedly", t);
-            VcsNotifier.getInstance(project).notifyError(TfPluginBundle.message(TfPluginBundle.KEY_CHECKOUT_DIALOG_TITLE),
+            VcsNotifier.getInstance(project).notifyError(null, TfPluginBundle.message(TfPluginBundle.KEY_CHECKOUT_DIALOG_TITLE),
                     TfPluginBundle.message(TfPluginBundle.KEY_CHECKOUT_ERRORS_UNEXPECTED, t.getMessage()));
         }
     }

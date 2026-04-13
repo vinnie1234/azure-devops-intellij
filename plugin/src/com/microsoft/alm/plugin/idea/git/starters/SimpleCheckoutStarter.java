@@ -116,7 +116,7 @@ public class SimpleCheckoutStarter implements StarterBase {
         } catch (Throwable t) {
             //unexpected error occurred while doing simple checkout
             logger.warn("Azure DevOps commandline checkout failed due to an unexpected error", t);
-            VcsNotifier.getInstance(project).notifyError(TfPluginBundle.message(TfPluginBundle.KEY_CHECKOUT_DIALOG_TITLE),
+            VcsNotifier.getInstance(project).notifyError(null, TfPluginBundle.message(TfPluginBundle.KEY_CHECKOUT_DIALOG_TITLE),
                     TfPluginBundle.message(TfPluginBundle.KEY_CHECKOUT_ERRORS_UNEXPECTED, t.getMessage()));
         }
     }

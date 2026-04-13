@@ -3,7 +3,14 @@
 
 package com.microsoft.alm.common.utils;
 
+import com.intellij.ide.projectView.impl.nodes.BasePsiNode;
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.LangDataKeys;
+import com.intellij.openapi.actionSystem.PlatformDataKeys;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.sun.jna.Platform;
+
+import java.util.stream.Stream;
 
 /**
  * Taken from team-explorer-everywhere: source/com.microsoft.tfs.util/src/com/microsoft/tfs/util/FileHelpers.java
@@ -135,5 +142,24 @@ public final class FileHelper {
 
         // This character is in our truth table.
         return VALID_NTFS_FILE_NAME_CHAR_TABLE[c];
+    }
+
+    public static VirtualFile[] getVirtualFiles(AnActionEvent anActionEvent) {
+        final var selectedObjects = anActionEvent.getData(PlatformDataKeys.SELECTED_ITEMS);
+        var files = selectedObjects != null ? Stream.of(selectedObjects).map(o -> o instanceof BasePsiNode psiFileNode ? psiFileNode.getVirtualFile() : null).filter(p -> p != null).toArray(VirtualFile[]::new) : new VirtualFile[0];
+
+        if (files == null || files.length == 0) {
+            files = anActionEvent.getData(LangDataKeys.VIRTUAL_FILE_ARRAY);
+        }
+
+        return files;
+    }
+
+    public static VirtualFile getOneVirtualFile(AnActionEvent anActionEvent) {
+        var files = getVirtualFiles(anActionEvent);
+        if (files != null && files.length != 0) {
+            return files[0];
+        }
+        return null;
     }
 }

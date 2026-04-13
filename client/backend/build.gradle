@@ -7,12 +7,17 @@ plugins {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation project("tfs-sdk")
     implementation "com.jetbrains.rd:rd-framework:$rdGenVersion"
     
     // Test dependencies - needed because test files are in main sourceset
     implementation 'junit:junit:4.12'
+}
+
+configurations {
+    all {
+        exclude group: 'org.jetbrains.kotlinx', module: 'kotlinx-coroutines-core-jvm'
+    }
 }
 
 compileKotlin {

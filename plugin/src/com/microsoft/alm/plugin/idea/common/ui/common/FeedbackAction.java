@@ -68,6 +68,7 @@ public class FeedbackAction extends AbstractAction {
 
         if (dialog.showAndGet()) {
             VcsNotifier.getInstance(project).notifySuccess(
+                    null,
                     TfPluginBundle.message(TfPluginBundle.KEY_FEEDBACK_DIALOG_TITLE),
                     TfPluginBundle.message(TfPluginBundle.KEY_FEEDBACK_NOTIFICATION));
         }
