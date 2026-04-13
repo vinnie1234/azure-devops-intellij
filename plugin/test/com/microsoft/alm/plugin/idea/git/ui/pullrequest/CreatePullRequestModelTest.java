@@ -16,7 +16,7 @@ import git4idea.repo.GitHooksInfo;
 import git4idea.repo.GitRemote;
 import git4idea.repo.GitRepoInfo;
 import git4idea.repo.GitRepository;
-import git4idea.util.GitCommitCompareInfo;
+import com.microsoft.alm.plugin.idea.git.ui.pullrequest.BranchCompareInfo;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -156,16 +156,16 @@ public class CreatePullRequestModelTest extends IdeaAbstractTest {
         underTest = new CreatePullRequestModel(projectMock, gitRepositoryMock);
 
         GitChangesContainer changesContainer = underTest.getMyChangesCompareInfo();
-        assertEquals(0, changesContainer.getGitCommitCompareInfo().getTotalDiff().size());
-        assertEquals(0, changesContainer.getGitCommitCompareInfo().getBranchToHeadCommits(gitRepositoryMock).size());
+        assertEquals(0, changesContainer.getBranchCompareInfo().getTotalDiff().size());
+        assertEquals(0, changesContainer.getBranchCompareInfo().getBranchToHeadCommits(gitRepositoryMock).size());
 
         // when there is a local branch, but we didn't select any remote branch, also return empty compareInfo
         GitLocalBranch mockLocalBranch = PRGitObjectMockHelper.createLocalBranch("local");
         mockGitRepoBranches(mockLocalBranch);
 
         changesContainer = underTest.getMyChangesCompareInfo();
-        assertEquals(0, changesContainer.getGitCommitCompareInfo().getTotalDiff().size());
-        assertEquals(0, changesContainer.getGitCommitCompareInfo().getBranchToHeadCommits(gitRepositoryMock).size());
+        assertEquals(0, changesContainer.getBranchCompareInfo().getTotalDiff().size());
+        assertEquals(0, changesContainer.getBranchCompareInfo().getBranchToHeadCommits(gitRepositoryMock).size());
     }
 
     @Test
@@ -187,13 +187,13 @@ public class CreatePullRequestModelTest extends IdeaAbstractTest {
             underTest.setDiffCompareInfoProvider(diffProviderMock);
             underTest.setApplicationProvider(applicationProviderMock);
 
-            GitCommitCompareInfo compareInfo = new GitCommitCompareInfo();
+            BranchCompareInfo compareInfo = new BranchCompareInfo();
             when(diffProviderMock.getBranchCompareInfo(projectMock, gitRepositoryMock,
                     currentBranchCommitHash, remoteBranchCommitHash))
                     .thenReturn(compareInfo);
 
             GitChangesContainer branchChangesContainer = underTest.getMyChangesCompareInfo();
-            assertEquals(compareInfo, branchChangesContainer.getGitCommitCompareInfo());
+            assertEquals(compareInfo, branchChangesContainer.getBranchCompareInfo());
 
             // verify diff loader is called once
             verify(diffProviderMock, times(1)).getBranchCompareInfo(projectMock, gitRepositoryMock,

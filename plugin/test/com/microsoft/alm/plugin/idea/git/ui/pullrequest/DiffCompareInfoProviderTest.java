@@ -11,7 +11,7 @@ import com.microsoft.alm.plugin.idea.IdeaAbstractTest;
 import git4idea.GitCommit;
 import git4idea.GitRevisionNumber;
 import git4idea.repo.GitRepository;
-import git4idea.util.GitCommitCompareInfo;
+import com.microsoft.alm.plugin.idea.git.ui.pullrequest.BranchCompareInfo;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -54,11 +54,11 @@ public class DiffCompareInfoProviderTest extends IdeaAbstractTest {
 
     @Test
     public void testGetEmptyDiff() throws Exception {
-        final GitCommitCompareInfo empty = underTest.getEmptyDiff(gitRepositoryMock);
+        final BranchCompareInfo empty = underTest.getEmptyDiff(gitRepositoryMock);
         assertCompareInfoEmptiness(empty);
     }
 
-    private void assertCompareInfoEmptiness(final GitCommitCompareInfo empty) {
+    private void assertCompareInfoEmptiness(final BranchCompareInfo empty) {
         assertTrue(empty.getBranchToHeadCommits(gitRepositoryMock).isEmpty());
         assertTrue(empty.getHeadToBranchCommits(gitRepositoryMock).isEmpty());
         assertTrue(empty.getTotalDiff().isEmpty());
@@ -93,7 +93,7 @@ public class DiffCompareInfoProviderTest extends IdeaAbstractTest {
         when(gitUtilWrapperMock.getDiff(any(Project.class), any(VirtualFile.class), eq("myparent"), eq("test1")))
                 .thenReturn(Collections.singletonList(diff));
 
-        final GitCommitCompareInfo compareInfo
+        final BranchCompareInfo compareInfo
                 = underTest.getBranchCompareInfo(projectMock, gitRepositoryMock, "test1", "test2");
 
         List<GitCommit> branchToHeadCommits = compareInfo.getBranchToHeadCommits(gitRepositoryMock);

@@ -18,7 +18,6 @@ import git4idea.GitBranch;
 import git4idea.GitRemoteBranch;
 import git4idea.repo.GitRepository;
 import git4idea.ui.GitCommitListWithDiffPanel;
-import git4idea.util.GitCommitCompareInfo;
 import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 
@@ -188,7 +187,7 @@ public class CreatePullRequestForm implements BasicForm {
                                               @NotNull final GitRepository gitRepository,
                                               @NotNull final String sourceBranchBeingCompared,
                                               @NotNull final String targetBranchBeingCompared,
-                                              @NotNull final GitCommitCompareInfo myCompareInfo) {
+                                              @NotNull final BranchCompareInfo myCompareInfo) {
         final GitRemoteBranch gitRemoteBranch = this.getSelectedRemoteBranch();
         final String currBranch = this.sourceBranch.getText();
 
@@ -208,11 +207,11 @@ public class CreatePullRequestForm implements BasicForm {
     }
 
     private JComponent createCommitsListPane(final Project project, final GitRepository gitRepository,
-                                             final GitCommitCompareInfo compareInfo) {
+                                             final BranchCompareInfo compareInfo) {
         return new GitCommitListWithDiffPanel(project, compareInfo.getBranchToHeadCommits(gitRepository));
     }
 
-    private JComponent createDiffPaneBrowser(final Project project, final GitCommitCompareInfo compareInfo) {
+    private JComponent createDiffPaneBrowser(final Project project, final BranchCompareInfo compareInfo) {
         List<Change> diff = compareInfo.getTotalDiff();
         final SimpleChangesBrowser changesBrowser = new  SimpleChangesBrowser(project,diff);
 

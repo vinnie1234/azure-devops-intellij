@@ -4,10 +4,9 @@
 package com.microsoft.alm.plugin.idea.git.ui.pullrequest;
 
 import git4idea.repo.GitRepository;
-import git4idea.util.GitCommitCompareInfo;
 
 /**
- * This class wraps the GitCommitCompareInfo object and the information about which branches and commit hashes were
+ * This class wraps the BranchCompareInfo object and the information about which branches and commit hashes were
  * compared
  */
 public class GitChangesContainer {
@@ -16,19 +15,19 @@ public class GitChangesContainer {
     private String targetBranchName;
     private String sourceBranchHash;
     private String targetBranchHash;
-    private GitCommitCompareInfo gitCommitCompareInfo;
+    private BranchCompareInfo gitCommitCompareInfo;
     private GitRepository gitRepository;
 
     public static GitChangesContainer createChangesContainer(final String sourceBranchName, final String targetBranchName,
                                                              final String sourceBranchHash, final String targetBranchHash,
-                                                             final GitCommitCompareInfo gitCommitCompareInfo,
+                                                             final BranchCompareInfo gitCommitCompareInfo,
                                                              final GitRepository gitRepository) {
         final GitChangesContainer container = new GitChangesContainer();
         container.setSourceBranchName(sourceBranchName);
         container.setSourceBranchHash(sourceBranchHash);
         container.setTargetBranchName(targetBranchName);
         container.setTargetBranchHash(targetBranchHash);
-        container.setGitCommitCompareInfo(gitCommitCompareInfo);
+        container.setBranchCompareInfo(gitCommitCompareInfo);
         container.setGitRepository(gitRepository);
 
         return container;
@@ -66,11 +65,11 @@ public class GitChangesContainer {
         this.targetBranchHash = targetBranchHash;
     }
 
-    public GitCommitCompareInfo getGitCommitCompareInfo() {
+    public BranchCompareInfo getBranchCompareInfo() {
         return gitCommitCompareInfo;
     }
 
-    public void setGitCommitCompareInfo(final GitCommitCompareInfo gitCommitCompareInfo) {
+    public void setBranchCompareInfo(final BranchCompareInfo gitCommitCompareInfo) {
         this.gitCommitCompareInfo = gitCommitCompareInfo;
     }
 

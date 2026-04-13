@@ -13,8 +13,6 @@ import git4idea.GitRevisionNumber;
 import git4idea.changes.GitChangeUtils;
 import git4idea.history.GitHistoryUtils;
 import git4idea.repo.GitRepository;
-import git4idea.util.GitCommitCompareInfo;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -32,7 +30,7 @@ public class DiffCompareInfoProvider {
         this.utilWrapper = new GitUtilWrapper();
     }
 
-    public GitCommitCompareInfo getBranchCompareInfo(final Project project, final GitRepository gitRepository,
+    public BranchCompareInfo getBranchCompareInfo(final Project project, final GitRepository gitRepository,
                                                      final String source, final String target)
             throws VcsException {
         final GitRevisionNumber commonParentRevision = getUtilWrapper().getMergeBase(project,
@@ -47,7 +45,7 @@ public class DiffCompareInfoProvider {
         return getCompareInfo(project, gitRepository, source, commonParentHash);
     }
 
-    private GitCommitCompareInfo getCompareInfo(final Project project, final GitRepository gitRepository,
+    private BranchCompareInfo getCompareInfo(final Project project, final GitRepository gitRepository,
                                                 final String source, final String target)
             throws VcsException {
         final VirtualFile root = gitRepository.getRoot();
@@ -55,7 +53,7 @@ public class DiffCompareInfoProvider {
         final List<GitCommit> commits2 = getUtilWrapper().history(project, root, target + "..");
 
         final Collection<Change> diff = getUtilWrapper().getDiff(project, root, target, source);
-        final GitCommitCompareInfo info = new GitCommitCompareInfo(GitCommitCompareInfo.InfoType.BRANCH_TO_HEAD);
+        final BranchCompareInfo info = new BranchCompareInfo();
 
         info.put(gitRepository, diff);
         info.put(gitRepository, new Pair<List<GitCommit>, List<GitCommit>>(commits1, commits2));
@@ -66,14 +64,14 @@ public class DiffCompareInfoProvider {
     /**
      * Return zero-length list of commits and diffs
      * <p/>
-     * This doesn't mean the GitCommitCompareInfo's isEmpty() method will return true, it considers an zero-length
+     * This doesn't mean the BranchCompareInfo's isEmpty() method will return true, it considers an zero-length
      * list as a diff still
      *
      * @param gitRepository
      * @return compare info which contains empty commits and diff lists
      */
-    public GitCommitCompareInfo getEmptyDiff(final GitRepository gitRepository) {
-        final GitCommitCompareInfo emptyCompareInfo = new GitCommitCompareInfo(GitCommitCompareInfo.InfoType.BRANCH_TO_HEAD);
+    public BranchCompareInfo getEmptyDiff(final GitRepository gitRepository) {
+        final BranchCompareInfo emptyCompareInfo = new BranchCompareInfo();
         emptyCompareInfo.put(gitRepository,
                 new Pair<List<GitCommit>, List<GitCommit>>(Collections.<GitCommit>emptyList(), Collections.<GitCommit>emptyList()));
         emptyCompareInfo.put(gitRepository, Collections.<Change>emptyList());

@@ -58,7 +58,6 @@ import git4idea.commands.GitCommandResult;
 import git4idea.repo.GitRemote;
 import git4idea.repo.GitRepoInfo;
 import git4idea.repo.GitRepository;
-import git4idea.util.GitCommitCompareInfo;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -121,7 +120,7 @@ public class CreatePullRequestModel extends AbstractModel {
     private boolean loading = false;
     private GitChangesContainer localBranchChanges;
 
-    private final LoadingCache<Pair<String, String>, GitCommitCompareInfo> diffCache;
+    private final LoadingCache<Pair<String, String>, BranchCompareInfo> diffCache;
 
     /* Executor service for running diff calculating Futures */
     private final ListeningExecutorService executorService;
@@ -145,9 +144,9 @@ public class CreatePullRequestModel extends AbstractModel {
         this.diffCompareInfoProvider = new DiffCompareInfoProvider();
         this.diffCache = CacheBuilder.newBuilder().maximumSize(20)
                 .build(
-                        new CacheLoader<Pair<String, String>, GitCommitCompareInfo>() {
+                        new CacheLoader<Pair<String, String>, BranchCompareInfo>() {
                             @Override
-                            public GitCommitCompareInfo load(Pair<String, String> key) throws Exception {
+                            public BranchCompareInfo load(Pair<String, String> key) throws Exception {
                                 // if we missed the cache, then show the loading spinner, otherwise
                                 // just switch to the diff we have to avoid flickering the screen
                                 applicationProvider.invokeAndWaitWithAnyModality(new Runnable() {
@@ -307,7 +306,7 @@ public class CreatePullRequestModel extends AbstractModel {
      * This method calculates the commits and diff information against the tip of current branch and
      * the common ancestor of source branch (current branch) and target branch (selected remote branch).
      * <p/>
-     * If there is no common parent (two branches are parallel), return an empty GitCommitCompareInfo
+     * If there is no common parent (two branches are parallel), return an empty BranchCompareInfo
      * <p/>
      * This is potentially an expensive calculation, probably should do it on a background thread.
      * We will also attempt to cache the result
@@ -334,7 +333,7 @@ public class CreatePullRequestModel extends AbstractModel {
         final String currBranchHash = GeneralGitHelper.getLastCommitHash(project, gitRepository, currBranch);
 
         try {
-            GitCommitCompareInfo changes
+            BranchCompareInfo changes
                     = this.diffCache.get(new Pair<String, String>(currBranchHash, remoteBranchHash));
 
             return GitChangesContainer.createChangesContainer(currBranch.getName(), selectedRemoteBranch.getName(),
@@ -370,7 +369,7 @@ public class CreatePullRequestModel extends AbstractModel {
                             if (changesContainer != null && isChangesUpToDate(changesContainer)) {
                                 setLoading(false);
 
-                                final GitCommitCompareInfo compareInfo = changesContainer.getGitCommitCompareInfo();
+                                final BranchCompareInfo compareInfo = changesContainer.getBranchCompareInfo();
                                 if (compareInfo != null) {
                                     List<GitCommit> commits
                                             = compareInfo.getBranchToHeadCommits(changesContainer.getGitRepository());

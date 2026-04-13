@@ -65,7 +65,7 @@ public class CreatePullRequestDialog extends BaseDialogImpl {
         if (project != null && changesContainer != null) {
             this.createPullRequestForm.populateDiffPane(project, changesContainer.getGitRepository(),
                     changesContainer.getSourceBranchName(), changesContainer.getTargetBranchName(),
-                    changesContainer.getGitCommitCompareInfo());
+                    changesContainer.getBranchCompareInfo());
         }
     }
 
