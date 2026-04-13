@@ -50,36 +50,41 @@ public class ServerContextManager {
     private final String TFS2015_NEW_SERVICE = "distributedtask";
 
     private Map<String, ServerContext> contextMap = new HashMap<String, ServerContext>();
+    private boolean initialized = false;
 
     private static class Holder {
-        private static final ServerContextManager INSTANCE = new ServerContextManager(true);
+        private static final ServerContextManager INSTANCE = new ServerContextManager();
     }
 
     /**
      * The constructor is protected for tests.
      */
     protected ServerContextManager() {
-        this(false);
-    }
-
-    private ServerContextManager(final boolean restore) {
-        if (!restore) {
-            return;
-        }
-
-        try {
-            restoreFromSavedState();
-        } catch (Throwable t) {
-            // being careful here
-            logger.error("constructor", t);
-        }
     }
 
     public static ServerContextManager getInstance() {
         return Holder.INSTANCE;
     }
 
+    /**
+     * Lazily restores saved state on first access to the context map.
+     * This must not be called from a static class initializer (&lt;clinit&gt;) because
+     * it accesses IntelliJ services (TeamServicesSecrets) which are not available
+     * during class initialization.
+     */
+    private synchronized void ensureInitialized() {
+        if (!initialized) {
+            initialized = true;
+            try {
+                restoreFromSavedState();
+            } catch (Throwable t) {
+                logger.error("ensureInitialized", t);
+            }
+        }
+    }
+
     public synchronized ServerContext getLastUsedContext() {
+        ensureInitialized();
         final ServerContext context = get(getLastUsedContextKey());
         return context;
     }
@@ -111,6 +116,7 @@ public class ServerContextManager {
     }
 
     public synchronized void add(final ServerContext context, boolean updateLastUsedContext) {
+        ensureInitialized();
         if (context != null) {
             final String key = context.getKey();
             contextMap.put(key, context);
@@ -137,6 +143,7 @@ public class ServerContextManager {
     }
 
     public synchronized ServerContext get(final String uri) {
+        ensureInitialized();
         if (!(uri == null || uri.isEmpty())) {
             final ServerContext context = contextMap.get(ServerContext.getKey(uri));
             return context;
@@ -146,6 +153,7 @@ public class ServerContextManager {
     }
 
     public synchronized void remove(final String serverUri) {
+        ensureInitialized();
         if ((serverUri == null || serverUri.isEmpty())) {
             return;
         }
@@ -163,6 +171,7 @@ public class ServerContextManager {
     }
 
     public synchronized Collection<ServerContext> getAllServerContexts() {
+        ensureInitialized();
         //copy values from HashMap to a new List make sure the list is immutable
         return Collections.unmodifiableCollection(new ArrayList<ServerContext>(contextMap.values()));
     }
@@ -172,7 +181,7 @@ public class ServerContextManager {
     }
 
     /**
-     * Called once from constructor restore the state from disk between sessions.
+     * Called once (lazily via ensureInitialized) to restore the state from disk between sessions.
      */
     private synchronized void restoreFromSavedState() {
         final List<ServerContext> contexts = getStore().restoreServerContexts();
